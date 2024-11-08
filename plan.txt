@@ -1,0 +1,32 @@
+job scheduler to ingest every 30 mins
+-activate the lambda
+
+
+lambda to harvest the data from the database and place it in injestion bucket 
+- sql for the database
+- version control to find what has changed since last call
+- store data that have changed
+- put data in bucket
+
+
+terraform
+- s3 bucket to handle injested data
+- deploy lambda when written
+- IAMs
+- shared AWS roles?
+- password manager for email, aws creds, etc
+
+
+cloudwatch for error handling
+- send to totesys@proton.com
+
+github actions
+- automated checks
+
+
+
+
+
+
+
+
