@@ -1,12 +1,12 @@
 name: secrets-deployment
 
+
 on:
   push:
     branches:
       - main
 
-      
-jobs:
+      jobs:
   run-tests:
     # if: false # this will cause the job to be skipped - delete to enable
     name: run-tests
