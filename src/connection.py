@@ -4,17 +4,12 @@ import json
 import psycopg2
 
 
-def get_database_creds():
-
-    secret_name = "totesys-db-creds"
-    region_name = "eu-west-2"
-
-    # Create a Secrets Manager client
-    session = boto3.session.Session()
-    client = session.client(service_name="secretsmanager", region_name=region_name)
+def get_database_creds(secret_id):
+    client = boto3.client(service_name="secretsmanager", 
+                            region_name="eu-west-2")
 
     try:
-        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+        get_secret_value_response = client.get_secret_value(SecretId=secret_id)
     except ClientError as e:
         raise e
 
@@ -23,9 +18,9 @@ def get_database_creds():
     return credential_dict
 
 
-def connect_to_db():
+def connect_to_db(database_name):
 
-    database_creds = get_database_creds()
+    database_creds = get_database_creds(database_name)
 
     ENDPOINT = database_creds["host"]
     PORT = database_creds["port"]
@@ -43,9 +38,6 @@ def connect_to_db():
             sslrootcert="SSLCERTIFICATE",
         )
         return conn.cursor()
-        # cur = conn.cursor()
-        # cur.execute("""SELECT now()""")
-        # query_results = cur.fetchall()
-        # print(query_results)
+
     except Exception as e:
         print("Database connection failed due to {}".format(e))
