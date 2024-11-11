@@ -1,12 +1,16 @@
 job scheduler to ingest every 30 mins
--activate the lambda
+- activate the lambda
 
 
 lambda to harvest the data from the database and place it in injestion bucket 
 - sql for the database
+    - 11 tables to check
 - version control to find what has changed since last call
+    - what data can change? can any entry be edited in the origin database
 - store data that have changed
 - put data in bucket
+    - what structure are we using to store the data? 
+    - chunks for each block of time that the job scheduler has run?
 
 
 terraform
@@ -14,14 +18,15 @@ terraform
 - deploy lambda when written
 - IAMs
 - shared AWS roles?
-- password manager for email, aws creds, etc
+- password manager for email and other important features
+    -  does this want a ui program like we made in week 10?
 
 
 cloudwatch for error handling
 - send to totesys@proton.com
 
 github actions
-- automated checks
+- automated tests
 
 
 
