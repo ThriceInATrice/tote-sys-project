@@ -4,12 +4,12 @@ import json
 import psycopg2
 
 
-def get_database_creds(secret_id):
+def get_database_creds(credentials_id):
     client = boto3.client(service_name="secretsmanager", 
                             region_name="eu-west-2")
-
+    
     try:
-        get_secret_value_response = client.get_secret_value(SecretId=secret_id)
+        get_secret_value_response = client.get_secret_value(SecretId=credentials_id)
     except ClientError as e:
         raise e
 
@@ -18,9 +18,9 @@ def get_database_creds(secret_id):
     return credential_dict
 
 
-def connect_to_db(database_name):
+def connect_to_db(credentials_id):
 
-    database_creds = get_database_creds(database_name)
+    database_creds = get_database_creds(credentials_id)
 
     ENDPOINT = database_creds["host"]
     PORT = database_creds["port"]
