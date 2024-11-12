@@ -39,4 +39,6 @@ def get_tables(credentials_id):
     tables = [table[1] for table in table_query_results]
     return tables
 
-get_new_data_from_database("totesys-db-creds")
+
+if __name__ == "__main__":
+    get_new_data_from_database("totesys-db-creds")
