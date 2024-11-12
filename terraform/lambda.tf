@@ -16,10 +16,15 @@ data "archive_file" "extract_lambda" {
   output_path = "${path.module}/../packages/ingestion_lambda/function.zip"
 }
 
+data "archive_file" "layer" {
+    type = "zip"
+    source_dir = "${path.module}/../src/lambda_layer/layer_content/"
+    output_path = "${path.module}/../packages/layer_content.zip"
+}
+
 resource "aws_lambda_layer_version" "psycopg2_layer" {
   layer_name          = "psycopg2_layer"
   compatible_runtimes = [var.python_runtime]
   filename = "${path.module}/../packages/layer_content.zip"
-
-
 }
+

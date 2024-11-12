@@ -5,5 +5,7 @@ src/__pychache__
 **/function.zip
 **/*.tfstate*
 dependencies/
-packages/
 **/*.hcl
+packages/
+.env
+src/lambda_layer

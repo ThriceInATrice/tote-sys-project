@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "cw_document" {
       resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_region.current.id}:*"]
       }
     statement {
-    effect = "allow"
+    effect = "Allow"
     actions = ["logs:CreateLogStream", "logs:PutLogEvents"]
     resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:/aws/lambda/${var.extract_lambda}:*"]
   }

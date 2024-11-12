@@ -1,5 +1,6 @@
 from datetime import datetime
 from connection import connect_to_db
+from pprint import pprint
 
 
 def get_new_data_from_database(credentials_id, last_update=None):
@@ -39,4 +40,6 @@ def get_tables(credentials_id):
     tables = [table[1] for table in table_query_results]
     return tables
 
-get_new_data_from_database("totesys-db-creds")
+
+if __name__ == '__main__':
+    pprint(get_new_data_from_database("totesys-db-creds"))
