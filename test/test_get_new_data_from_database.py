@@ -39,7 +39,7 @@ def test_returns_a_dict(patch_psycopg2_conn_and_creds):
     assert type(result) is dict
 
 @mock_aws
-def test_terminals_logs_how_many_columns_there_are(patch_psycopg2_conn_and_creds, capsys):
+def test_terminal_logs_how_many_columns_there_are(patch_psycopg2_conn_and_creds, capsys):
     expected = 'there are 0 and they are []'
     get_new_data_from_database(patch_psycopg2_conn_and_creds)
 

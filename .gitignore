@@ -1,6 +1,6 @@
 venv
-**/__pychache__
-**/.pychache
+**/__pycache__
+**/.pycache
 **/.terraform
 **/.terraform*
 **/function.zip
@@ -8,3 +8,4 @@ venv
 dependencies/
 packages/
 **/*.hcl
+test_database/create_test_database.txt
