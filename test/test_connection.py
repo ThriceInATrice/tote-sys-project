@@ -1,7 +1,7 @@
 from moto import mock_aws
 import boto3
 import json
-from src.connection import get_database_creds, connect_to_db
+from src.connection import get_database_creds
 
 
 @mock_aws
