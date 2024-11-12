@@ -34,12 +34,15 @@ def get_tables(credentials_id):
         FROM pg_tables
         WHERE schemaname = 'public';
     """
-    cursor = connect_to_db(credentials_id)
-    cursor.execute(table_query)
-    table_query_results = cursor.fetchall()
-    tables = [table[1] for table in table_query_results]
-    return tables
+    try:
+        cursor = connect_to_db(credentials_id)
+        cursor.execute(table_query)
+        table_query_results = cursor.fetchall()
+        tables = [table[1] for table in table_query_results]
+        return tables
 
+    except Exception as e:
+        print("Database connection failed due to {}".format(e))
 
 if __name__ == "__main__":
     get_new_data_from_database("totesys-db-creds")
