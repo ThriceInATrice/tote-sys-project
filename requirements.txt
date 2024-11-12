@@ -2,4 +2,4 @@ pytest
 boto3
 moto
 flake8
-pytest-docker
+psycopg2-binary
