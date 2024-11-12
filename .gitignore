@@ -8,8 +8,5 @@ venv
 dependencies/
 packages/
 **/*.hcl
-test_database/create_test_database.txt
+test_database/test_database.txt
 test_database/test_database.ini
-test_database/01_create_test_database.txt
-test_database/02_create_test_table.txt
-test_database/03_create_test_tabel_values.txt
