@@ -10,3 +10,4 @@ packages/
 **/*.hcl
 test_database/test_database.txt
 test_database/test_database.ini
+test_database

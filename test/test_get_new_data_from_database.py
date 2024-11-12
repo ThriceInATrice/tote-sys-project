@@ -1,17 +1,21 @@
 from src.get_new_data_from_database import get_new_data_from_database
-from test_database.test_config import load_test_config
+from configparser import ConfigParser
 from unittest.mock import patch
 from moto import mock_aws
 import psycopg2
 import pytest
 
-config = load_test_config()
-
 @pytest.fixture(autouse=True)
 def test_data_from_test_database():
+    
+    parser = ConfigParser()
+    parser.read('test_database/test_database.ini')
+    params = parser.items('postgresql_test_database')
+    config_dict = {param[0]: param[1] for param in params}
+
     with patch('src.connection.get_database_creds') as patched_creds:
-        patched_creds.return_value = config
-        with psycopg2.connect(**config) as conn:
+        patched_creds.return_value = config_dict
+        with psycopg2.connect() as conn:
             with patch('src.connection.connect_to_db', conn.cursor):                    
                 yield(get_new_data_from_database(credentials_id=None))
 
@@ -29,6 +33,7 @@ def test_data_from_test_database():
 
 def test_returns_a_dict(test_data_from_test_database):
     result = test_data_from_test_database
+    print(result)
     assert isinstance(result, dict)
     
 def test_terminal_logs_how_many_tables_there_are(capsys):

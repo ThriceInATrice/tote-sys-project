@@ -21,9 +21,25 @@ VALUES
 ('F', 'f', false)
 EOM
 
+cat > test_database/test_database.ini << EOM
+[postgresql_test_database]
+host=localhost
+port=5432
+database=test_database
+user=$USER
+password=password
+EOM
+
+
+
+
+
 psql -c 'DROP DATABASE IF EXISTS test_database;'
 psql -c 'CREATE DATABASE test_database;'
 psql -f test_database/test_database.sql
 rm test_database/test_database.sql
+
+
+
 pytest test/test_get_new_data_from_database.py -vvvrP
 psql -c "DROP DATABASE IF EXISTS test_database"
