@@ -1,5 +1,5 @@
 from datetime import datetime
-from connection import connect_to_db
+from src.connection import connect_to_db
 
 
 def get_new_data_from_database(credentials_id, last_update=None):
@@ -23,6 +23,7 @@ def get_new_data_from_database(credentials_id, last_update=None):
                 )
                 results = cursor.fetchall()
                 updated_data[now].append(results)
+                
 
         return updated_data
     except Exception as e:

@@ -34,6 +34,14 @@ def patch_psycopg2_conn_and_creds():
 
 
 @mock_aws
-def test(patch_psycopg2_conn_and_creds):   
+def test_returns_a_dict(patch_psycopg2_conn_and_creds):
     result = get_new_data_from_database(patch_psycopg2_conn_and_creds)
-    print(result)
+    assert type(result) is dict
+
+@mock_aws
+def test_terminals_logs_how_many_columns_there_are(patch_psycopg2_conn_and_creds, capsys):
+    expected = 'there are 0 and they are []'
+    get_new_data_from_database(patch_psycopg2_conn_and_creds)
+
+    captured = capsys.readouterr().out.strip()
+    assert captured == expected
