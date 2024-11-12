@@ -1,5 +1,6 @@
 venv
-src/__pychache__
+**/.pycache
+**/__pycache__
 **/.terraform
 **/.terraform*
 **/function.zip

@@ -5,8 +5,7 @@ import psycopg2
 
 
 def get_database_creds(credentials_id):
-    client = boto3.client(service_name="secretsmanager", 
-                            region_name="eu-west-2")
+    client = boto3.client(service_name="secretsmanager", region_name="eu-west-2")
     
     try:
         get_secret_value_response = client.get_secret_value(SecretId=credentials_id)
@@ -14,7 +13,6 @@ def get_database_creds(credentials_id):
         raise e
 
     credential_dict = json.loads(get_secret_value_response["SecretString"])
-
     return credential_dict
 
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from connection import connect_to_db
+from src.connection import connect_to_db
 
 
 def get_new_data_from_database(credentials_id, last_update=None):
@@ -7,6 +7,7 @@ def get_new_data_from_database(credentials_id, last_update=None):
     timeframe_string = ""
     if last_update:
         timeframe_string = f"WHERE last_updated BETWEEN {last_update} AND {now}"
+
 
     updated_data = {now: []}
     tables = get_tables(credentials_id)
@@ -39,4 +40,5 @@ def get_tables(credentials_id):
     tables = [table[1] for table in table_query_results]
     return tables
 
-get_new_data_from_database("totesys-db-creds")
+if __name__ == '__main__':
+    get_new_data_from_database("totesys-db-creds")
