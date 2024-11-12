@@ -34,7 +34,13 @@ data "aws_iam_policy_document" "cw_document" {
       actions = ["logs:CreateLogGroup"]
       resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_region.current.id}:*"]
       }
+    statement {
+    effect = "allow"
+    actions = ["logs:CreateLogStream", "logs:PutLogEvents"]
+    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:/aws/lambda/${var.extract_lambda}:*"]
+  }
 }
+
 
 
 resource "aws_iam_policy" "s3_policy" {
