@@ -1,10 +1,13 @@
 venv
-src/__pycache__
+**/__pycache__
+**/.pycache
 **/.terraform
 **/.terraform*
 **/function.zip
 **/*.tfstate*
 dependencies/
-**/*.hcl
 packages/
-.env
+**/*.hcl
+test/test_database.ini
+test/test_database.sql
+requirements.txt
