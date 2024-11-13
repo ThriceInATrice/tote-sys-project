@@ -2,6 +2,7 @@ from datetime import datetime
 from connection import connect_to_db
 
 
+
 def get_new_data_from_database(credentials_id, last_update=None):
     now = datetime.now()
     timeframe_string = ""
@@ -10,7 +11,6 @@ def get_new_data_from_database(credentials_id, last_update=None):
     try:
         updated_data = {now: []}
         tables = get_tables(credentials_id)
-        print(f"there are {len(tables)} and they are {tables}")
         for table in tables:
             if table != "_prisma_migrations":
                 cursor = connect_to_db(credentials_id)
@@ -19,15 +19,23 @@ def get_new_data_from_database(credentials_id, last_update=None):
                     SELECT *
                     FROM {table}
                     {timeframe_string}
+                    LIMIT 1
                 """
                 )
                 results = cursor.fetchall()
-                updated_data[now].append(results)
+                column_names = [desc[0] for desc in cursor.description]
+                updated_data[now].append([make_dict(column_names, result) for result in results])
 
         return updated_data
     except Exception as e:
         print("Database connection failed due to {}".format(e))
 
+def make_dict(column_names, values):
+    if len(column_names) == len(values):
+        return {column_names[i]: values[i] for i in range(len(column_names))}
+    else:
+        raise Exception("data_error")
+    
 def get_tables(credentials_id):
     table_query = """
         SELECT * 
@@ -45,4 +53,4 @@ def get_tables(credentials_id):
         print("Database connection failed due to {}".format(e))
 
 if __name__ == "__main__":
-    get_new_data_from_database("totesys-db-creds")
+    print(get_new_data_from_database("totesys-db-creds"))

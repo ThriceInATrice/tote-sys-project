@@ -18,7 +18,7 @@ this is a fixure which patches the test cred dict as the
 return value of the get_database_creds func so that 
 connect_to_db func can be passed it. psycopg2's connect 
 method is then patched so it returns an empty cursor to 
-be passed into the get_new_data_from_database funtion in 
+be passed into the get_new_data_from_database function in 
 the tests below.
 '''
 
