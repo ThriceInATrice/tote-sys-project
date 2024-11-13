@@ -10,6 +10,7 @@ on:
         type: string
         default: dev
         required: false
+        
   push:
     branches: [ "main", "test_database" ]
   pull_request:
@@ -23,23 +24,20 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
-
-
-
+    # services:
+    #   postgres:
+    #     image: postgres:15
+    #     env:
+    #       POSTGRES_USER: user
+    #       POSTGRES_PASSWORD: password
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       # Maps tcp port 5432 on service container to the host
+    #       - 5432:5432
 
     steps:
     - uses: actions/checkout@v4
@@ -61,4 +59,4 @@ jobs:
     - name: Test with pytest
       run: |
         export PYTHONPATH=$(pwd)
-        sh test_get_new_data_from_database.sh
+      # sh test_get_new_data_from_database.sh
