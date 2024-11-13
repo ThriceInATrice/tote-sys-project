@@ -55,6 +55,8 @@ jobs:
         # Runs a script that creates a PostgreSQL table, populates
         # the table with data, and then retrieves the data
         run: |
+          ps -ef | grep postgres
+          sudo find /tmp/ -name .s.PGSQL.5432
           export PYTHONPATH=$(pwd)
           sh test_get_new_data_from_database.sh
         # Environment variables used by the `client.js` script to create
