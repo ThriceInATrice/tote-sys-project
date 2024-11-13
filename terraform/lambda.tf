@@ -8,6 +8,7 @@ resource "aws_lambda_function" "ingestion_lambda" {
   runtime = "python3.12"
   timeout = 10
   depends_on = [ aws_s3_object.lambda_code, aws_s3_object.layer_code ]
+  layers = [ aws_lambda_layer_version.psycopg2_layer.arn ]
 }
 
 data "archive_file" "extract_lambda" {
