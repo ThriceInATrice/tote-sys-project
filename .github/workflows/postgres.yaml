@@ -51,3 +51,6 @@ jobs:
           sh test_get_new_data_from_database.sh
         # Environment variables used by the `client.js` script to create
         # a new PostgreSQL table.
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
