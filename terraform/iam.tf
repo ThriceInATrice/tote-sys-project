@@ -66,21 +66,24 @@ resource "aws_iam_role_policy_attachment" "lambda_cw_policy_attachment" {
 
 resource "aws_iam_policy" "lambda_secrets_manager" {
   name = "lambda_secrets_manager"
-  policy = <<EOF
-  "Version": "2012-10-17",
+  # role = aws_iam_role.lambda_role.id
+  policy = jsonencode({
+        "Version": "2012-10-17",
         "Statement": [
             {
                 "Effect": "Allow",
-                "Resource": arn:aws:secretsmanager:${data.aws.current.name}:${data.aws_caller_identity.current.account_id}:totesys-db-creds-Q5tZCs
                 "Action": [
                     "secretsmanager:GetSecretValue"
-                  ]
+                  ],
+                # "Resource": "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}totesys-db-creds*"
+                # "Resource": "arn:aws:secretsmanager:eu-west-2:881490134104:totesys-db-creds-Q5tZCs"
+                "Resource": "*"
             }
           ]
-    EOF
+        })
   }
 
   resource "aws_iam_role_policy_attachment" "lambda_secret_attachment" {
     role = aws_iam_role.lambda_role.name
-    policy_arn = aws_iam_policy.lambda_secrets_manager.a
+    policy_arn = aws_iam_policy.lambda_secrets_manager.arn
   }
