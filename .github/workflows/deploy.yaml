@@ -10,7 +10,7 @@ on:
         type: string
         default: dev
         required: false
-        
+
   push:
     branches: [ "main", "test_database" ]
   pull_request:
@@ -59,4 +59,5 @@ jobs:
     - name: Test with pytest
       run: |
         export PYTHONPATH=$(pwd)
+        pytest test/test_get_new_data_from_database.py -k 'test_get_database_creds_can_return_creds' -vvvrP
       # sh test_get_new_data_from_database.sh
