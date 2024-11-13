@@ -8,3 +8,5 @@ venv
 dependencies/
 packages/
 **/*.hcl
+test/test_database.ini
+test/test_database.sql
