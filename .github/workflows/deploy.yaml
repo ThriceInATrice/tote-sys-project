@@ -5,7 +5,7 @@ name: Python application
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "test_database" ]
   pull_request:
     branches: [ "main" ]
 
@@ -42,4 +42,4 @@ jobs:
     - name: Test with pytest
       run: |
         export PYTHONPATH=$(pwd)
-        pytest -vvvrP
+        sh test_get_new_data_from_database.sh

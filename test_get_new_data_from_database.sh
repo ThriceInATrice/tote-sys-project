@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cat > test_database/test_database.sql <<EOM
+cat > test/test_database.sql <<EOM
 \c test_database
 
 CREATE TABLE test_table (
@@ -21,7 +21,7 @@ VALUES
 ('F', 'f', false)
 EOM
 
-cat > test_database/test_database.ini << EOM
+cat > test/test_database.ini << EOM
 [postgresql_test_database]
 host=localhost
 port=5432
@@ -30,16 +30,9 @@ user=$USER
 password=password
 EOM
 
-
-
-
-
 psql -c 'DROP DATABASE IF EXISTS test_database;'
 psql -c 'CREATE DATABASE test_database;'
-psql -f test_database/test_database.sql
-rm test_database/test_database.sql
-
-
-
+psql -f test/test_database.sql
+rm test/test_database.sql
 pytest test/test_get_new_data_from_database.py -vvvrP
 psql -c "DROP DATABASE IF EXISTS test_database"
