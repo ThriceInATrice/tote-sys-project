@@ -38,17 +38,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
-        export PYTHONPATH=$(pwd)
-        sh test_get_new_data_from_database.sh
-      # pytest test/test_get_new_data_from_database.py -k 'test_get_database_creds_can_return_creds' -vvvrP
-
-name: PostgreSQL service example
-on: push
-
-jobs:
-  # Label of the container job
+        
   container-job:
     # Containers must run in Linux based operating systems
     runs-on: ubuntu-latest
@@ -91,3 +81,8 @@ jobs:
           POSTGRES_HOST: postgres
           # The default PostgreSQL port
           POSTGRES_PORT: 5432
+    - name: Test with pytest
+      run: |
+        export PYTHONPATH=$(pwd)
+        sh test_get_new_data_from_database.sh
+      # pytest test/test_get_new_data_from_database.py -k 'test_get_database_creds_can_return_creds' -vvvrP
