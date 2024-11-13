@@ -46,4 +46,4 @@ def get_tables(credentials_id):
         print("Database connection failed due to {}".format(e))
 
 if __name__ == "__main__":
-    get_new_data_from_database("totesys-db-creds")
+    print(get_new_data_from_database("totesys-db-creds"))

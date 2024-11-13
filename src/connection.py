@@ -13,7 +13,6 @@ def get_database_creds(credentials_id):
         raise e
 
     credential_dict = json.loads(get_secret_value_response["SecretString"])
-
     return credential_dict
 
 
