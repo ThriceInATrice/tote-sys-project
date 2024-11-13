@@ -22,7 +22,3 @@ def lambda_handler(event, context):
             'body': json.dumps('An error occurred saving data to bucket.')}
 
 # we should ensure the connection to db is closed once lambda stopped running 
-
-
-if __name__=="__main__":
-    print(lambda_handler({},{}))
