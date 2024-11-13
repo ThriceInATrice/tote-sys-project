@@ -1,11 +1,10 @@
-from src.get_new_data_from_database import get_new_data_from_database
+from get_new_data_from_database import get_new_data_from_database
 import logging 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.info)
+logger.setLevel(logging.INFO)
 import json 
 import boto3
 client = boto3.client('s3')
-
 
 def lambda_handler(event, context):
 

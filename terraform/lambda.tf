@@ -5,7 +5,7 @@ resource "aws_lambda_function" "ingestion_lambda" {
   source_code_hash = data.archive_file.extract_lambda.output_base64sha256
   role = aws_iam_role.lambda_role.arn
   handler = "ingestion_lambda.lambda_handler"
-  runtime = "python3.12"
+  runtime = "python3.11"
   timeout = 10
   depends_on = [ aws_s3_object.lambda_code, aws_s3_object.layer_code ]
   layers = [ aws_lambda_layer_version.psycopg2_layer.arn ]
