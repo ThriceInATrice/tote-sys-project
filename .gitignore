@@ -1,5 +1,5 @@
 venv
-**/__pychache__
+**/__pycache__
 **/.pychache
 **/.terraform
 **/.terraform*
@@ -8,3 +8,6 @@ venv
 dependencies/
 packages/
 **/*.hcl
+.pytest_cache
+test/__pycache__
+src/__pycache__
