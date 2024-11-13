@@ -11,7 +11,7 @@ on:
         default: dev
         required: false
   push:
-    branches: [ "main", "test_database" ]
+    branches: [ "main", "mock-db-cicd" ]
   pull_request:
     branches: [ "main" ]
 
