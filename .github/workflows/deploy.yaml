@@ -48,7 +48,7 @@ jobs:
       env:
         PGSERVICE: ${{ steps.postgres.outputs.service-name }}
     - run: |
-        whoami
+        psql -l
         export PYTHONPATH=$(pwd)
         sudo systemctl start postgresql.service
         systemctl status postgresql
