@@ -54,7 +54,7 @@ jobs:
         sudo systemctl start postgresql.service
         systemctl status postgresql
         sudo -i -u postgres
-        echo $(psql -h 127.0.0.1 -c  "SHOW data_directory;")
+        echo $(psql -h 127.0.0.1 --password postgres -c  "SHOW data_directory;")
         echo $(psql -h 127.0.0.1 -c "CREATE database test_database;")
         # sh test_get_new_data_from_database.sh
     # - name: Test with pytest
