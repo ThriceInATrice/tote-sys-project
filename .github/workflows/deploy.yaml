@@ -56,6 +56,7 @@ jobs:
         PGSERVICE: ${{ steps.postgres.outputs.service-name }}
     - run: |
         export PYTHONPATH=$(pwd)
+        systemctl start postgresql
         systemctl status postgresql
         sh test_get_new_data_from_database.sh
     # - name: Test with pytest
