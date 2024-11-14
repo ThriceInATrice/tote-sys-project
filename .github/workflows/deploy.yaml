@@ -49,12 +49,12 @@ jobs:
     #     PGSERVICE: ${{ steps.postgres.outputs.service-name }}
     - run: |
         export PYTHONPATH=$(pwd)
-        export PG_USER=postgres
-        export PG_PASSWORD=postgres
-        sudo systemctl start postgresql.service
+        export PGUSER=postgres
+        export PGPASSWORD=postgres
+        systemctl start postgresql.service
         systemctl status postgresql
-        echo $(sudo psql -h 127.0.0.1 -c  "SHOW data_directory;")
-        echo $(sudo psql -h 127.0.0.1 -c "CREATE database test_database;")
+        echo $(psql -h 127.0.0.1 -c  "SHOW data_directory;")
+        echo $(psql -h 127.0.0.1 -c "CREATE database test_database;")
         # sh test_get_new_data_from_database.sh
     # - name: Test with pytest
     #   run: |
