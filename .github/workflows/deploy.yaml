@@ -59,7 +59,6 @@ jobs:
         export PYTHONPATH=$(pwd)
         sudo systemctl start postgresql
         systemctl status postgresql
-        sudo su - postgres psql
         echo $(psql -c "SHOW data_directory;")
         # sh test_get_new_data_from_database.sh
         createuser myuser
