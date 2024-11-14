@@ -47,6 +47,10 @@ jobs:
     # - run: psql -c "SELECT 1"
     #   env:
     #     PGSERVICE: ${{ steps.postgres.outputs.service-name }}
+    - name: Setup PostgreSQL
+      uses: tj-actions/install-postgresql@v3
+      with:
+        postgresql-version: 16
     - run: |
         export PYTHONPATH=$(pwd)
         export PGUSER=postgres
