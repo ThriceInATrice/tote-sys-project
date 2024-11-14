@@ -13,4 +13,4 @@ def store_new_data(ingestion_bucket, extraction_time, new_data):
         client.put_object(Bucket=ingestion_bucket, Key=extraction_time, Body=body)
 
     except Exception as e:
-        raise IngestionError(e)
+        raise IngestionError(f"store_new_data: {e}")

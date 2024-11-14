@@ -15,10 +15,9 @@ except ImportError:
 
 def lambda_handler(event, context):
     try:
-        event_dict = json.loads(event)
-        credentials_id = event_dict["credentials_id"]
-        extraction_times_bucket = event_dict["extraction_times_bucket"]
-        ingestion_bucket = event_dict["ingestion_bucket"]
+        credentials_id = event["credentials_id"]
+        extraction_times_bucket = event["extraction_times_bucket"]
+        ingestion_bucket = event["ingestion_bucket"]
 
         last_extraction = get_last_extraction(extraction_times_bucket)
         new_data, extraction_time = get_new_data_from_database(
@@ -28,7 +27,7 @@ def lambda_handler(event, context):
         store_new_data(ingestion_bucket, extraction_time, new_data)
         log_extraction_time(extraction_time, extraction_times_bucket)
     except Exception as e:
-        raise IngestionError(e)
+        raise IngestionError(f"extract: {e}")
 
 
 # does this want a return, even if its just a status code?

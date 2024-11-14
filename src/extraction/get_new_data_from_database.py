@@ -94,7 +94,7 @@ def get_tables(credentials_id):
 
     except Exception as e:
 
-        print("Database connection failed due to {}".format(e))
+        raise IngestionError(f"get_tables: {e}")
 
     finally:
         if conn:

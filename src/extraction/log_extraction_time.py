@@ -21,4 +21,4 @@ def log_extraction_time(extraction_time, extraction_bucket_name):
         )
 
     except Exception as e:
-        raise IngestionError(e)
+        raise IngestionError(f"log_extraction: {e}")

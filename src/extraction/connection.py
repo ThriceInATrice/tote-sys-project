@@ -12,7 +12,7 @@ def get_database_creds(credentials_id):
     try:
         get_secret_value_response = client.get_secret_value(SecretId=credentials_id)
     except ClientError as e:
-        raise e
+        raise ClientError(f"get_database_creds: {e}")
 
     credential_dict = json.loads(get_secret_value_response["SecretString"])
     return credential_dict
@@ -51,4 +51,4 @@ def connect_to_db(credentials_id):
         return conn
 
     except Exception as e:
-        raise IngestionError(e)
+        raise IngestionError(f"connect_to_db: {e}")
