@@ -1,6 +1,9 @@
 import store_new_data, log_extraction_time, get_last_extraction, get_new_data_from_database
 import json
-from src.extraction.ingestion_error import IngestionError
+try:
+    from src.extraction.ingestion_error import IngestionError
+except ImportError:
+    from ingestion_error import IngestionError
 
 # trigger event is a json with the bucket names and the name of the credentials in the secret manager
 # {

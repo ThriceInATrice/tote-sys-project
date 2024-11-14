@@ -1,5 +1,8 @@
 import json, boto3
-from src.extraction.ingestion_error import IngestionError
+try:
+    from src.extraction.ingestion_error import IngestionError
+except ImportError:
+    from ingestion_error import IngestionError
 
 
 def store_new_data(ingestion_bucket, extraction_time, new_data):

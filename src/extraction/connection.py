@@ -1,6 +1,9 @@
 import boto3, json, psycopg2
 from botocore.exceptions import ClientError
-from src.extraction.ingestion_error import IngestionError
+try:
+    from src.extraction.ingestion_error import IngestionError
+except ImportError:
+    from ingestion_error import IngestionError
 
 
 def get_database_creds(credentials_id):

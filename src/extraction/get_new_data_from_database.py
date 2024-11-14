@@ -1,6 +1,10 @@
 from datetime import datetime
-from src.extraction.connection import connect_to_db
-from src.extraction.ingestion_error import IngestionError
+try:
+    from src.extraction.connection import connect_to_db
+    from src.extraction.ingestion_error import IngestionError
+except ImportError:
+    from connection import connect_to_db
+    from ingestion_error import IngestionError
 import re
 
 
