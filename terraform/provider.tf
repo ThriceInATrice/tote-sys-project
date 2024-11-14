@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3" {
     bucket = "state-bucket-nov-11"
-    key = "data-engineering-project-state/terraform.tfstate"
+    key    = "data-engineering-project-state/terraform.tfstate"
     region = "eu-west-2"
   }
 }
