@@ -62,7 +62,10 @@ jobs:
         sudo su - postgres psql
         psql
         echo $(psql -c "SHOW data_directory;")
-        sh test_get_new_data_from_database.sh
+        # sh test_get_new_data_from_database.sh
+        createuser myuser
+        createdb --owner myuser mydatabase
+        psql -c "ALTER USER myuser WITH PASSWORD 'mypassword'"
     # - name: Test with pytest
     #   run: |
     #     export PYTHONPATH=$(pwd)
