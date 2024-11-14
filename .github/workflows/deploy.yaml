@@ -60,7 +60,6 @@ jobs:
         python-version: "3.12"
     - name: Install dependencies
       run: |
-        apt-get install --yes python3-pip
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.in ]; then pip install -r requirements.in; fi
