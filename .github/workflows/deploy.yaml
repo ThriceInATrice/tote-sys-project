@@ -59,7 +59,7 @@ jobs:
         export PYTHONPATH=$(pwd)
         sudo systemctl start postgresql
         systemctl status postgresql
-        ls /home/runner/work/_temp/pgdata/
+        cat /home/runner/work/_temp/pgdata/pg_hba.conf
         echo $(psql -c "SHOW data_directory;")
         sh test_get_new_data_from_database.sh
     # - name: Test with pytest
