@@ -81,27 +81,14 @@ jobs:
       - name: Query database
         run: | 
           psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
-          psql -h postgres -d postgres_db -U postgres_user -c 'CREATE TABLE test_table (
-              test_id SERIAL PRIMARY KEY,
-              
-              test_text_1 TEXT,
-              test_text_2 TEXT,
-              test_bool BOOLEAN
-          );
-          INSERT INTO test_table 
-              (test_text_1, test_text_2, test_bool)
-              VALUES 
-              ('A', 'a', true), 
-              ('B', 'b', false), 
-              ('C', 'c', true), 
-              ('D', 'd', false),
-              ('E', 'e', true),
-              ('F', 'f', false);
-          SELECT * FROM test_table'
+          sh test_get_new_data_from_database.sh
         env:
           # postgress password is required; alternatively, you can run:
           # `PGPASSWORD=postgres_password psql ...`
+          PGHOST: postgres
           PGPASSWORD: postgres_password
+          PGUSER: postgres_user
+          PGDATABASE: postgres_db
       - run: |
           export PYTHONPATH=$(pwd)
           # sh test_get_new_data_from_database.sh
