@@ -54,6 +54,7 @@ jobs:
         sudo systemctl start postgresql.service
         systemctl status postgresql
         sudo -i -u postgres
+        find / pg_hba.conf
         cat /home/runner/work/_temp/pgdata/pg_hba.conf
         echo $(psql -h 127.0.0.1 --password postgres -c  "SHOW data_directory;")
         echo $(psql -h 127.0.0.1 -c "CREATE database test_database;")
