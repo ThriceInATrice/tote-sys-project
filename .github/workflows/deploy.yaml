@@ -61,7 +61,7 @@ jobs:
         systemctl status postgresql
         echo $(psql -c "SHOW data_directory;")
         # sh test_get_new_data_from_database.sh
-        sudo netstat -anlp | grep 5432
+        cat /etc/hosts
     # - name: Test with pytest
     #   run: |
     #     export PYTHONPATH=$(pwd)
