@@ -1,4 +1,5 @@
 import json, boto3
+from src.extraction.ingestion_error import IngestionError
 
 
 def store_new_data(ingestion_bucket, extraction_time, new_data):
@@ -9,4 +10,4 @@ def store_new_data(ingestion_bucket, extraction_time, new_data):
         client.put_object(Bucket=ingestion_bucket, Key=extraction_time, Body=body)
 
     except Exception as e:
-        print("Database connection failed due to {}".format(e))
+        raise IngestionError(e)

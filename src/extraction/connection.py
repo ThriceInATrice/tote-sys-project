@@ -1,7 +1,6 @@
-import boto3
+import boto3, json, psycopg2
 from botocore.exceptions import ClientError
-import json
-import psycopg2
+from src.extraction.ingestion_error import IngestionError
 
 
 def get_database_creds(credentials_id):
@@ -16,7 +15,7 @@ def get_database_creds(credentials_id):
     return credential_dict
 
 
-# credential is of the form
+# credentials are of the form:
 # {
 #     "cohort_id": str,
 #     "user": str,
@@ -46,7 +45,7 @@ def connect_to_db(credentials_id):
             password=PASSWORD,
             sslrootcert="SSLCERTIFICATE",
         )
-        return conn.cursor()
+        return conn
 
     except Exception as e:
-        print("Database connection failed due to {}".format(e))
+        raise IngestionError(e)

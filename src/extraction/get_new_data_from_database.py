@@ -1,5 +1,6 @@
 from datetime import datetime
 from src.extraction.connection import connect_to_db
+from src.extraction.ingestion_error import IngestionError
 import re
 
 
@@ -8,16 +9,22 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
 
     timeframe_string = ""
     if last_extraction:
-        last_extraction_time=destring_timestamp(last_extraction)
-        timeframe_string = f"WHERE last_updated BETWEEN '{last_extraction_time}' and '{now}'"
+        last_extraction_time = destring_timestamp(last_extraction)
+        timeframe_string = (
+            f"WHERE last_updated BETWEEN '{last_extraction_time}' and '{now}'"
+        )
         # you can just give pycopg2 a python datetime and it makes it work
-        
+
     try:
         new_data = {now: []}
         tables = get_tables(credentials_id)
+
+        conn = connect_to_db(credentials_id)
+        cursor = conn.cursor()
+
         for table in tables:
-            if table != "_prisma_migrations": # this is a table that we dont need
-                cursor = connect_to_db(credentials_id)
+            if table != "_prisma_migrations":  # this is a table that we dont need
+
                 cursor.execute(
                     f"""
                     SELECT *
@@ -35,7 +42,11 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
         return new_data, now
 
     except Exception as e:
-        print("Database connection failed due to {}".format(e))
+        raise IngestionError(e)
+
+    finally:
+        if conn:
+            conn.close()
 
 
 def destring_timestamp(datetime_string):
@@ -48,10 +59,12 @@ def destring_timestamp(datetime_string):
             int(datetime_split[2]),
             int(datetime_split[3]),
             int(datetime_split[4]),
-            int(datetime_split[5])
+            int(datetime_split[5]),
+            int(datetime_split[6]),
         )
     except:
         raise Exception("datetime error")
+
 
 def make_dict(column_names, values):
     if len(column_names) == len(values):
@@ -67,14 +80,21 @@ def get_tables(credentials_id):
         WHERE schemaname = 'public';
     """
     try:
-        cursor = connect_to_db(credentials_id)
+        conn = connect_to_db(credentials_id)
+        cursor = conn.cursor()
         cursor.execute(table_query)
         table_query_results = cursor.fetchall()
         tables = [table[1] for table in table_query_results]
+
         return tables
 
     except Exception as e:
+
         print("Database connection failed due to {}".format(e))
+
+    finally:
+        if conn:
+            conn.close()
 
 
 if __name__ == "__main__":
