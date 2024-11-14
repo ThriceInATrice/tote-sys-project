@@ -41,7 +41,7 @@ jobs:
     - name: connect to postgres
       uses: ikalnytskyi/action-setup-postgres@v7
       id: postgres
-
+    - run: psql -l
     - run: psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
     - run: psql service=${{ steps.postgres.outputs.service-name }} -c "SELECT 1"
     - run: psql -c "SELECT 1"
