@@ -81,6 +81,17 @@ jobs:
       - name: Query database
         run: | 
           psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
+          # sh test_get_new_data_from_database.sh
+        env:
+          # postgress password is required; alternatively, you can run:
+          # `PGPASSWORD=postgres_password psql ...`
+          PGHOST: postgres
+          PGPASSWORD: postgres_password
+          PGUSER: postgres_user
+          PGDATABASE: postgres_db
+      - name: Run tests
+        run: |
+          export PYTHONPATH=$(pwd)
           sh test_get_new_data_from_database.sh
         env:
           # postgress password is required; alternatively, you can run:
@@ -89,9 +100,6 @@ jobs:
           PGPASSWORD: postgres_password
           PGUSER: postgres_user
           PGDATABASE: postgres_db
-      - run: |
-          export PYTHONPATH=$(pwd)
-          # sh test_get_new_data_from_database.sh
     # - name: Test with pytest
     #   run: |
     #     export PYTHONPATH=$(pwd)
