@@ -95,7 +95,7 @@ jobs:
           export PYTHONPATH=$(pwd)
           pwd
           ls
-          sh test_get_new_data_from_database.sh
+          sh ../test_get_new_data_from_database.sh
         env:
           # postgress password is required; alternatively, you can run:
           # `PGPASSWORD=postgres_password psql ...`
