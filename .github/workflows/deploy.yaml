@@ -10,9 +10,8 @@ on:
         type: string
         default: dev
         required: false
-
   push:
-    branches: [ "main", "test_database" ]
+    branches: [ "main", "new-workflow" ]
   pull_request:
     branches: [ "main" ]
 
@@ -21,24 +20,7 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    # services:
-    #   postgres:
-    #     image: postgres:15
-    #     env:
-    #       POSTGRES_USER: user
-    #       POSTGRES_PASSWORD: password
-    #     options: >-
-    #       --health-cmd pg_isready
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
-    #     ports:
-    #       # Maps tcp port 5432 on service container to the host
-    #       - 5432:5432
-
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.12
@@ -56,8 +38,26 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
+    - name: connect to postgres
+      uses: ikalnytskyi/action-setup-postgres@v7
+      with:
+        username: user
+        password: password
+        database: test_database
+        port: 5432
+        postgres-version: "14"
+        ssl: false
+      id: postgres
+
+    - run: psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
+    - run: psql service=${{ steps.postgres.outputs.service-name }} -c "SELECT 1"
+    - run: psql -c "SELECT 1"
+      env:
+        PGSERVICE: ${{ steps.postgres.outputs.service-name }}
+    - run: |
         export PYTHONPATH=$(pwd)
-        pytest test/test_get_new_data_from_database.py -k 'test_get_database_creds_can_return_creds' -vvvrP
-      # sh test_get_new_data_from_database.sh
+        sh test_get_new_data_from_database.sh
+    # - name: Test with pytest
+    #   run: |
+    #     export PYTHONPATH=$(pwd)
+    #     pytest test/test_get_new_data_from_database.py -k 'test_get_database_creds_can_return_creds' -vvvrP
