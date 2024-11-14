@@ -50,7 +50,7 @@ jobs:
     - run: |
         export PYTHONPATH=$(pwd)
         export PGUSER=postgres
-        export PGPASSWORD=postgres
+        export POSTGRES_PASSWORD=postgres
         sudo systemctl start postgresql.service
         systemctl status postgresql
         echo $(psql -h 127.0.0.1 -c  "SHOW data_directory;")
