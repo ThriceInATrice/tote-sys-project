@@ -40,13 +40,6 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: connect to postgres
       uses: ikalnytskyi/action-setup-postgres@v7
-      with:
-        username: user
-        password: password
-        database: test_database
-        port: 5432
-        postgres-version: "14"
-        ssl: false
       id: postgres
 
     - run: psql ${{ steps.postgres.outputs.connection-uri }} -c "SELECT 1"
