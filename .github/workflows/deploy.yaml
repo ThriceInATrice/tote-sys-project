@@ -60,8 +60,7 @@ jobs:
         sudo systemctl start postgresql.service
         systemctl status postgresql
         echo $(psql -c "SHOW data_directory;")
-        # sh test_get_new_data_from_database.sh
-        cat /etc/hosts
+        sh test_get_new_data_from_database.sh
     # - name: Test with pytest
     #   run: |
     #     export PYTHONPATH=$(pwd)
