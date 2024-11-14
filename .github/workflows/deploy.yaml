@@ -61,9 +61,27 @@ jobs:
         systemctl status postgresql
         echo $(psql -c "SHOW data_directory;")
         # sh test_get_new_data_from_database.sh
-        createuser myuser
-        createdb --owner myuser mydatabase
-        psql -c "ALTER USER myuser WITH PASSWORD 'mypassword'"
+        echo "Initializing database cluster..."
+
+        # Convert backslashes to forward slashes in RUNNER_TEMP for Windows Git Bash
+        export PGHOST="${RUNNER_TEMP//\\//}/postgres"
+        export PGDATA="$PGHOST/pgdata"
+        mkdir -p "$PGDATA"
+
+        # initdb requires file for password in non-interactive mode
+        export PWFILE="$RUNNER_TEMP/pwfile"
+        echo "postgres" > $PWFILE
+        initdb --pgdata="$PGDATA" --username="postgres" --pwfile="$PWFILE"
+
+        echo "Starting PostgreSQL..."
+        echo "unix_socket_directories = '$PGHOST'" >> "$PGDATA/postgresql.conf"
+        pg_ctl start
+
+        echo "Creating user..."
+        psql --host "$PGHOST" --username="postgres" --dbname="postgres" --command="CREATE USER $PGUSERNAME PASSWORD '$PGPASSWORD'" --command="\du"
+
+        echo "Creating database..."
+        createdb --owner="$PGUSERNAME" --username="postgres" "$PGDATABASE"
     # - name: Test with pytest
     #   run: |
     #     export PYTHONPATH=$(pwd)
