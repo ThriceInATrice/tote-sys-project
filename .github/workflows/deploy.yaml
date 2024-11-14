@@ -59,7 +59,7 @@ jobs:
         export PYTHONPATH=$(pwd)
         sudo systemctl start postgresql
         systemctl status postgresql
-        sudo find /tmp/ -name .s.PGSQL.5432
+        sudo find /var/ -name .s.PGSQL.5432
         sh test_get_new_data_from_database.sh
     # - name: Test with pytest
     #   run: |
