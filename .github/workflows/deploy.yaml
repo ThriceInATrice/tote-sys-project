@@ -51,8 +51,8 @@ jobs:
         export PYTHONPATH=$(pwd)
         sudo systemctl start postgresql.service
         systemctl status postgresql
-        echo $(psql -U postgres -P postgres -c "SHOW data_directory;")
-        echo $(psql -U postgres -P postgres -c "CREATE database test_database;")
+        echo $(psql -U postgres -p postgres -c "SHOW data_directory;")
+        echo $(psql -U postgres -p postgres -c "CREATE database test_database;")
         # sh test_get_new_data_from_database.sh
     # - name: Test with pytest
     #   run: |
