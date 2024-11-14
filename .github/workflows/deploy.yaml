@@ -53,8 +53,8 @@ jobs:
         export PGPASSWORD=postgres
         sudo systemctl start postgresql.service
         systemctl status postgresql
-        sudo find /tmp/ -name .s.PGSQL.5432
         sudo -i -u postgres
+        cat /home/runner/work/_temp/pgdata/pg_hba.conf
         echo $(psql -h 127.0.0.1 --password postgres -c  "SHOW data_directory;")
         echo $(psql -h 127.0.0.1 -c "CREATE database test_database;")
         # sh test_get_new_data_from_database.sh
