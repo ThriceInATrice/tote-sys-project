@@ -41,10 +41,6 @@ data "aws_iam_policy_document" "cw_document" {
     resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*"]
   }
 }
-# cloudwatch logging resources 
-# creates a log group and a log stream for each deployment within log group
-# give permission to create Log Groups in your account
-# give permission to create Log Streams and put Log Events in the lambda's own Log Group
 
 
 resource "aws_iam_policy" "s3_policy" {
@@ -70,7 +66,6 @@ resource "aws_iam_role_policy_attachment" "lambda_cw_policy_attachment" {
 
 resource "aws_iam_policy" "lambda_secrets_manager" {
   name = "lambda_secrets_manager"
-  # role = aws_iam_role.lambda_role.id
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -79,9 +74,7 @@ resource "aws_iam_policy" "lambda_secrets_manager" {
         "Action" : [
           "secretsmanager:GetSecretValue"
         ],
-        # "Resource": "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}totesys-db-creds*"
-        # "Resource": "arn:aws:secretsmanager:eu-west-2:881490134104:totesys-db-creds-Q5tZCs"
-        "Resource" : "*"
+        "Resource": "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:totesys-db-creds-*"
       }
     ]
   })
