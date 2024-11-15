@@ -13,10 +13,10 @@ def test_data_from_test_database():
     params = parser.items("postgresql_test_database")
     config_dict = {param[0]: param[1] for param in params}
 
-    with patch("src.connection.get_database_creds") as patched_creds:
+    with patch("src.extraction.connection.get_database_creds") as patched_creds:
         patched_creds.return_value = config_dict
         with psycopg2.connect() as conn:
-            with patch("src.connection.connect_to_db", conn.cursor):
+            with patch("src.extraction.connection.connect_to_db", conn.cursor):
                 yield (get_new_data_from_database(credentials_id=None))
 
 
@@ -25,13 +25,11 @@ def test_returns_a_dict(test_data_from_test_database):
     assert isinstance(result, dict)
 
 
-def test_get_new_data_from_database_returns_data_from_database(
-    test_data_from_test_database,
-):
+def test_get_new_data_from_database_returns_data_from_database(test_data_from_test_database):
     result = test_data_from_test_database
-    result_value = [value for _, value in result.items()][0][0]
+    result_value = [value for _, value in result.items()][0][0][0]
     expected = (1, "A", "a", True)
-    assert result_value[0] == expected
+    assert result_value == expected
 
 
 def test_get_new_data_from_database_gets_all_data_when_last_updated_is_falsy(
@@ -45,8 +43,8 @@ def test_get_new_data_from_database_gets_all_data_when_last_updated_is_falsy(
         (5, "E", "e", True),
         (6, "F", "f", False),
     ]
-    result = get_new_data_from_database(credentials_id=None, last_update=False)
-    result_value = [value for _, value in result.items()][0][0]
+    result = get_new_data_from_database(credentials_id=None, last_extraction=None)
+    result_value = [value for _, value in result][0][0]
     print(result)
     assert excepted == result_value
 
