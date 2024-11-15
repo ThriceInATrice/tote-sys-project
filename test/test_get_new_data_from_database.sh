@@ -30,7 +30,7 @@ host=localhost
 port=5432
 database=test_database
 user=$USER
-password=password
+password=$PGPASSWORD
 EOM
 
 psql -c 'DROP DATABASE IF EXISTS test_database;'

@@ -33,7 +33,7 @@ jobs:
         # `POSTGRES_HOST` is `postgres`
         env:
           # optional (defaults to `postgres`)
-          POSTGRES_DB: postgres_db
+          POSTGRES_DB: test_database
           # required
           POSTGRES_PASSWORD: postgres_password
           # optional (defaults to `5432`)
@@ -71,12 +71,13 @@ jobs:
     # queries database with postgres client
     - name: Query database
       run: | 
-        psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
+        psql -h postgres -d test_database -U postgres_user -c 'SELECT 1;'
       env:
         PGHOST: postgres
         PGPASSWORD: postgres_password
         PGUSER: postgres_user
-        PGDATABASE: postgres_db
+        PGDATABASE: test_database
+        USER: postgres_user
     - name: Run tests
       run: |
         export PYTHONPATH=$(pwd)
@@ -85,4 +86,5 @@ jobs:
         PGHOST: postgres
         PGPASSWORD: postgres_password
         PGUSER: postgres_user
-        PGDATABASE: postgres_db
+        PGDATABASE: test_database
+        USER: postgres_user
