@@ -1,3 +1,4 @@
+
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
@@ -11,7 +12,7 @@ on:
         default: dev
         required: false
   push:
-    branches: [ "main", "new-workflow" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -21,10 +22,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-      # postgres-job:
-  #   # containers must run in Linux based operating systems
-  #   runs-on: ubuntu-latest
-    # Docker Hub image that `postgres-job` executes in
     container: python:latest
     # service containers to run with `postgres-job`
     services:
@@ -54,21 +51,9 @@ jobs:
           --health-retries 5
     steps:
     - uses: actions/checkout@v4
-    # - name: Set up Python 3.12
-    #   uses: actions/setup-python@v3
-    #   with:
-    #     python-version: "3.12"
     - name: Install dependencies
       run: |
-        echo $(pwd)
-        # export PYTHONPATH=$(/__w/tote-sys-project/tote-sys-project)
-        # python3 -c "import sys; print('\n'.join(sys.path))"
-        # python -m venv venv
-        # source venv/bin/activate
         python -m pip install --upgrade pip
-        echo $(pip --version)
-        echo $(python --version)
-        echo $(which pip)
         pip install flake8 pytest
         if [ -f requirements.in ]; then pip install -r requirements.in; fi
     - name: Lint with flake8
@@ -89,8 +74,6 @@ jobs:
         psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
         # sh test_get_new_data_from_database.sh
       env:
-        # postgress password is required; alternatively, you can run:
-        # `PGPASSWORD=postgres_password psql ...`
         PGHOST: postgres
         PGPASSWORD: postgres_password
         PGUSER: postgres_user
@@ -102,17 +85,7 @@ jobs:
         echo $(ls)
         sh test_get_new_data_from_database.sh
       env:
-        # postgress password is required; alternatively, you can run:
-        # `PGPASSWORD=postgres_password psql ...`
         PGHOST: postgres
         PGPASSWORD: postgres_password
         PGUSER: postgres_user
         PGDATABASE: postgres_db
-    # - name: Test with pytest
-    #   run: |
-    #     export PYTHONPATH=$(pwd)
-    #     pytest test/test_get_new_data_from_database.py -k 'test_get_database_creds_can_return_creds' -vvvrP
-
-    
-
-    # cat /home/runner/work/_temp/pgdata/pg_hba.conf

@@ -25,13 +25,11 @@ def test_returns_a_dict(test_data_from_test_database):
     assert isinstance(result, dict)
 
 
-def test_get_new_data_from_database_returns_data_from_database(
-    test_data_from_test_database,
-):
+def test_get_new_data_from_database_returns_data_from_database(test_data_from_test_database):
     result = test_data_from_test_database
-    result_value = [value for _, value in result.items()][0][0]
+    result_value = [value for _, value in result.items()][0][0][0]
     expected = (1, "A", "a", True)
-    assert result_value[0] == expected
+    assert result_value == expected
 
 
 def test_get_new_data_from_database_gets_all_data_when_last_updated_is_falsy(
