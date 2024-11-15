@@ -1,5 +1,6 @@
 import boto3, json
 from src.extraction.ingestion_error import IngestionError
+
 # try:
 #     from src.extraction.ingestion_error import IngestionError
 # except ImportError:
@@ -10,7 +11,8 @@ def get_last_extraction(bucket_name):
     try:
         client = boto3.client("s3")
         try:
-            response = client.get_object(Bucket=bucket_name, Key="extraction_times")
+            extraction_times_key = "extraction_times.json"
+            response = client.get_object(Bucket=bucket_name, Key=extraction_times_key)
             body = response["Body"]
             bytes = body.read()
             extraction_times_dict = json.loads(bytes)
@@ -22,7 +24,9 @@ def get_last_extraction(bucket_name):
                 return extraction_times[-1]
         except:
             new_body = json.dumps({"extraction_times": []})
-            client.put_object(Bucket=bucket_name, Key="extraction_times", Body=new_body)
+            client.put_object(
+                Bucket=bucket_name, Key=extraction_times_key, Body=new_body
+            )
             return None
 
     except Exception as e:

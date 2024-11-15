@@ -8,7 +8,7 @@ import boto3, json, pytest
 class TestStoreNewData:
     def test_if_func_puts_data_successfully(self):
         bucket_name = "test_bucket"
-        extraction_time = "today at 2 o'clock"
+        extraction_time = "2024.11.1.14.30.1.10"
         data = {"data": "my_data"}
 
         client = boto3.client("s3")
@@ -16,7 +16,9 @@ class TestStoreNewData:
 
         store_new_data(bucket_name, extraction_time, data)
 
-        response = client.get_object(Bucket=bucket_name, Key=extraction_time)
+        response = client.get_object(
+            Bucket=bucket_name, Key="2024/11/1/2024.11.1.14.30.1.10.json"
+        )
         response_body = response["Body"]
         response_bytes = response_body.read()
         response_data = json.loads(response_bytes)
@@ -25,7 +27,7 @@ class TestStoreNewData:
 
     def test_func_does_not_change_other_data_in_bucket(self):
         bucket_name = "test_bucket"
-        extraction_time = "today at 2 o'clock"
+        extraction_time = "2024.11.1.14.30.1.10"
         data = {"data": "my_data"}
 
         other_key = "other key"
@@ -48,7 +50,7 @@ class TestStoreNewData:
 
     def test_func_fails_correctly_when_there_is_no_bucket(self):
         bucket_name = "test_bucket"
-        extraction_time = "today at 2 o'clock"
+        extraction_time = "2024.11.1.14.30.1.10"
         data = {"data": "my_data"}
 
         with pytest.raises(IngestionError):
