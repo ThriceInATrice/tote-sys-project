@@ -37,3 +37,6 @@ requirements: create-environment
 test-extract:
 	sh test/test_get_new_data_from_database.sh
 	pytest test/test_connection.py -vvvrP
+
+check-coverage:
+	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov=src test/)
