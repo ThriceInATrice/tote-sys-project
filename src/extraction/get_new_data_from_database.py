@@ -1,6 +1,7 @@
 from datetime import datetime
 from src.extraction.ingestion_error import IngestionError
 from src.extraction.connection import connect_to_db
+
 # try:
 #     from src.extraction.connection import connect_to_db
 #     from src.extraction.ingestion_error import IngestionError

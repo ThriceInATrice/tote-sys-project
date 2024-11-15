@@ -1,8 +1,9 @@
-from src.extraction.store_new_data import store_new_data 
+from src.extraction.store_new_data import store_new_data
 from src.extraction.log_extraction_time import log_extraction_time
 from src.extraction.get_last_extraction import get_last_extraction
 from src.extraction.get_new_data_from_database import get_new_data_from_database
 from src.extraction.ingestion_error import IngestionError
+
 # try:
 #     from src.extraction.ingestion_error import IngestionError
 # except ImportError:
@@ -23,11 +24,10 @@ def lambda_handler(event, context):
         ingestion_bucket = event["ingestion_bucket"]
 
         last_extraction = get_last_extraction(extraction_times_bucket)
-        print(last_extraction)
         new_data, extraction_time = get_new_data_from_database(
             credentials_id, last_extraction
         )
-        print(new_data)
+
         store_new_data(ingestion_bucket, extraction_time, new_data)
         log_extraction_time(extraction_time, extraction_times_bucket)
     except Exception as e:
