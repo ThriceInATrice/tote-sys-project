@@ -61,7 +61,7 @@ jobs:
     - name: Install dependencies
       run: |
         echo $(pwd)
-        export PYTHONPATH=$(pwd)
+        export PYTHONPATH=$(/__w/tote-sys-project/tote-sys-project)
         python3 -c "import sys; print('\n'.join(sys.path))"
         python -m venv venv
         source venv/bin/activate
