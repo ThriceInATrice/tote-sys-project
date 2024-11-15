@@ -60,10 +60,10 @@ jobs:
         python-version: "3.12"
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        sudo -H python -m pip install --upgrade pip
         echo $(python --version)
         echo $(which pip)
-        /__t/Python/3.12.7/x64/bin/pip install flake8 pytest
+        pip install flake8 pytest
         if [ -f requirements.in ]; then pip install -r requirements.in; fi
     - name: Lint with flake8
       run: |
