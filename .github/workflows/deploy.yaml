@@ -98,6 +98,8 @@ jobs:
     - name: Run tests
       run: |
         export PYTHONPATH=$(pwd)
+        echo $(pwd)
+        echo $(ls)
         sh test_get_new_data_from_database.sh
       env:
         # postgress password is required; alternatively, you can run:
