@@ -30,7 +30,6 @@ endef
 
 ## Build the environment requirements
 requirements: create-environment
-	export PYTHONPATH=$(pwd)
 	$(call execute_in_env, $(PIP) install pip-tools)
 	$(call execute_in_env, pip-compile requirements.in)
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
