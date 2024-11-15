@@ -33,7 +33,7 @@ requirements: create-environment
 	$(call execute_in_env, $(PIP) install pip-tools)
 	$(call execute_in_env, pip-compile requirements.in)
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
-	source venv/bin/activate
+	# source venv/bin/activate
 
 test-extract:
 	sh test/test_get_new_data_from_database.sh
