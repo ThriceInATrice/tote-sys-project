@@ -72,7 +72,6 @@ jobs:
     - name: Query database
       run: | 
         psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
-        # sh test_get_new_data_from_database.sh
       env:
         PGHOST: postgres
         PGPASSWORD: postgres_password
@@ -81,9 +80,7 @@ jobs:
     - name: Run tests
       run: |
         export PYTHONPATH=$(pwd)
-        echo $(pwd)
-        echo $(ls)
-        sh test_get_new_data_from_database.sh
+        sh test/test_get_new_data_from_database.sh
       env:
         PGHOST: postgres
         PGPASSWORD: postgres_password
