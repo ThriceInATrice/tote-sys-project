@@ -26,7 +26,7 @@ EOM
 
 cat > test/test_database.ini << EOM
 [postgresql_test_database]
-host=localhost
+host=$PGHOST
 port=5432
 database=test_database
 user=$USER
