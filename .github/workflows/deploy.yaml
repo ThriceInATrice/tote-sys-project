@@ -1,3 +1,4 @@
+
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
@@ -10,9 +11,8 @@ on:
         type: string
         default: dev
         required: false
-
   push:
-    branches: [ "main", "test_database" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -21,30 +21,36 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    # services:
-    #   postgres:
-    #     image: postgres:15
-    #     env:
-    #       POSTGRES_USER: user
-    #       POSTGRES_PASSWORD: password
-    #     options: >-
-    #       --health-cmd pg_isready
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
-    #     ports:
-    #       # Maps tcp port 5432 on service container to the host
-    #       - 5432:5432
-
+    container: python:latest
+    # service containers to run with `postgres-job`
+    services:
+      # label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:latest
+        # service environment variables
+        # `POSTGRES_HOST` is `postgres`
+        env:
+          # optional (defaults to `postgres`)
+          POSTGRES_DB: postgres_db
+          # required
+          POSTGRES_PASSWORD: postgres_password
+          # optional (defaults to `5432`)
+          POSTGRES_PORT: 5432
+          # optional (defaults to `postgres`)
+          POSTGRES_USER: postgres_user
+        ports:
+          # maps tcp port 5432 on service container to the host
+          - 5432:5432
+        # set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.12"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -56,8 +62,27 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+          
+    - name: Install PostgreSQL client
+      run: |
+        apt-get update
+        apt-get install --yes postgresql-client
+
+    # queries database with postgres client
+    - name: Query database
+      run: | 
+        psql -h postgres -d postgres_db -U postgres_user -c 'SELECT 1;'
+      env:
+        PGHOST: postgres
+        PGPASSWORD: postgres_password
+        PGUSER: postgres_user
+        PGDATABASE: postgres_db
+    - name: Run tests
       run: |
         export PYTHONPATH=$(pwd)
-        pytest test/test_get_new_data_from_database.py -k 'test_get_database_creds_can_return_creds' -vvvrP
-      # sh test_get_new_data_from_database.sh
+        sh test/test_get_new_data_from_database.sh
+      env:
+        PGHOST: postgres
+        PGPASSWORD: postgres_password
+        PGUSER: postgres_user
+        PGDATABASE: postgres_db

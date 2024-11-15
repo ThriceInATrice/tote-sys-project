@@ -1,10 +1,10 @@
-resource "aws_lambda_function" "ingestion_lambda" {
-  function_name = "ingestion_lambda"
+resource "aws_lambda_function" "extract_lambda" {
+  function_name = "extract_lambda"
   s3_bucket = aws_s3_bucket.code_bucket.bucket
   s3_key = "${var.extract_lambda}/function.zip"
   source_code_hash = data.archive_file.extract_lambda.output_base64sha256
   role = aws_iam_role.lambda_role.arn
-  handler = "ingestion_lambda.lambda_handler"
+  handler = "extract.lambda_handler"
   runtime = "python3.11"
   timeout = 10
   depends_on = [ aws_s3_object.lambda_code, aws_s3_object.layer_code ]
@@ -13,7 +13,7 @@ resource "aws_lambda_function" "ingestion_lambda" {
 
 data "archive_file" "extract_lambda" {
   type = "zip"
-  source_dir = "${path.module}/../src/"
+  source_dir = "${path.module}/../src/extraction/"
   output_path = "${path.module}/../packages/ingestion_lambda/function.zip"
 }
 
