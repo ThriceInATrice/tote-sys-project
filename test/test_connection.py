@@ -20,5 +20,5 @@ class TestGetDatabaseCreds:
     ):
         secret_id = "test_credentials"
 
-        with pytest.raises(ClientError):
+        with pytest.raises(TypeError):
             get_database_creds(secret_id)

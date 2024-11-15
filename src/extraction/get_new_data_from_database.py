@@ -1,15 +1,17 @@
 from datetime import datetime
-try:
-    from src.extraction.connection import connect_to_db
-    from src.extraction.ingestion_error import IngestionError
-except ImportError:
-    from connection import connect_to_db
-    from ingestion_error import IngestionError
+from src.extraction.ingestion_error import IngestionError
+from src.extraction.connection import connect_to_db
+# try:
+#     from src.extraction.connection import connect_to_db
+#     from src.extraction.ingestion_error import IngestionError
+# except ImportError:
+#     from connection import connect_to_db
+#     from ingestion_error import IngestionError
 import re
 
 
 def get_new_data_from_database(credentials_id, last_extraction=None):
-    now = datetime.now()
+    now = str(datetime.now())
 
     timeframe_string = ""
     if last_extraction:
@@ -72,7 +74,7 @@ def destring_timestamp(datetime_string):
 
 def make_dict(column_names, values):
     if len(column_names) == len(values):
-        return {column_names[i]: values[i] for i in range(len(column_names))}
+        return {column_names[i]: str(values[i]) for i in range(len(column_names))}
     else:
         raise Exception("data_error")
 

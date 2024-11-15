@@ -1,8 +1,9 @@
 import boto3, json
-try:
-    from src.extraction.ingestion_error import IngestionError
-except ImportError:
-    from ingestion_error import IngestionError
+from src.extraction.ingestion_error import IngestionError
+# try:
+#     from src.extraction.ingestion_error import IngestionError
+# except ImportError:
+#     from ingestion_error import IngestionError
 
 
 def get_last_extraction(bucket_name):

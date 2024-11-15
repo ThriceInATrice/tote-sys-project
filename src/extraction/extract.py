@@ -1,9 +1,12 @@
-import store_new_data, log_extraction_time, get_last_extraction, get_new_data_from_database
-import json
-try:
-    from src.extraction.ingestion_error import IngestionError
-except ImportError:
-    from ingestion_error import IngestionError
+from src.extraction.store_new_data import store_new_data 
+from src.extraction.log_extraction_time import log_extraction_time
+from src.extraction.get_last_extraction import get_last_extraction
+from src.extraction.get_new_data_from_database import get_new_data_from_database
+from src.extraction.ingestion_error import IngestionError
+# try:
+#     from src.extraction.ingestion_error import IngestionError
+# except ImportError:
+#     from ingestion_error import IngestionError
 
 # trigger event is a json with the bucket names and the name of the credentials in the secret manager
 # {
@@ -31,3 +34,12 @@ def lambda_handler(event, context):
 
 
 # does this want a return, even if its just a status code?
+
+if __name__ == "__main__":
+    event = {
+        "credentials_id": "totesys-db-creds",
+        "ingestion_bucket": "ingestion-bucket-20241111133940921900000001",
+        "extraction_times_bucket": "extraction-times-20241111134946737900000001",
+    }
+    context = {}
+    lambda_handler(event, context)
