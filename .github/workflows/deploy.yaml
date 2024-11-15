@@ -25,7 +25,7 @@ jobs:
   #   # containers must run in Linux based operating systems
   #   runs-on: ubuntu-latest
     # Docker Hub image that `postgres-job` executes in
-    container: node:latest
+    container: python3.12
     # service containers to run with `postgres-job`
     services:
       # label used to access the service container
@@ -53,11 +53,11 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.12"
+    # - uses: actions/checkout@v4
+    # - name: Set up Python 3.12
+    #   uses: actions/setup-python@v3
+    #   with:
+    #     python-version: "3.12"
     - name: Install dependencies
       run: |
         echo $(pwd)
