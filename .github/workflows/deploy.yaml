@@ -61,9 +61,9 @@ jobs:
     - name: Install dependencies
       run: |
         echo $(pwd)
+        export PYTHONPATH=$(pwd)
         python -m venv venv
         source venv/bin/activate
-        export PYTHONPATH=$(pwd)
         python -m pip install --upgrade pip
         echo $(pip --version)
         echo $(python --version)
