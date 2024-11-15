@@ -36,4 +36,4 @@ requirements: create-environment
 
 test-extract:
 	sh test/test_get_new_data_from_database.sh
-	pytest test/test_connection.py -k test_get_database_creds_can_return_creds -vvvrP
+	pytest test/test_connection.py -vvvrP
