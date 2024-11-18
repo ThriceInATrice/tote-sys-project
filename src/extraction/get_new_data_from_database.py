@@ -1,17 +1,18 @@
 from datetime import datetime
-from src.extraction.ingestion_error import IngestionError
-from src.extraction.connection import connect_to_db
-
-# try:
-#     from src.extraction.connection import connect_to_db
-#     from src.extraction.ingestion_error import IngestionError
-# except ImportError:
-#     from connection import connect_to_db
-#     from ingestion_error import IngestionError
+try:
+    from src.extraction.ingestion_error import IngestionError
+    from src.extraction.connection import connect_to_db
+    from src.extraction.logger import logger
+except ImportError:
+    from ingestion_error import IngestionError
+    from connection import connect_to_db
+    from logger import logger
 import re
 
 
 def get_new_data_from_database(credentials_id, last_extraction=None):
+    logger.info("get_new_data_from_database invoked")
+
     now = str(datetime.now())
 
     timeframe_string = ""
@@ -39,7 +40,11 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
                     {timeframe_string}
                 """
                 )
-
+                logger.info(f"""
+                    SELECT *
+                    FROM {table}
+                    {timeframe_string}
+                """)
                 results = cursor.fetchall()
                 column_names = [desc[0] for desc in cursor.description]
                 new_data[now].append(

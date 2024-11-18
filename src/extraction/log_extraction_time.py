@@ -1,10 +1,8 @@
 import json, boto3
-from src.extraction.ingestion_error import IngestionError
-
-# try:
-#     from src.extraction.ingestion_error import IngestionError
-# except ImportError:
-#     from ingestion_error import IngestionError
+try:
+    from src.extraction.ingestion_error import IngestionError
+except ImportError:
+    from ingestion_error import IngestionError
 
 
 def log_extraction_time(extraction_time, extraction_bucket_name):

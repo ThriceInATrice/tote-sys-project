@@ -1,13 +1,14 @@
 import boto3, json
-from src.extraction.ingestion_error import IngestionError
-
-# try:
-#     from src.extraction.ingestion_error import IngestionError
-# except ImportError:
-#     from ingestion_error import IngestionError
+try:
+    from src.extraction.ingestion_error import IngestionError
+    from src.extraction.logger import logger
+except ImportError:
+    from ingestion_error import IngestionError
+    from logger import logger
 
 
 def get_last_extraction(bucket_name):
+    logger.info("get_last_extraction invoked")
     try:
         client = boto3.client("s3")
         try:
