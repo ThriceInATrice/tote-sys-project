@@ -40,7 +40,11 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
                     {timeframe_string}
                 """
                 )
-
+                logger.info(f"""
+                    SELECT *
+                    FROM {table}
+                    {timeframe_string}
+                """)
                 results = cursor.fetchall()
                 column_names = [desc[0] for desc in cursor.description]
                 new_data[now].append(
