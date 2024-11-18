@@ -1,9 +1,9 @@
 variable "extract_lambda" {
-  type = string
+  type    = string
   default = "extract"
 }
 
 variable "python_runtime" {
-  type = string
+  type    = string
   default = "python3.11"
 }

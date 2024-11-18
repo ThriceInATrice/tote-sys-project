@@ -3,7 +3,9 @@ from src.extraction.log_extraction_time import log_extraction_time
 from src.extraction.get_last_extraction import get_last_extraction
 from src.extraction.get_new_data_from_database import get_new_data_from_database
 from src.extraction.ingestion_error import IngestionError
-
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 # try:
 #     from src.extraction.ingestion_error import IngestionError
 # except ImportError:
@@ -18,6 +20,7 @@ from src.extraction.ingestion_error import IngestionError
 
 
 def lambda_handler(event, context):
+    logger.info("Lambda function invoked")
     try:
         credentials_id = event["credentials_id"]
         extraction_times_bucket = event["extraction_times_bucket"]

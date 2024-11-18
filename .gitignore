@@ -11,3 +11,4 @@ packages/
 test/test_database.ini
 test/test_database.sql
 requirements.txt
+!*.tftest.hcl
