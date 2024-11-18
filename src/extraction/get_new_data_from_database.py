@@ -23,6 +23,7 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
         )
         # you can just give pycopg2 a python datetime and it makes it work
 
+    conn = None
     try:
         new_data = {now: []}
         tables = get_tables(credentials_id)
@@ -91,6 +92,7 @@ def get_tables(credentials_id):
         FROM pg_tables
         WHERE schemaname = 'public';
     """
+    conn = None
     try:
         conn = connect_to_db(credentials_id)
         cursor = conn.cursor()

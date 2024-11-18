@@ -1,21 +1,81 @@
-from src.extraction.extract import log_extraction_time
+from src.extraction.extract import lambda_handler
 from moto import mock_aws
+from unittest.mock import MagicMock, patch
 import boto3, json
 
 
+@mock_aws
 def test_extract_works_correctly():
-    # set up test secret
-    client = boto3.client("secretsmanager", "eu-west-2")
+    # make a mock rds with boto3
+    rds_client = boto3.client("rds", region_name="eu-west-2")
+    db_name = "test-db"
+    db_user = "test-db-user"
+    db_password = "test-db-password"
+
+    rds_response = rds_client.create_db_instance(
+        DBInstanceIdentifier=db_name,
+        DBInstanceClass='db.t2.micro',
+        Engine="postgres",
+        MasterUsername=db_user,
+        MasterUserPassword=db_password,
+    )
+
+    db_endpoint = rds_response['DBInstance']['Endpoint']['Address']
+    db_port  = rds_response['DBInstance']['Endpoint']['Port']
+    print(db_endpoint)
+    
+    # set up test secret with rds details
+    secret_client = boto3.client("secretsmanager", "eu-west-2")
     secret_id = "test_credentials"
-    test_credentials = {"credentials": "test"}
+    test_credentials = {
+        "database": db_name,
+        "user": db_user,
+        "password": db_password,
+        "host": db_endpoint,
+        "port": db_port,
+    }
+    
     secret_string = json.dumps(test_credentials)
-    client.create_secret(Name=secret_id, SecretString=secret_string)
+    secret_client.create_secret(Name=secret_id, SecretString=secret_string)
 
-    # set up extraction_times bucket
-    bucket_name = "extraction_times_bucket"
+    # create ingestion_bucket and extraciton_times bucket
+    ingestion_bucket_name = "ingestion_bucket"
+    s3_client = boto3.client("s3")
+    s3_client.create_bucket(Bucket=ingestion_bucket_name)
+
+    extraction_bucket_name = "extraction_times_bucket"
     body = json.dumps({"extraction_times": []})
-    client = boto3.client("s3")
-    client.create_bucket(Bucket=bucket_name)
-    client.put_object(Bucket=bucket_name, Key="extraction_times", Body=body)
+    s3_client.create_bucket(Bucket=extraction_bucket_name)
+    s3_client.put_object(
+        Bucket=extraction_bucket_name, Key="extraction_times", Body=body
+    )
 
-    # patch get_new_data
+    # set up event, context can be empty
+    event = {
+        "credentials_id": secret_id,
+        "ingestion_bucket": ingestion_bucket_name,
+        "extraction_times_bucket": extraction_bucket_name,
+    }
+    context = {}
+
+    #run extract
+    lambda_handler(event, context)
+
+    # check data is in ingestion_bucket
+    response = s3_client.get_object(
+        Bucket=ingestion_bucket_name, Key="2024/11/1/2024.11.1.14.30.1.10.json"
+    )
+    ingestion_body = response["Body"]
+    ingestion_bytes = ingestion_body.read()
+    data = json.loads(ingestion_bytes)
+    assert data == test_data
+
+    # check extraction time is in extraction_times_bucket
+    response = s3_client.get_object(
+        Bucket=extraction_bucket_name, key="extraction_times"
+    )
+    extraction_body = response["Body"]
+    extraction_bytes = extraction_body.read()
+    extraction_dict = json.loads(extraction_bytes)
+    extraction_list = extraction_dict["extraction_times"]
+    assert extraction_list[-1] == "2024.11.1.14.30.1.10"
