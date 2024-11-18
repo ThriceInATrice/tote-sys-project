@@ -12,5 +12,5 @@ def process_currency(currency_data):
 
 
 #func to use a currency code to get a currency name from a currency api
-def get_currency_name(currnecy_code):
+def get_currency_name(currency_code):
     pass
