@@ -1,15 +1,17 @@
-from src.extraction.store_new_data import store_new_data
-from src.extraction.log_extraction_time import log_extraction_time
-from src.extraction.get_last_extraction import get_last_extraction
-from src.extraction.get_new_data_from_database import get_new_data_from_database
-from src.extraction.ingestion_error import IngestionError
-import logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-# try:
-#     from src.extraction.ingestion_error import IngestionError
-# except ImportError:
-#     from ingestion_error import IngestionError
+try:
+    from src.extraction.store_new_data import store_new_data
+    from src.extraction.log_extraction_time import log_extraction_time
+    from src.extraction.get_last_extraction import get_last_extraction
+    from src.extraction.get_new_data_from_database import get_new_data_from_database
+    from src.extraction.ingestion_error import IngestionError
+    from src.extraction.logger import logger
+except ImportError:
+    from store_new_data import store_new_data
+    from log_extraction_time import log_extraction_time
+    from get_last_extraction import get_last_extraction
+    from get_new_data_from_database import get_new_data_from_database
+    from ingestion_error import IngestionError
+    from logger import logger
 
 # trigger event is a json with the bucket names and the name of the credentials in the secret manager
 # {
@@ -30,9 +32,11 @@ def lambda_handler(event, context):
         new_data, extraction_time = get_new_data_from_database(
             credentials_id, last_extraction
         )
-
+        logger.info("Extraction complete")
         store_new_data(ingestion_bucket, extraction_time, new_data)
+        logger.info("Data stored")
         log_extraction_time(extraction_time, extraction_times_bucket)
+        logger.info("Extraction times logged")
     except Exception as e:
         raise IngestionError(f"extract: {e}")
 

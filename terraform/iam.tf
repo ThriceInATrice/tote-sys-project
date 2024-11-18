@@ -74,7 +74,8 @@ resource "aws_iam_policy" "lambda_secrets_manager" {
         "Action" : [
           "secretsmanager:GetSecretValue"
         ],
-        "Resource" : "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:totesys-db-creds-*"
+        # "Resource" : "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:totesys-db-creds-*"
+        "Resource" : "*"
       }
     ]
   })
@@ -87,7 +88,7 @@ resource "aws_iam_role_policy_attachment" "lambda_secret_attachment" {
 
 data "aws_iam_policy_document" "s3_extraction_times_document" {
   statement {
-    actions   = ["s3:PutObject"]
+    actions   = ["s3:PutObject", "s3:GetObject"]
     resources = ["arn:aws:s3:::extraction-times-20241111134946737900000001/*"]
   }
 }

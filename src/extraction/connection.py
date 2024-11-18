@@ -1,19 +1,21 @@
 import boto3, json, psycopg2
 from botocore.exceptions import ClientError
-from src.extraction.ingestion_error import IngestionError
-
-# try:
-#     from src.extraction.ingestion_error import IngestionError
-# except ImportError:
-#     from ingestion_error import IngestionError
+try:
+    from src.extraction.ingestion_error import IngestionError
+    from src.extraction.logger import logger
+except ImportError:
+    from ingestion_error import IngestionError
+    from logger import logger
 
 
 def get_database_creds(credentials_id):
+    logger.info("get_database_creds invoked")
     client = boto3.client(service_name="secretsmanager", region_name="eu-west-2")
 
     try:
         get_secret_value_response = client.get_secret_value(SecretId=credentials_id)
     except ClientError as e:
+        logger.debug("Houston, we have a %s", "thorny problem", exc_info=1)
         raise ClientError(f"get_database_creds: {e}")
 
     credential_dict = json.loads(get_secret_value_response["SecretString"])
@@ -53,4 +55,5 @@ def connect_to_db(credentials_id):
         return conn
 
     except Exception as e:
+        logger.debug("Houston, we have a %s", "thorny problem", exc_info=1)
         raise IngestionError(f"connect_to_db: {e}")

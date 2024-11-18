@@ -6,9 +6,10 @@ resource "aws_lambda_function" "extract_lambda" {
   role             = aws_iam_role.lambda_role.arn
   handler          = "extract.lambda_handler"
   runtime          = "python3.11"
-  timeout          = 10
+  timeout          = 60
   depends_on       = [aws_s3_object.lambda_code, aws_s3_object.layer_code]
   layers           = [aws_lambda_layer_version.psycopg2_layer.arn]
+  memory_size      = 256
 }
 
 data "archive_file" "extract_lambda" {
