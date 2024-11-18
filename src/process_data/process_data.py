@@ -1,4 +1,3 @@
-
 # raw data arrives like this:
 # {
 #     "extraction_time": str,
@@ -37,7 +36,7 @@
 #         "last_updated": str
 #     }
 # ]
-# 
+#
 # and should return a new list of dictionaries of a similar structure
 # with each dictionary representing a line in the dim_staff table in the new database
 # [
