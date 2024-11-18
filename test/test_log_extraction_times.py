@@ -8,7 +8,7 @@ from src.extraction.ingestion_error import IngestionError
 class TestLogExtractionTime:
     def test_if_func_logs_extraction_time_sucessfully(self):
         bucket_name = "extaction_log_bucket"
-        key = "extraction_times"
+        key = "extraction_times.json"
         extraction_times_json = json.dumps({"extraction_times": []})
         extraction_time_string = "today at 2 o clock"
 
@@ -30,7 +30,7 @@ class TestLogExtractionTime:
 
     def test_if_multiple_logs_work_and_leave_latest_log_in_correct_possition(self):
         bucket_name = "extaction_log_bucket"
-        key = "extraction_times"
+        key = "extraction_times.json"
         extraction_times_json = json.dumps({"extraction_times": []})
         extraction_time_string_1 = "yesterday at 2 o clock"
         extraction_time_string_2 = "today at 2 o clock"
@@ -54,7 +54,7 @@ class TestLogExtractionTime:
 
     def test_if_all_logs_are_present_after_multiple_logs(self):
         bucket_name = "extaction_log_bucket"
-        key = "extraction_times"
+        key = "extraction_times.json"
         extraction_times_json = json.dumps({"extraction_times": []})
         extraction_time_string_1 = "yesterday at 2 o clock"
         extraction_time_string_2 = "today at 2 o clock"
