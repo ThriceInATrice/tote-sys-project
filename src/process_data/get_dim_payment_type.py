@@ -14,7 +14,7 @@ and return them in this form:
     "payment_type": str,
 }'''
 
-def process_payment_type(payment_type_table):
+def get_dim_payment_type(payment_type_table):
 
     def create_dict(item):
 
