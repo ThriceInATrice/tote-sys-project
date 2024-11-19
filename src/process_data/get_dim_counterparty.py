@@ -25,7 +25,7 @@ and return them in this form:
 }
 
 you will need to find the address information from legal_address_id - maybe do some sql on the original database to get the relevant information?'''
-
+from pprint import pprint
 
 class ValueNotFoundError(Exception):
     def __init__(self, item):
@@ -35,7 +35,7 @@ def get_dim_counterparty(input_counterparty_data, input_address_data):
 
     def create_dict(counterparty, address):
         output_dict = {
-            "counterparty_id": counterparty['counterparty_id'],
+            "counterparty_id": int(counterparty['counterparty_id']),
             "counterparty_legal_name": counterparty['counterparty_legal_name'],
             "counterparty_legal_adress_line_1": address['address_line_1'],
             "counterparty_legal_address_line_2": address['address_line_2'],
@@ -59,8 +59,9 @@ def get_dim_counterparty(input_counterparty_data, input_address_data):
                 new_dict = create_dict(counterparty, address)
                 return new_dict
 
-            if counter > len(input_address_data):
+            elif counter > len(input_address_data):
                 raise ValueNotFoundError(f'counterparty legal address id: {counterparty["legal_address_id"]} not found in address table')
 
     output_list = [search_for_address_id(counterparty) for counterparty in input_counterparty_data]
+    pprint(output_list)
     return output_list
