@@ -1,0 +1,351 @@
+{
+    "extraction_time": "2024-11-18 17:13:38.045778",
+    "data": {
+        "sales_order": [
+            {
+                "sales_order_id": "2",
+                "created_at": "2022-11-03 14:20:52.186000",
+                "last_updated": "2022-11-03 14:20:52.186000",
+                "design_id": "3",
+                "staff_id": "19",
+                "counterparty_id": "8",
+                "units_sold": "42972",
+                "unit_price": "3.94",
+                "currency_id": "2",
+                "agreed_delivery_date": "2022-11-07",
+                "agreed_payment_date": "2022-11-08",
+                "agreed_delivery_location_id": "8"
+            },
+            {
+                "sales_order_id": "3",
+                "created_at": "2022-11-03 14:20:52.188000",
+                "last_updated": "2022-11-03 14:20:52.188000",
+                "design_id": "4",
+                "staff_id": "10",
+                "counterparty_id": "4",
+                "units_sold": "65839",
+                "unit_price": "2.91",
+                "currency_id": "3",
+                "agreed_delivery_date": "2022-11-06",
+                "agreed_payment_date": "2022-11-07",
+                "agreed_delivery_location_id": "19"
+            },
+            {
+                "sales_order_id": "4",
+                "created_at": "2022-11-03 14:20:52.188000",
+                "last_updated": "2022-11-03 14:20:52.188000",
+                "design_id": "4",
+                "staff_id": "10",
+                "counterparty_id": "16",
+                "units_sold": "32069",
+                "unit_price": "3.89",
+                "currency_id": "2",
+                "agreed_delivery_date": "2022-11-05",
+                "agreed_payment_date": "2022-11-07",
+                "agreed_delivery_location_id": "15"
+            }
+        ],
+        "transaction": [
+            {
+                "transaction_id": "1",
+                "transaction_type": "PURCHASE",
+                "sales_order_id": "None",
+                "purchase_order_id": "2",
+                "created_at": "2022-11-03 14:20:52.186000",
+                "last_updated": "2022-11-03 14:20:52.186000"
+            },
+            {
+                "transaction_id": "2",
+                "transaction_type": "PURCHASE",
+                "sales_order_id": "None",
+                "purchase_order_id": "3",
+                "created_at": "2022-11-03 14:20:52.187000",
+                "last_updated": "2022-11-03 14:20:52.187000"
+            },
+            {
+                "transaction_id": "3",
+                "transaction_type": "SALE",
+                "sales_order_id": "1",
+                "purchase_order_id": "None",
+                "created_at": "2022-11-03 14:20:52.186000",
+                "last_updated": "2022-11-03 14:20:52.186000"
+            }
+        ],
+        "department": [
+            {
+                "department_id": "1",
+                "department_name": "Sales",
+                "location": "Manchester",
+                "manager": "Richard Roma",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "department_id": "2",
+                "department_name": "Purchasing",
+                "location": "Manchester",
+                "manager": "Naomi Lapaglia",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "department_id": "3",
+                "department_name": "Production",
+                "location": "Leeds",
+                "manager": "Chester Ming",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            }
+        ],
+        "staff": [
+            {
+                "staff_id": "1",
+                "first_name": "Jeremie",
+                "last_name": "Franey",
+                "department_id": "2",
+                "email_address": "jeremie.franey@terrifictotes.com",
+                "created_at": "2022-11-03 14:20:51.563000",
+                "last_updated": "2022-11-03 14:20:51.563000"
+            },
+            {
+                "staff_id": "2",
+                "first_name": "Deron",
+                "last_name": "Beier",
+                "department_id": "6",
+                "email_address": "deron.beier@terrifictotes.com",
+                "created_at": "2022-11-03 14:20:51.563000",
+                "last_updated": "2022-11-03 14:20:51.563000"
+            },
+            {
+                "staff_id": "3",
+                "first_name": "Jeanette",
+                "last_name": "Erdman",
+                "department_id": "6",
+                "email_address": "jeanette.erdman@terrifictotes.com",
+                "created_at": "2022-11-03 14:20:51.563000",
+                "last_updated": "2022-11-03 14:20:51.563000"
+            }
+        ],
+        "purchase_order": [
+            {
+                "purchase_order_id": "1",
+                "created_at": "2022-11-03 14:20:52.187000",
+                "last_updated": "2022-11-03 14:20:52.187000",
+                "staff_id": "12",
+                "counterparty_id": "11",
+                "item_code": "ZDOI5EA",
+                "item_quantity": "371",
+                "item_unit_price": "361.39",
+                "currency_id": "2",
+                "agreed_delivery_date": "2022-11-09",
+                "agreed_payment_date": "2022-11-07",
+                "agreed_delivery_location_id": "6"
+            },
+            {
+                "purchase_order_id": "2",
+                "created_at": "2022-11-03 14:20:52.186000",
+                "last_updated": "2022-11-03 14:20:52.186000",
+                "staff_id": "20",
+                "counterparty_id": "17",
+                "item_code": "QLZLEXR",
+                "item_quantity": "286",
+                "item_unit_price": "199.04",
+                "currency_id": "2",
+                "agreed_delivery_date": "2022-11-04",
+                "agreed_payment_date": "2022-11-07",
+                "agreed_delivery_location_id": "8"
+            },
+            {
+                "purchase_order_id": "3",
+                "created_at": "2022-11-03 14:20:52.187000",
+                "last_updated": "2022-11-03 14:20:52.187000",
+                "staff_id": "12",
+                "counterparty_id": "15",
+                "item_code": "AN3D85L",
+                "item_quantity": "839",
+                "item_unit_price": "658.58",
+                "currency_id": "2",
+                "agreed_delivery_date": "2022-11-05",
+                "agreed_payment_date": "2022-11-04",
+                "agreed_delivery_location_id": "16"
+            }
+        ],
+        "counterparty": [
+            {
+                "counterparty_id": "1",
+                "counterparty_legal_name": "Fahey and Sons",
+                "legal_address_id": "15",
+                "commercial_contact": "Micheal Toy",
+                "delivery_contact": "Mrs. Lucy Runolfsdottir",
+                "created_at": "2022-11-03 14:20:51.563000",
+                "last_updated": "2022-11-03 14:20:51.563000"
+            },
+            {
+                "counterparty_id": "2",
+                "counterparty_legal_name": "Leannon, Predovic and Morar",
+                "legal_address_id": "28",
+                "commercial_contact": "Melba Sanford",
+                "delivery_contact": "Jean Hane III",
+                "created_at": "2022-11-03 14:20:51.563000",
+                "last_updated": "2022-11-03 14:20:51.563000"
+            },
+            {
+                "counterparty_id": "3",
+                "counterparty_legal_name": "Armstrong Inc",
+                "legal_address_id": "2",
+                "commercial_contact": "Jane Wiza",
+                "delivery_contact": "Myra Kovacek",
+                "created_at": "2022-11-03 14:20:51.563000",
+                "last_updated": "2022-11-03 14:20:51.563000"
+            }
+        ],
+        "payment": [
+            {
+                "payment_id": "2",
+                "created_at": "2022-11-03 14:20:52.187000",
+                "last_updated": "2022-11-03 14:20:52.187000",
+                "transaction_id": "2",
+                "counterparty_id": "15",
+                "payment_amount": "552548.62",
+                "currency_id": "2",
+                "payment_type_id": "3",
+                "paid": "False",
+                "payment_date": "2022-11-04",
+                "company_ac_number": "67305075",
+                "counterparty_ac_number": "31622269"
+            },
+            {
+                "payment_id": "3",
+                "created_at": "2022-11-03 14:20:52.186000",
+                "last_updated": "2022-11-03 14:20:52.186000",
+                "transaction_id": "3",
+                "counterparty_id": "18",
+                "payment_amount": "205952.22",
+                "currency_id": "3",
+                "payment_type_id": "1",
+                "paid": "False",
+                "payment_date": "2022-11-03",
+                "company_ac_number": "81718079",
+                "counterparty_ac_number": "47839086"
+            },
+            {
+                "payment_id": "5",
+                "created_at": "2022-11-03 14:20:52.187000",
+                "last_updated": "2022-11-03 14:20:52.187000",
+                "transaction_id": "5",
+                "counterparty_id": "17",
+                "payment_amount": "57067.20",
+                "currency_id": "2",
+                "payment_type_id": "3",
+                "paid": "False",
+                "payment_date": "2022-11-06",
+                "company_ac_number": "66213052",
+                "counterparty_ac_number": "91659548"
+            }
+        ],
+        "currency": [
+            {
+                "currency_id": "1",
+                "currency_code": "GBP",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "currency_id": "2",
+                "currency_code": "USD",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "currency_id": "3",
+                "currency_code": "EUR",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            }
+        ],
+        "payment_type": [
+            {
+                "payment_type_id": "1",
+                "payment_type_name": "SALES_RECEIPT",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "payment_type_id": "2",
+                "payment_type_name": "SALES_REFUND",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "payment_type_id": "3",
+                "payment_type_name": "PURCHASE_PAYMENT",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            }
+        ],
+        "address": [
+            {
+                "address_id": "1",
+                "address_line_1": "6826 Herzog Via",
+                "address_line_2": "None",
+                "district": "Avon",
+                "city": "New Patienceburgh",
+                "postal_code": "28441",
+                "country": "Turkey",
+                "phone": "1803 637401",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "address_id": "2",
+                "address_line_1": "179 Alexie Cliffs",
+                "address_line_2": "None",
+                "district": "None",
+                "city": "Aliso Viejo",
+                "postal_code": "99305-7380",
+                "country": "San Marino",
+                "phone": "9621 880720",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "address_id": "3",
+                "address_line_1": "148 Sincere Fort",
+                "address_line_2": "None",
+                "district": "None",
+                "city": "Lake Charles",
+                "postal_code": "89360",
+                "country": "Samoa",
+                "phone": "0730 783349",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            }
+        ],
+        "design": [
+            {
+                "design_id": "8",
+                "created_at": "2022-11-03 14:20:49.962000",
+                "design_name": "Wooden",
+                "file_location": "/usr",
+                "file_name": "wooden-20220717-npgz.json",
+                "last_updated": "2022-11-03 14:20:49.962000"
+            },
+            {
+                "design_id": "51",
+                "created_at": "2023-01-12 18:50:09.935000",
+                "design_name": "Bronze",
+                "file_location": "/private",
+                "file_name": "bronze-20221024-4dds.json",
+                "last_updated": "2023-01-12 18:50:09.935000"
+            },
+            {
+                "design_id": "69",
+                "created_at": "2023-02-07 17:31:10.093000",
+                "design_name": "Bronze",
+                "file_location": "/lost+found",
+                "file_name": "bronze-20230102-r904.json",
+                "last_updated": "2023-02-07 17:31:10.093000"
+            }
+        ]
+    }
+}
