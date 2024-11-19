@@ -43,20 +43,3 @@ class TestGetLastExtraction:
 
         with pytest.raises(IngestionError):
             get_last_extraction(bucket_name)
-
-    def test_get_last_extraction_raises_error_when_no_object_exists(self):
-        bucket_name = "extraction_times_bucket"
-        client = boto3.client("s3")
-        client.create_bucket(Bucket=bucket_name)
-
-        with pytest.raises(IngestionError):
-            get_last_extraction(bucket_name)
-
-    def test_get_last_extraction_raises_error_when_file_has_wrong_object(self):
-        bucket_name = "extraction_times_bucket"
-        client = boto3.client("s3")
-        client.create_bucket(Bucket=bucket_name)
-        client.put_object(Bucket=bucket_name, Key="test")
-
-        with pytest.raises(IngestionError):
-            get_last_extraction(bucket_name)

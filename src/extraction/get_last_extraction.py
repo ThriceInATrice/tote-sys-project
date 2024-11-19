@@ -10,6 +10,7 @@ except ImportError:
 
 def get_last_extraction(bucket_name):
     logger.info("get_last_extraction invoked")
+
     try:
         client = boto3.client("s3")
         try:
@@ -20,11 +21,10 @@ def get_last_extraction(bucket_name):
             extraction_times_dict = json.loads(bytes)
             extraction_times = extraction_times_dict["extraction_times"]
 
-            if extraction_times == []:
-                return None
-            else:
-                return extraction_times[-1]
-        except:
+        return None if extraction_times == [] else extraction_times[-1]
+
+    except:
+        try:
             new_body = json.dumps({"extraction_times": []})
             client.put_object(
                 Bucket=bucket_name, Key=extraction_times_key, Body=new_body

@@ -1,7 +1,25 @@
 from src.extraction.extract import lambda_handler
 from moto import mock_aws
-from unittest.mock import MagicMock, patch
-import boto3, json
+from configparser import ConfigParser
+import boto3
+import json
+import psycopg2
+import pytest
+import re
+
+parser = ConfigParser()
+parser.read("test/test_database.ini")
+params = parser.items("postgresql_test_database")
+config_dict = {param[0]: param[1] for param in params}
+
+
+@pytest.fixture()
+def test_data_from_test_database():
+    with patch("src.extraction.connection.get_database_creds") as patched_creds:
+        patched_creds.return_value = config_dict
+        with psycopg2.connect() as conn:
+            with patch("src.extraction.connection.connect_to_db", conn.cursor):
+                yield (get_new_data_from_database(credentials_id=None))
 
 
 @mock_aws
@@ -68,7 +86,8 @@ def test_extract_works_correctly():
     ingestion_body = response["Body"]
     ingestion_bytes = ingestion_body.read()
     data = json.loads(ingestion_bytes)
-    assert data == test_data
+
+    assert data == expected_ingestion_content
 
     # check extraction time is in extraction_times_bucket
     response = s3_client.get_object(
@@ -78,4 +97,5 @@ def test_extract_works_correctly():
     extraction_bytes = extraction_body.read()
     extraction_dict = json.loads(extraction_bytes)
     extraction_list = extraction_dict["extraction_times"]
-    assert extraction_list[-1] == "2024.11.1.14.30.1.10"
+
+    assert extraction_list[-1] == extraction_time
