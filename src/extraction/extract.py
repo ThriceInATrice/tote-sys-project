@@ -14,7 +14,7 @@ except ImportError:
     from logger import logger
 
 # trigger event is a json with the bucket names and the name of the credentials in the secret manager
-# {
+# event = {
 # credentials_id: "credentials_id"
 # ingestion_bucket : "bucket-id",
 # extraction_times_bucket : "bucket-id"

@@ -1,4 +1,5 @@
 import boto3, json
+
 try:
     from src.extraction.ingestion_error import IngestionError
     from src.extraction.logger import logger

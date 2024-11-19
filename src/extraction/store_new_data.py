@@ -1,4 +1,5 @@
 import json, boto3, re
+
 try:
     from src.extraction.get_new_data_from_database import destring_timestamp
     from src.extraction.ingestion_error import IngestionError

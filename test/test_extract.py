@@ -14,16 +14,16 @@ def test_extract_works_correctly():
 
     rds_response = rds_client.create_db_instance(
         DBInstanceIdentifier=db_name,
-        DBInstanceClass='db.t2.micro',
+        DBInstanceClass="db.t2.micro",
         Engine="postgres",
         MasterUsername=db_user,
         MasterUserPassword=db_password,
     )
 
-    db_endpoint = rds_response['DBInstance']['Endpoint']['Address']
-    db_port  = rds_response['DBInstance']['Endpoint']['Port']
+    db_endpoint = rds_response["DBInstance"]["Endpoint"]["Address"]
+    db_port = rds_response["DBInstance"]["Endpoint"]["Port"]
     print(db_endpoint)
-    
+
     # set up test secret with rds details
     secret_client = boto3.client("secretsmanager", "eu-west-2")
     secret_id = "test_credentials"
@@ -34,7 +34,7 @@ def test_extract_works_correctly():
         "host": db_endpoint,
         "port": db_port,
     }
-    
+
     secret_string = json.dumps(test_credentials)
     secret_client.create_secret(Name=secret_id, SecretString=secret_string)
 
@@ -58,7 +58,7 @@ def test_extract_works_correctly():
     }
     context = {}
 
-    #run extract
+    # run extract
     lambda_handler(event, context)
 
     # check data is in ingestion_bucket
