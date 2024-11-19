@@ -1,30 +1,32 @@
-'''takes the payment_type_table and returns a list of dictionaries.
-the dicts are in the format of:
+'''this should take a list of dictionaries of this form:
 
-{payment_type_id: str, payment_type_name: str}'''
+{
+    "payment_type_id": int,
+    "payment_type": str,
+    "created_at": str,
+    "updated_at": str
+}
 
+and return them in this form:
+
+{
+    "payment_type_id": int,
+    "payment_type": str,
+}'''
 
 def process_payment_type(payment_type_table):
 
-    # def create_dict(item):
-    #     new_payment_type_dict = {'payment_type_id': item['payment_type_id'], 'payment_type_name': item['payment_type_name']}
-    #     return new_payment_type_dict
+    def create_dict(item):
 
-    # output_list = [create_dict(item) for item in payment_type_table]
-
-    output_list = []
-    for item in payment_type_table:
-
-        new_payment_type_dict = {}
         try:
-            new_payment_type_dict['payment_type_id'] = item['payment_type_id']
+            new_payment_type_dict = {
+                'payment_type_id': item['payment_type_id'], 
+                'payment_type_name': item['payment_type_name']}
+            
+            return new_payment_type_dict
+        
         except:
-            raise Exception
-        try:
-            new_payment_type_dict['payment_type_name'] = item['payment_type_name']
-        except:
-            raise Exception
-        output_list.append(new_payment_type_dict)
+            pass
 
+    output_list = [create_dict(item) for item in payment_type_table]
     return output_list
-    
