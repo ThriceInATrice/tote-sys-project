@@ -1,4 +1,6 @@
-'''this function should take a list of dictionaries in this form:
+'''this function takes two lists of dictionaries in this form:
+
+input_counter_part_data:
 
 {
     "counterparty_id": int,
@@ -8,6 +10,21 @@
     "delivery_contact": str,
     "created_at": str,
     "updated_at": str
+}
+
+input_address_data:
+
+{
+    "address_id": int,
+    "address_line_1": str,
+    "address_line_2": str,
+    "district": str,
+    "city": str,
+    "postal_code": str,
+    "country": str,
+    "phone": str,
+    "created_at": date,
+    "last_updated": "date
 }
 
 and return them in this form:
