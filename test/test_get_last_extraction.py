@@ -45,4 +45,3 @@ class TestGetLastExtraction:
 
         with pytest.raises(IngestionError):
             get_last_extraction(bucket_name)
-
