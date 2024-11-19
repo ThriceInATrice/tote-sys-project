@@ -1,5 +1,6 @@
 import boto3, json, psycopg2
 from botocore.exceptions import ClientError
+
 try:
     from src.extraction.ingestion_error import IngestionError
     from src.extraction.logger import logger

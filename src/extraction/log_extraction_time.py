@@ -1,4 +1,5 @@
 import json, boto3
+
 try:
     from src.extraction.ingestion_error import IngestionError
 except ImportError:

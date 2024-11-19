@@ -1,4 +1,5 @@
 from datetime import datetime
+
 try:
     from src.extraction.ingestion_error import IngestionError
     from src.extraction.connection import connect_to_db
@@ -23,8 +24,10 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
         )
         # you can just give pycopg2 a python datetime and it makes it work
 
+    conn = None
     try:
-        new_data = {now: []}
+        new_data = {"extraction_time": now, "data": {}}
+
         tables = get_tables(credentials_id)
 
         conn = connect_to_db(credentials_id)
@@ -40,18 +43,22 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
                     {timeframe_string}
                 """
                 )
-                logger.info(f"""
+                
+                logger.info(
+                    f"""
                     SELECT *
                     FROM {table}
                     {timeframe_string}
-                """)
+                """
+                )
+                
                 results = cursor.fetchall()
                 column_names = [desc[0] for desc in cursor.description]
-                new_data[now].append(
-                    {table: [make_dict(column_names, result) for result in results]}
-                )
+                new_data["data"][table] = [
+                    make_dict(column_names, result) for result in results
+                ]
 
-        return new_data, now
+        return new_data
 
     except Exception as e:
         raise IngestionError(e)
@@ -91,6 +98,7 @@ def get_tables(credentials_id):
         FROM pg_tables
         WHERE schemaname = 'public';
     """
+    conn = None
     try:
         conn = connect_to_db(credentials_id)
         cursor = conn.cursor()

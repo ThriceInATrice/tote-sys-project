@@ -1,4 +1,5 @@
 import json, boto3, re
+
 try:
     from src.extraction.get_new_data_from_database import destring_timestamp
     from src.extraction.ingestion_error import IngestionError
@@ -9,9 +10,10 @@ except ImportError:
     from logger import logger
 
 
-def store_new_data(ingestion_bucket, extraction_time, new_data):
+def store_new_data(ingestion_bucket, new_data):
     logger.info("store_new_data invoked")
 
+    extraction_time = new_data["extraction_time"]
     date_split = re.findall("[0-9]+", extraction_time)
     key = "/".join(
         [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]

@@ -29,14 +29,19 @@ def lambda_handler(event, context):
         ingestion_bucket = event["ingestion_bucket"]
 
         last_extraction = get_last_extraction(extraction_times_bucket)
-        new_data, extraction_time = get_new_data_from_database(
-            credentials_id, last_extraction
-        )
+        new_data = get_new_data_from_database(credentials_id, last_extraction)
+        print(f"NEW DATA {new_data}")
+
         logger.info("Extraction complete")
-        store_new_data(ingestion_bucket, extraction_time, new_data)
+
+        store_new_data(ingestion_bucket, new_data)
         logger.info("Data stored")
-        log_extraction_time(extraction_time, extraction_times_bucket)
+
+        log_extraction_time(new_data["extraction_time"], extraction_times_bucket)
         logger.info("Extraction times logged")
+
+        return new_data["extraction_time"]
+
     except Exception as e:
         raise IngestionError(f"extract: {e}")
 
