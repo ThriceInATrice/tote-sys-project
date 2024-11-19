@@ -1,3 +1,9 @@
+'''takes the payment_type_table and returns a list of dictionaries.
+the dicts are in the format of:
+
+{payment_typde_id: str, payment_type_name: str}'''
+
+
 def process_payment_type(payment_type_table):
     output_list = []
     for item in payment_type_table:
