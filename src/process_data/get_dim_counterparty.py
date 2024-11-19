@@ -23,8 +23,8 @@ input_address_data:
     "postal_code": str,
     "country": str,
     "phone": str,
-    "created_at": date,
-    "last_updated": "date
+    "created_at": timestamp,
+    "last_updated": timestamp
 }
 
 and return them in this form:
