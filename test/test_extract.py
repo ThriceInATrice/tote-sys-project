@@ -48,7 +48,7 @@ def test_extract_works_correctly(test_data_from_test_database):
     body = json.dumps({"extraction_times": []})
     s3_client.create_bucket(Bucket=extraction_bucket_name)
     s3_client.put_object(
-        Bucket=extraction_bucket_name, Key="extraction_times", Body=body
+        Bucket=extraction_bucket_name, Key="extraction_times.json", Body=body
     )
 
     # set up event, context can be empty
