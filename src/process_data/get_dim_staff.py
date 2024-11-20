@@ -24,7 +24,7 @@ def get_dim_staff(credentials_id, staff_data):
     """
 
 
-    query_string = """SELECT department_id, department_name, location FROM department LIMIT 10;"""
+    query_string = """SELECT department_id, department_name, location FROM department;"""
     
     conn = connect_to_db(credentials_id)
     with conn.cursor() as cursor:
