@@ -12,21 +12,6 @@ input_counter_part_data:
     "updated_at": str
 }
 
-input_address_data:
-
-{
-    "address_id": int,
-    "address_line_1": str,
-    "address_line_2": str,
-    "district": str,
-    "city": str,
-    "postal_code": str,
-    "country": str,
-    "phone": str,
-    "created_at": timestamp,
-    "last_updated": timestamp
-}
-
 and return them in this form:
 
 {
@@ -42,43 +27,39 @@ and return them in this form:
 }
 
 you will need to find the address information from legal_address_id - maybe do some sql on the original database to get the relevant information?'''
-from pprint import pprint
+from src.process_data.connection import query_database
 
-class ValueNotFoundError(Exception):
-    def __init__(self, item):
-        print(item)
+def get_dim_counterparty(credentials_id, input_counterparty_data):
 
-def get_dim_counterparty(input_counterparty_data, input_address_data):
+    query_string = """SELECT address_id, address_line_1, address_line_2, district, city, postal_code, country, phone FROM address LIMIT 10"""
+    addresses = query_database(credentials_id, query_string)
 
-    def create_dict(counterparty, address):
-        output_dict = {
-            "counterparty_id": int(counterparty['counterparty_id']),
-            "counterparty_legal_name": counterparty['counterparty_legal_name'],
-            "counterparty_legal_adress_line_1": address['address_line_1'],
-            "counterparty_legal_address_line_2": address['address_line_2'],
-            "counterparty_legal_district": address['district'],
-            "counterparty_legal_city": address['city'],
-            "counterparty_legal_postal_code": address['postal_code'],
-            "counterparty_legal_country": address['country'],
-            "counterparty_legal_phone_number": address['phone']
-            }
-        
-        return output_dict
+    address_columns = ('address_id', 'address_line_1', 'address_line_2', 'district', 'city', 'postal_code', 'country', 'phone')
+    address_dict_list = [dict(zip(address_columns, address)) for address in addresses]
 
-    def search_for_address_id(counterparty):
-        counter = 0
-        legal_address_id = counterparty['legal_address_id']
+    def create_dim_counterparty_dict(counterparty, address):
+        dim_counterparty_dict =  {
+        "counterparty_id": counterparty['counterparty_id'],
+        "counterparty_legal_name": counterparty['counterparty_legal_name'],
+        "counterparty_legal_address_line_1": address['address_line_1'],
+        "counterparty_legal_address_line_2": address['address_line_2'],
+        "counterparty_legal_district": address['district'],
+        "counterparty_legal_city": address['city'],
+        "counterparty_legal_postal_code": address['postal_code'],
+        "counterparty_legal_country": address['country'],
+        "counterparty_legal_phone_number": address['phone']
+        }
 
-        for address in input_address_data:
-            counter += 1
+        return dim_counterparty_dict
 
-            if address['address_id'] == legal_address_id:
-                new_dict = create_dict(counterparty, address)
-                return new_dict
+    processed_counterparty_data = []
 
-            elif counter > len(input_address_data):
-                raise ValueNotFoundError(f'counterparty legal address id: {counterparty["legal_address_id"]} not found in address table')
+    for counterparty in input_counterparty_data:
+        legal_address_id = int(counterparty['legal_address_id'])
 
-    output_list = [search_for_address_id(counterparty) for counterparty in input_counterparty_data]
-    pprint(output_list)
-    return output_list
+        for address in address_dict_list:
+            if legal_address_id == address['address_id']:
+                new_dim_counterparty_dict = create_dim_counterparty_dict(counterparty, address)
+                processed_counterparty_data.append(new_dim_counterparty_dict)
+
+    return processed_counterparty_data 

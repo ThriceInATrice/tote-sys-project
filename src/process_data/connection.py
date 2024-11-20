@@ -58,3 +58,16 @@ def connect_to_db(credentials_id):
     except Exception as e:
         logger.debug("Houston, we have a %s", "thorny problem", exc_info=1)
         raise IngestionError(f"connect_to_db: {e}")
+
+def query_database(credentials_id, query_string):
+
+    conn = connect_to_db(credentials_id)
+
+    if conn:
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query_string)
+                query_result = cursor.fetchall()
+                return query_result
+        except:
+            raise Exception
