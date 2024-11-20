@@ -35,8 +35,8 @@ requirements: create-environment
 	$(call execute_in_env, $(PIP) install -r ./requirements.txt)
 
 test-extract:
-	sh test/test_get_new_data_from_database.sh
-	pytest test/test_connection.py -vvvrP
+	sh test/test_extraction/test_get_new_data_from_database.sh
+	pytest test/test_extraction/test_connection.py -vvvrP
 
 test-transform:
 	pytest test/test_process_data/test_get_dim_counterparty.py -vvvrP
