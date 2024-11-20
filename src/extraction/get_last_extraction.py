@@ -36,6 +36,9 @@ def get_last_extraction(bucket_name):
         except Exception as e:
             raise IngestionError(f"get_last_extraction: {e}")
 
+    except Exception as e:
+        raise IngestionError(f"get_last_extraction: {e}")
+
 
 # datetime objects can be made from datetime.datetime() on a series of integers
 # corresponding to string of a datetime object
