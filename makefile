@@ -38,5 +38,13 @@ test-extract:
 	sh test/test_get_new_data_from_database.sh
 	pytest test/test_connection.py -vvvrP
 
+test-transform:
+	pytest test/test_process_data/test_get_dim_counterparty.py -vvvrP
+	pytest test/test_process_data/test_get_dim_payment_type.py -vvvrP
+
+test-all:
+	make test-extract
+	make test-transform
+
 check-coverage:
 	$(call execute_in_env, PYTHONPATH=${PYTHONPATH} pytest --cov=src test/)

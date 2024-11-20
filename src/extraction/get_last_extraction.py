@@ -37,6 +37,8 @@ def get_last_extraction(bucket_name):
             raise IngestionError(f"get_last_extraction: {e}")
 
 
+
+
 # datetime objects can be made from datetime.datetime() on a series of integers
 # corresponding to string of a datetime object
 # so a string can be returned to a datetime object in this manner when comparison is needed

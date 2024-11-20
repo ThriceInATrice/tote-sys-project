@@ -20,6 +20,7 @@ params = parser.items("postgresql_test_database")
 config_dict = {param[0]: param[1] for param in params}
 
 
+
 @pytest.fixture()
 def test_data_from_test_database():
     with patch("src.extraction.connection.get_database_creds") as patched_creds:
@@ -46,6 +47,7 @@ def test_get_new_data_from_database_returns_data_from_database_as_dict_with_corr
         "test_bool": "True",
     }
     assert result["data"]["test_table"][0] == expected
+
 
 
 def test_get_new_data_returns_every_row_in_database(test_data_from_test_database):
