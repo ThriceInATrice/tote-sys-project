@@ -36,7 +36,7 @@ def get_dim_staff(credentials_id, staff_data):
     for department in departments:
         department_list.append(dict(zip(departments_columns, department)))
 
-    #print('this is zipped departments >', department_list)
+    # print('this is zipped departments >', department_list)
 
     processed_staff_data = []
     for row in staff_data:
