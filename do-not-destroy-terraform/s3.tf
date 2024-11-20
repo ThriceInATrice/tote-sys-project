@@ -5,3 +5,11 @@ resource "aws_s3_bucket" "ingestion_bucket" {
 resource "aws_s3_bucket" "extraction_times" {
   bucket_prefix = "extraction-times-"
 }
+
+resource "aws_s3_bucket" "transformed_data" {
+  bucket_prefix = "transformed-data-"
+}
+
+resource "aws_s3_bucket" "data_transformation_times" {
+  bucket_prefix = "transformation-times-"
+}
