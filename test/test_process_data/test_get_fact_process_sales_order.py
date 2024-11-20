@@ -1,4 +1,4 @@
-from src.process_data.process_sales_order import process_sales_order
+from process_data.get_fact_sales_order import process_sales_order
 import pytest
 
 test_list= [
