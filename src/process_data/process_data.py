@@ -47,7 +47,7 @@
 #     }
 # ]
 
-import boto3, json
+import boto3, json, re
 from src.process_data.processing_error import ProcessingError
 
 # event contains details of the buckets it will use
@@ -61,21 +61,50 @@ from src.process_data.processing_error import ProcessingError
 
 
 def lambda_handler(event, context):
-    pass
+    ingestion_bucket = event["ingestion_bucket"]
+
 
     # run get_unprocessed_extractions to get unprocessed entries
+    unprocessed_extractions = get_unprocessed_extractions(event)
 
     # for each unprocessed entry:
-    # fetch data
+    for extraction_time in unprocessed_extractions:
+        date_split = re.findall("[0-9]+", extraction_time)
+        ingestion_key = "/".join(
+            [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
+        )
+        try:
+            s3_client = boto3.client("s3")
+            data = s3_client.get_object(Bucket=ingestion_bucket, Key=ingestion_key)["data"]
+        
 
-    # run get functions
+            # run get functions
+            processed_data = {
+                "extraction_time": extraction_time,
+                "processed_data": {
+                    "dim_staff": get_dim_staff(data["staff"]),
+                    "dim_location": get_dim_location(data["address"]),
+                    "dim_design": get_dim_design(data["design"]),
+                    "dim_currency": get_dim_currency(data["currency"]),
+                    "dim_transaction": get_dim_transaction(data["transaction"]),
+                    "dim_payment_type": get_dim_payment_type(data["payment_type"]),
+                    "dim_counterparty": get_dim_counterparty(data["counterparty"]),
+                    "fact_purchase_order": get_fact_purchase_order(data["purchase_order"]),
+                    "fact_sales_order": get_fact_sales_order(data["sales_order"]),
+                    "fact_payment": get_fact_payment(data["payment"])
+                }
+            }
+            
+            # run get_dim_date last, with the rest of the data as the arg
+            processed_data["data"]["dim_date"] = get_dim_date(processed_data["data"])
+            
+            # save data to processed_data_bucket
+            processed_data_bucket = event["processed_data_bucket"]
+            s3_client.put_object(Bucket=processed_data_bucket, Key=)
 
-    # run get_dim_date last, with the rest of the data as the arg
-
-    # save data to processed_data_bucket
-
-    # log extraction time in processed_extractions_bucket
-
+            # log extraction time in processed_extractions_bucket
+        except Exception as e:
+            raise ProcessingError(f"get_unprocessed_extractions: {e}")
 
 def get_unprocessed_extractions(event):
 
