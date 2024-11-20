@@ -52,6 +52,7 @@ from src.process_data.processing_error import ProcessingError
 
 # event contains details of the buckets it will use
 # event = {
+#     credentials_id: credentials_id
 #     ingestion_bucket: bucket-id,
 #     extraction_times_bucket: bucket-id,
 #     processed_data_bucket: bucket-id
