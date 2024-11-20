@@ -52,10 +52,6 @@ def test_get_new_data_from_database_returns_data_from_database_as_dict_with_corr
 
 def test_get_new_data_returns_every_row_in_database(test_data_from_test_database):
     result = test_data_from_test_database
-    result_value = [value for _, value in result[0].items()][0][0]["test_table"]
-    assert all(
-        [result_value[i] == full_expected_db[i] for i in range(len(full_expected_db))]
-    )
     result_value = result["data"]["test_table"]
     assert all(
         [result_value[i] == full_expected_db[i] for i in range(len(full_expected_db))]
@@ -66,7 +62,6 @@ def test_get_new_data_from_database_gets_all_data_when_last_updated_is_falsy(
     test_data_from_test_database,
 ):
     result = get_new_data_from_database(credentials_id=None, last_extraction=None)
-    result_value = [value for _, value in result[0].items()][0][0]["test_table"]
     result_value = result["data"]["test_table"]
     assert result_value == full_expected_db
 
