@@ -35,7 +35,7 @@ and return them in this form:
 the final input will have an extra column called sales_record_id which is a serial,
 so we will generate it as it is input into the final database"""
 
-def process_sales_order(purchess_order_table):
+def get_fact_sales_order(purchess_order_table):
     output_list = []
     for diction in purchess_order_table:
         new_purchess_order_dict = {}
@@ -47,18 +47,17 @@ def process_sales_order(purchess_order_table):
                             "units_sold",
                             "unit_price",
                             "currency_id",
-                            "agreed_delivery_date",
-                            "agreed_payment_date",
                             "agreed_delivery_lcoation_id"}:
                     new_purchess_order_dict[key]= diction[key]
+                elif key in ["agreed_delivery_date","agreed_payment_date"]:
+                    new_purchess_order_dict[key] = "".join(filter(lambda char: char != "-", diction[key]))
                 elif key == 'created_at':
-                    new_purchess_order_dict["created_date"]= diction[key].split()[0]
-                    new_purchess_order_dict["created_time"]= diction[key].split()[1]
+                    new_purchess_order_dict["created_date"]= "".join(filter(lambda char: char != "-", diction[key].split()[0]))
+                    new_purchess_order_dict["created_time"]= "".join(filter(lambda char: char != "-", diction[key].split()[1]))
                 elif key == 'last_updated':
-                    new_purchess_order_dict["last_updated_date"]= diction[key].split()[0]
-                    new_purchess_order_dict["last_updated_time"]= diction[key].split()[1]
+                    new_purchess_order_dict["last_updated_date"]= "".join(filter(lambda char: char != "-", diction[key].split()[0]))
+                    new_purchess_order_dict["last_updated_time"]= "".join(filter(lambda char: char != "-", diction[key].split()[1]))
             except: raise Exception
         output_list.append(new_purchess_order_dict)
     print(output_list)
     return output_list
-    

@@ -70,8 +70,8 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
 
 def destring_timestamp(datetime_string):
     # date time string is of the form 2024-11-13 16:14:04.060884
-    try:
-        datetime_split = re.findall("[0-9]+", datetime_string)
+    datetime_split = re.findall("[0-9]+", datetime_string)
+    if len(datetime_split) == 7:
         return datetime(
             int(datetime_split[0]),
             int(datetime_split[1]),
@@ -81,7 +81,16 @@ def destring_timestamp(datetime_string):
             int(datetime_split[5]),
             int(datetime_split[6]),
         )
-    except:
+    elif len(datetime_split) == 6:
+        return datetime(
+            int(datetime_split[0]),
+            int(datetime_split[1]),
+            int(datetime_split[2]),
+            int(datetime_split[3]),
+            int(datetime_split[4]),
+            int(datetime_split[5]),
+        )
+    else: 
         raise Exception("datetime error")
 
 
@@ -117,5 +126,3 @@ def get_tables(credentials_id):
             conn.close()
 
 
-if __name__ == "__main__":
-    print(get_new_data_from_database("totesys-db-creds", "2023-1-1-12-10-10"))

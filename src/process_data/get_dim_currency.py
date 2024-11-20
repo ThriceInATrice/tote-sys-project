@@ -36,12 +36,12 @@ def get_dim_currency(currency_data):
 
 
 # func to use a currency code to get a currency name from a currency api
-def get_currency_name(currnecy_code):
+def get_currency_name(currency_code):
     try:
         with open("currencies.json") as currency_json:
             currency_dict = json.load(currency_json)
 
-        return currency_dict[currnecy_code]
+        return currency_dict[currency_code.lower()]
 
     except Exception as e:
         raise ProcessingError(f"get_dim_currency: {e}")

@@ -1,54 +1,36 @@
-# raw data arrives like this:
-# {
-#     "extraction_time": str,
-#     "data": {
-#         "staff": [
-#             {
-#                 "staff_id": int,
-#                 "first name": str,
-#             }
-#         ],
-#         "currency": [
-#             {
-#                 "currency_id": int,
-#                 "currency_code": str
-#                 }
-#         ]
-#     }
-# }
-#
-# we want to return this:
-# {
-#     "extraction_time": str,
-#     "processed_data": {
-#         "dim_staff": get_dim_staff(data["data"]["staff"]),
-#         "dim_currency": get_dim_currency(data["data"]["currency"])
-#     }
-# }
-#
-# get_dim_staff is given a list of dictionaries like this
-# with each dictionary representing a line in the staff table in the origin database
-# [
-#     {
-#         "currency_id": int,
-#         "currency_code": str,
-#         "created_at": str,
-#         "last_updated": str
-#     }
-# ]
-#
-# and should return a new list of dictionaries of a similar structure
-# with each dictionary representing a line in the dim_staff table in the new database
-# [
-#     {
-#         "currency_id": int,
-#         "currency_code": str,
-#         "currency name": str
-#     }
-# ]
-
 import boto3, json, re
-from src.process_data.processing_error import ProcessingError
+from datetime import datetime
+
+try:
+    from src.process_data.logger import logger
+    from src.process_data.processing_error import ProcessingError
+    from src.process_data.get_dim_counterparty import get_dim_counterparty
+    from src.process_data.get_dim_currency import get_dim_currency
+    from src.process_data.get_dim_date import get_dim_date
+    from src.process_data.get_dim_design import get_dim_design
+    from src.process_data.get_dim_location import get_dim_location
+    from src.process_data.get_dim_payment_type import get_dim_payment_type
+    from src.process_data.get_dim_staff import get_dim_staff
+    from src.process_data.get_dim_transaction import get_dim_transaction
+    from src.process_data.get_fact_sales_order import get_fact_sales_order
+    from src.process_data.get_fact_payment import get_fact_payment
+    from src.process_data.get_fact_purchase_order import get_fact_purchase_order
+    from src.process_data.log_extraction_time import log_extraction_time
+except ImportError:
+    from logger import logger
+    from processing_error import ProcessingError
+    from get_dim_counterparty import get_dim_counterparty
+    from get_dim_currency import get_dim_currency
+    from get_dim_date import get_dim_date
+    from get_dim_design import get_dim_design
+    from get_dim_location import get_dim_location
+    from get_dim_payment_type import get_dim_payment_type
+    from get_dim_staff import get_dim_staff
+    from get_dim_transaction import get_dim_transaction
+    from get_fact_sales_order import get_fact_sales_order
+    from get_fact_payment import get_fact_payment
+    from get_fact_purchase_order import get_fact_purchase_order
+    from log_extraction_time import log_extraction_time
 
 # event contains details of the buckets it will use
 # event = {
@@ -56,16 +38,19 @@ from src.process_data.processing_error import ProcessingError
 #     ingestion_bucket: bucket-id,
 #     extraction_times_bucket: bucket-id,
 #     processed_data_bucket: bucket-id
-#     process_extractions_bucket: bucket_id
+#     processed_extractions_bucket: bucket_id
 # }
 
 
 def lambda_handler(event, context):
-    ingestion_bucket = event["ingestion_bucket"]
+    #logger.info("transformation phase lambda has been called")
 
+    credentials_id = event["credentials_id"]
+    ingestion_bucket = event["ingestion_bucket"]
 
     # run get_unprocessed_extractions to get unprocessed entries
     unprocessed_extractions = get_unprocessed_extractions(event)
+    #logger.info("get_unprocessed_extractions has been called")
 
     # for each unprocessed entry:
     for extraction_time in unprocessed_extractions:
@@ -73,38 +58,60 @@ def lambda_handler(event, context):
         ingestion_key = "/".join(
             [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
         )
+
         try:
             s3_client = boto3.client("s3")
-            data = s3_client.get_object(Bucket=ingestion_bucket, Key=ingestion_key)["data"]
-        
+            response = s3_client.get_object(Bucket=ingestion_bucket, Key=ingestion_key)
+            body=response["Body"]
+            bytes = body.read()
+            content = json.loads(bytes)
+            data = content["data"]
+            print(data)
+            print(f"TYPE: {type(data)}")
 
             # run get functions
             processed_data = {
                 "extraction_time": extraction_time,
+                "processing time": str(datetime.now()),
                 "processed_data": {
-                    "dim_staff": get_dim_staff(data["staff"]),
+                    "dim_staff": get_dim_staff(credentials_id, data["staff"]),
                     "dim_location": get_dim_location(data["address"]),
                     "dim_design": get_dim_design(data["design"]),
                     "dim_currency": get_dim_currency(data["currency"]),
                     "dim_transaction": get_dim_transaction(data["transaction"]),
                     "dim_payment_type": get_dim_payment_type(data["payment_type"]),
-                    "dim_counterparty": get_dim_counterparty(data["counterparty"]),
-                    "fact_purchase_order": get_fact_purchase_order(data["purchase_order"]),
+                    "dim_counterparty": get_dim_counterparty(
+                        credentials_id, data["counterparty"]
+                    ),
+                    "fact_purchase_order": get_fact_purchase_order(
+                        data["purchase_order"]
+                    ),
                     "fact_sales_order": get_fact_sales_order(data["sales_order"]),
-                    "fact_payment": get_fact_payment(data["payment"])
-                }
+                    "fact_payment": get_fact_payment(data["payment"]),
+                },
             }
-            
+
             # run get_dim_date last, with the rest of the data as the arg
-            processed_data["data"]["dim_date"] = get_dim_date(processed_data["data"])
-            
+            processed_data["processsed_data"]["dim_date"] = get_dim_date(processed_data["processed_data"])
+
+            #logger.info("data transformation functions have been called")
+
             # save data to processed_data_bucket
             processed_data_bucket = event["processed_data_bucket"]
-            s3_client.put_object(Bucket=processed_data_bucket, Key=)
+            body = json.dumps(processed_data)
+            s3_client.put_object(
+                Bucket=processed_data_bucket, Key=ingestion_key, Body=body
+            )
+            #logger.info("processed data daves to bucket")
 
             # log extraction time in processed_extractions_bucket
+            processed_extractions_bucket = event["processed_extractions_bucket"]
+            log_extraction_time(extraction_time, processed_extractions_bucket)
+            #logger.info("extraction time logged to processed extractions bucket")
+
         except Exception as e:
-            raise ProcessingError(f"get_unprocessed_extractions: {e}")
+            raise ProcessingError(f"lambda handler: {e}")
+
 
 def get_unprocessed_extractions(event):
 
@@ -123,25 +130,24 @@ def get_unprocessed_extractions(event):
         extraction_times = extraction_times_dict["extraction_times"]
 
         # check processed_extractions_bucket
-        processed_times_bucket = event["processed_times_bucket"]
-        processed_times_key = "processed_times.json"
-        processed_times_response = client.get_object(
-            Bucket=processed_times_bucket, Key=processed_times_key
+        processed_extractions_bucket = event["processed_extractions_bucket"]
+        processed_extractions_key = "processed_extractions.json"
+        processed_extractions_response = client.get_object(
+            Bucket=processed_extractions_bucket, Key=processed_extractions_key
         )
-        processed_times_body = processed_times_response["Body"]
-        processed_times_bytes = processed_times_body.read()
-        processed_times_dict = json.loads(processed_times_bytes)
-        processed_times = processed_times_dict["extraction_times"]
+        processed_extractions_body = processed_extractions_response["Body"]
+        processed_extractions_bytes = processed_extractions_body.read()
+        processed_extractions_dict = json.loads(processed_extractions_bytes)
+        processed_extractions = processed_extractions_dict["extraction_times"]
 
-        # raises error if there are entries in processed_times_bucket
-        # that are not in extractions_times_bucket
-        if len([entry for entry in processed_times if entry not in extraction_times]):
+        # raises error if there are entries in processed_extractions_bucket that are not in extraction_times_bucket
+        if len([entry for entry in processed_extractions if entry not in extraction_times]):
             raise ProcessingError(
-                "Entries in processed_times bucket do not match extraction_times bucket"
+                "Entries in processed_extractions bucket do not match extraction_times bucket"
             )
 
         # return a list of unprocessed entries
-        return [entry for entry in extraction_times if entry not in processed_times]
+        return [entry for entry in extraction_times if entry not in processed_extractions]
 
     except Exception as e:
         raise ProcessingError(f"get_unprocessed_extractions: {e}")

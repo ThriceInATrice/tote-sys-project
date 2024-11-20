@@ -36,9 +36,9 @@ def get_fact_purchase_order(purchase_order_data):
     this entry will also have another column called “purchase_order_record_id” which is a serial, so we will generate it as we input it into the data warehouse"""
     return [{
         "purchase_order_id": purchase_order_data[i]["purchase_order_id"],
-        "created_date":	purchase_order_data[i]["created_at"][:10],
+        "created_date":	purchase_order_data[i]["created_at"][:4]+purchase_order_data[i]["created_at"][5:7]+purchase_order_data[i]["created_at"][8:10],
         "created_time": purchase_order_data[i]["created_at"][11:],
-        "last_updated_date": purchase_order_data[i]["last_updated"][:10],
+        "last_updated_date": purchase_order_data[i]["last_updated"][:4]+purchase_order_data[i]["last_updated"][5:7]+purchase_order_data[i]["last_updated"][8:10],
         "last_updated_time":  purchase_order_data[i]["last_updated"][11:],
         "staff_id":	purchase_order_data[i]["staff_id"],
         "counterparty_id":	purchase_order_data[i]["counterparty_id"],
@@ -46,7 +46,7 @@ def get_fact_purchase_order(purchase_order_data):
         "item_quantity": purchase_order_data[i]["item_quantity"],
         "item_unit_price": purchase_order_data[i]["item_unit_price"],
         "currency_id": purchase_order_data[i]["currency_id"],
-        "agreed_delivery_date":	purchase_order_data[i]["agreed_delivery_date"],
-        "agreed_payment_date":	purchase_order_data[i]["agreed_payment_date"],
+        "agreed_delivery_date":	purchase_order_data[i]["agreed_delivery_date"][:4]+purchase_order_data[i]["agreed_delivery_date"][5:7]+purchase_order_data[i]["agreed_delivery_date"][8:10],
+        "agreed_payment_date": purchase_order_data[i]["agreed_payment_date"][:4]+purchase_order_data[i]["agreed_payment_date"][5:7]+purchase_order_data[i]["agreed_payment_date"][8:10],
         "agreed_delivery_location_id": purchase_order_data[i]["agreed_delivery_location_id"]
     } for i in range(len(purchase_order_data))]

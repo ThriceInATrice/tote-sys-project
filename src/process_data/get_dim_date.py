@@ -14,7 +14,7 @@ def get_dim_date(data):
                 "day_of_week": int(date_object.strftime("%w")),
                 "day_name": date_object.strftime("%A"),
                 "month_name": date_object.strftime("%B"),
-                # "quarter":
+                "quarter": (date_object.month // 3) +1
             }
         )
     return new_dim_date_entries
@@ -34,12 +34,22 @@ def get_new_dates(data):
         for line in lines:
             for key, value in line.items():
                 if key in date_keys and value not in new_dates:
+                    print(f"{lines}, {line}, {key}, {value}")
                     new_dates.append(str(value))
 
     return new_dates
 
 
 def get_date_object(date_id_string):
-    return date(
-        int(date_id_string[:4]), int(date_id_string[4:6]), int(date_id_string[6:])
-    )
+    print(date_id_string)
+    year = int(date_id_string[:4])
+    
+    if date_id_string[4] == 0:
+        month = date_id_string[5]
+    else: month = int(date_id_string[4:6])
+    
+    if date_id_string[6] == 0:
+        day = date_id_string[7]
+    else: day = int(date_id_string[6:])
+    
+    return date(year, month, day)

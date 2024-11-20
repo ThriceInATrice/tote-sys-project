@@ -2,16 +2,16 @@ import boto3, json, psycopg2
 from botocore.exceptions import ClientError
 
 try:
-    from src.process_data.ingestion_error import IngestionError
+    from src.process_data.processing_error import ProcessingError
     from src.process_data.logger import logger
 except ImportError:
-    from ingestion_error import IngestionError
+    from processing_error import ProcessingError
     from logger import logger
 
 
 def get_database_creds(credentials_id):
     logger.info("get_database_creds invoked")
-    client = boto3.client(service_name="secretsmanager", region_name="eu-west-2")
+    client = boto3.client("secretsmanager", region_name="eu-west-2")
 
     try:
         get_secret_value_response = client.get_secret_value(SecretId=credentials_id)
@@ -57,7 +57,7 @@ def connect_to_db(credentials_id):
 
     except Exception as e:
         logger.debug("Houston, we have a %s", "thorny problem", exc_info=1)
-        raise IngestionError(f"connect_to_db: {e}")
+        raise ProcessingError(f"connect_to_db: {e}")
 
 def query_database(credentials_id, query_string):
 

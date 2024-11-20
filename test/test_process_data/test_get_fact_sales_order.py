@@ -1,4 +1,4 @@
-from process_data.get_fact_sales_order import process_sales_order
+from src.process_data.get_fact_sales_order import get_fact_sales_order
 import pytest
 
 test_list= [
@@ -50,4 +50,4 @@ expected_output = [{'created_date': '2025-09-01',
                      'agreed_delivery_lcoation_id': '4'}]
 
 def test_list_processed_correctly():
-    assert process_sales_order(test_list)== expected_output
+    assert get_fact_sales_order(test_list)== expected_output
