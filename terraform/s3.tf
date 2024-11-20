@@ -9,6 +9,16 @@ resource "aws_s3_object" "lambda_code" {
   etag   = filemd5("${path.module}/../packages/ingestion_lambda/function.zip")
 }
 
+# transform lambda
+
+resource "aws_s3_object" "transform_lambda_code" {
+  bucket = aws_s3_bucket.code_bucket.id
+  key    = "${var.transform_lambda}/function.zip"
+  source = "${path.module}/../packages/transform_lambda/function.zip"
+  etag   = filemd5("${path.module}/../packages/transform_lambda/function.zip")
+  depends_on = [ data.archive_file.transform_lambda ]
+}
+
 resource "aws_s3_object" "layer_code" {
   bucket = aws_s3_bucket.code_bucket.id
   key    = "${var.extract_lambda}/layer_content.zip"

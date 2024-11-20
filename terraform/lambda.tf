@@ -1,3 +1,5 @@
+# Extract lambda
+
 resource "aws_lambda_function" "extract_lambda" {
   function_name    = "extract_lambda"
   s3_bucket        = aws_s3_bucket.code_bucket.bucket
@@ -33,3 +35,24 @@ resource "aws_lambda_layer_version" "psycopg2_layer" {
   # filename = "${path.module}/../packages/layer_content.zip"
 }
 
+# Transform lambda
+
+resource "aws_lambda_function" "transform_lambda" {
+  function_name    = "transform_lambda"
+  s3_bucket        = aws_s3_bucket.code_bucket.bucket
+  s3_key           = "${var.transform_lambda}/function.zip"
+  source_code_hash = data.archive_file.transform_lambda.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  handler          = "transform.lambda_handler"
+  runtime          = "python3.11"
+  timeout          = 60
+  depends_on       = [aws_s3_object.transform_lambda_code, aws_s3_object.layer_code]
+  layers           = [aws_lambda_layer_version.psycopg2_layer.arn]
+  memory_size      = 256
+}
+
+data "archive_file" "transform_lambda" {
+  type        = "zip"
+  source_dir  = "${path.module}/../src/process_data/"
+  output_path = "${path.module}/../packages/transform_lambda/function.zip"
+}
