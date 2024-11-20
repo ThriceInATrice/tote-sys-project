@@ -9,11 +9,11 @@ import psycopg2
 import pytest
 import re
 
+
 parser = ConfigParser()
 parser.read("test/test_database.ini")
 params = parser.items("postgresql_test_database")
 config_dict = {param[0]: param[1] for param in params}
-
 
 @pytest.fixture()
 def test_data_from_test_database():
@@ -30,7 +30,7 @@ def test_boto3_s3():
     object_key = "test_object"
     test_body = "test_body"
 
-    client = boto3.client("s3")
+    client = boto3.client("s3", region_name='eu-west-2')
     client.create_bucket(Bucket=bucket_name)
     client.put_object(Bucket=bucket_name, Key=object_key, Body=test_body)
 
@@ -41,7 +41,7 @@ def test_boto3_s3():
 def test_extract_works_correctly(test_data_from_test_database):
     # create ingestion_bucket and extraciton_times bucket
     ingestion_bucket_name = "ingestion_bucket"
-    s3_client = boto3.client("s3")
+    s3_client = boto3.client("s3", region_name='eu-west-2')
     s3_client.create_bucket(Bucket=ingestion_bucket_name)
 
     extraction_bucket_name = "extraction_times_bucket"

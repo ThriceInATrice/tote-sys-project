@@ -64,7 +64,7 @@ jobs:
     - name: Create mock database and run tests
       run: |
         export PYTHONPATH=$(pwd)
-        make test-extract
+        make test-all
       env:
         PGHOST: postgres
         PGPASSWORD: postgres_password
