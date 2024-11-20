@@ -21,15 +21,18 @@ def get_last_extraction(bucket_name):
             extraction_times_dict = json.loads(bytes)
             extraction_times = extraction_times_dict["extraction_times"]
 
-        return None if extraction_times == [] else extraction_times[-1]
+            return None if extraction_times == [] else extraction_times[-1]
 
-    except:
-        try:
-            new_body = json.dumps({"extraction_times": []})
-            client.put_object(
-                Bucket=bucket_name, Key=extraction_times_key, Body=new_body
-            )
-            return None
+        except:
+            try:
+                new_body = json.dumps({"extraction_times": []})
+                client.put_object(
+                    Bucket=bucket_name, Key=extraction_times_key, Body=new_body
+                )
+                return None
+            
+            except Exception as e:
+                raise IngestionError(f"get_last_extraction: {e}")
 
     except Exception as e:
         raise IngestionError(f"get_last_extraction: {e}")
