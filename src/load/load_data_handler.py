@@ -42,7 +42,7 @@ def lambda_handler(event, context):
                 )
 
             # record data as loaded
-            
+
 
         except Exception as e:
             raise LoadError(f"load_data: {e}")
@@ -67,13 +67,17 @@ def get_unloaded_data(event):
         # check processed_extractions_bucket
         loaded_data_bucket = event["loaded_data_bucket"]
         loaded_data_key = "loaded_data.json"
-        loaded_data_response = client.get_object(
-            Bucket=loaded_data_bucket, Key=loaded_data_key
-        )
-        loaded_data_body = loaded_data_response["Body"]
-        loaded_data_bytes = loaded_data_body.read()
-        loaded_data_dict = json.loads(loaded_data_bytes)
-        loaded_data = loaded_data_dict["extraction_times"]
+        try:
+            loaded_data_response = client.get_object(
+                Bucket=loaded_data_bucket, Key=loaded_data_key
+            )
+            loaded_data_body = loaded_data_response["Body"]
+            loaded_data_bytes = loaded_data_body.read()
+            loaded_data_dict = json.loads(loaded_data_bytes)
+            loaded_data = loaded_data_dict["extraction_times"]
+        except:
+            loaded_data = []
+            client.put_object(Bucket=loaded_data_bucket, Key = loaded_data_key, Body=json.dumps({"extraction_times": []}))
 
         # raises error if there are entries in processed_extractions_bucket that are not in extraction_times_bucket
         if len([entry for entry in loaded_data if entry not in processed_extractions]):
