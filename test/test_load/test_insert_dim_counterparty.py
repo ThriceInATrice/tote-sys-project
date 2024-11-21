@@ -15,7 +15,26 @@ class TestGetDimCounterpartyInsertQuery:
             }
         ]
         expected_return = """
-            INSERT INTO 
+            INSERT INTO dim_counterparty (
+                counterparty_id, 
+                counterparty_legal_name, 
+                counterparty_legal_adress_line_1, 
+                counterparty_legal_address_line_2,
+                counterparty_legal_district,
+                counterparty_legal_city,
+                counterparty_legal_postal_code,
+                counterparty_legal_country,
+                counterparty_legal_phone_number
+                )
+            VALUES
+            ("1",
+            "Fahey and Sons",
+            "15",
+            "commercial_contact": "Micheal Toy",
+            "Mrs. Lucy Runolfsdottir",
+            "2022-11-03 14:20:51.563000",
+            "2022-11-03 14:20:51.563000",)
+
         """
         assert get_dim_counterparty_insert_query(test_input) == expected_return
 
