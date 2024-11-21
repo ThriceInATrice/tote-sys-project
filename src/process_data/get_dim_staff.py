@@ -1,4 +1,11 @@
 from src.process_data.connection import connect_to_db
+from botocore.exceptions import ParamValidationError
+from botocore.errorfactory import ClientError
+
+class DBCredentialsExportError(Exception):
+    pass
+class UnexpectedDimStaffError(Exception):
+    pass
 
 def get_dim_staff(credentials_id, staff_data):
     """    
@@ -23,35 +30,47 @@ def get_dim_staff(credentials_id, staff_data):
     }
     """
 
-
-    query_string = """SELECT department_id, department_name, location FROM department;"""
+    if not isinstance(staff_data, list):
+        raise TypeError("Input must be a list")
+    elif not all([type(el) == dict for el in staff_data]):
+        raise TypeError("Input must be a list of dictionaries")
     
-    conn = connect_to_db(credentials_id)
-    with conn.cursor() as cursor:
-        cursor.execute(query_string)
-        departments = cursor.fetchall()
+    try:
 
-    departments_columns = ('department_id', 'department_name', 'location')
-    department_list = []
-    for department in departments:
-        department_list.append(dict(zip(departments_columns, department)))
-    print(f"department list: {department_list}")
-    #print('this is zipped departments >', department_list)
+        query_string = """SELECT department_id, department_name, location FROM department;"""
+        conn = connect_to_db(credentials_id)
+        with conn.cursor() as cursor:
+            cursor.execute(query_string)
+            departments = cursor.fetchall()
 
-    processed_staff_data = []
-    for row in staff_data:
-        id = 'department_id'
-        name = 'department_name'
-        location = 'location'
-        row[id] = int(row[id])
-        department_name = [d[name] for d in department_list if d[id] == row[id]][0]
-        department_location = [d[location] for d in department_list if d[id] == row[id]][0]
-        dim_staff =  {"staff_id": row["staff_id"], 
-                              "first_name": row["first_name"], 
-                              "last_name": row["last_name"],
-                              "department_name": department_name,
-                              "location": department_location,
-                              "email_address": row["email_address"]}
-        processed_staff_data.append(dim_staff)
+        departments_columns = ('department_id', 'department_name', 'location')
+        department_list = []
+        for department in departments:
+            department_list.append(dict(zip(departments_columns, department)))
 
-    return processed_staff_data   
+        processed_staff_data = []
+        for row in staff_data:
+            id = 'department_id'
+            name = 'department_name'
+            location = 'location'
+            row[id] = int(row[id])
+            department_name = [d[name] for d in department_list if d[id] == row[id]][0]
+            department_location = [d[location] for d in department_list if d[id] == row[id]][0]
+            dim_staff =  {"staff_id": row["staff_id"], 
+                                "first_name": row["first_name"], 
+                                "last_name": row["last_name"],
+                                "department_name": department_name,
+                                "location": department_location,
+                                "email_address": row["email_address"]}
+            processed_staff_data.append(dim_staff)
+
+        return processed_staff_data 
+    
+    except ParamValidationError:
+        raise DBCredentialsExportError("Please enter export DB_CREDENTIALS_ID=[Your database credentials ID] into terminal.")     
+    except TypeError:
+        raise DBCredentialsExportError("Incorrect Credentials ID: Please export DB_CREDENTIALS_ID=[Your database credentials ID] into terminal.")
+    except Exception as e: 
+        raise UnexpectedDimStaffError(f'Unexpected Error: {e}')
+
+
