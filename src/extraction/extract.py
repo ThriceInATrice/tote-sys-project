@@ -30,8 +30,6 @@ def lambda_handler(event, context):
 
         last_extraction = get_last_extraction(extraction_times_bucket)
         new_data = get_new_data_from_database(credentials_id, last_extraction)
-        print(f"NEW DATA {new_data}")
-
         logger.info("Extraction complete")
 
         store_new_data(ingestion_bucket, new_data)
