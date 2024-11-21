@@ -487,8 +487,10 @@ expected_processed_data = {
 @mock_aws
 class TestProcessData:
     def test_lambda_handler_processes_data_correctly(self):
+        #create s3 client
         client = boto3.client("s3")
 
+        #create extraction_times bucket and populate with a single extraction time
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_time = "2024-11-20 15:27:20.495299"
@@ -500,9 +502,10 @@ class TestProcessData:
             Body=extraction_times_body,
         )
 
-        date_split = re.findall("[0-9]+", extraction_time)
-        
+        #create ingestion_bucket and populate with test_input data
+        # key is generated from the extraction time in the same way as in extract.py
         ingestion_bucket_name = "ingestion_bucket"
+        date_split = re.findall("[0-9]+", extraction_time)
         ingestion_key = "/".join(
             [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
         )
@@ -514,6 +517,7 @@ class TestProcessData:
             Body=ingestion_body,
         )
 
+        # create processed_extractions bucket and populate with an empty list
         processed_extractions_bucket_name = "processed_extractions_bucket"
         processed_extractions_key = "processed_extractions.json"
         processed_extractions_body = json.dumps({"extraction_times": []})
@@ -524,9 +528,12 @@ class TestProcessData:
             Body=processed_extractions_body,
         )
 
+        # create processed_data bucket for the data to be placed into
         processed_data_bucket_name = "processed_data_bucket"
         client.create_bucket(Bucket=processed_data_bucket_name)
 
+        # lambda_handler is called with json of relevant information
+        # context is a required field in aws lambda, but can be an empty json or dict 
         event = {
             "credentials_id": "totesys-db-creds",
             "ingestion_bucket": "ingestion_bucket",
@@ -536,16 +543,18 @@ class TestProcessData:
         }
         context = {}
 
+        # call lambda handler
         lambda_handler(event, context)    
 
+        # check processed_data bucket to see if the data is present and processed correctly
+        # this uses the same key as in the ingestion bucket so that we know which data it has come from
         response = client.get_object(Bucket=processed_data_bucket_name, Key=ingestion_key)
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
-        
         assert processed_data == expected_processed_data
 
-        # # check extraction time is in extraction_times_bucket
+        # check extraction time is in processed_extractions bucket correctly
         # response = client.get_object(
         #     Bucket=extraction_bucket_name, Key="extraction_times.json"
         # )
@@ -553,7 +562,6 @@ class TestProcessData:
         # extraction_bytes = extraction_body.read()
         # extraction_dict = json.loads(extraction_bytes)
         # extraction_list = extraction_dict["extraction_times"]
-        
         # assert extraction_list[-1] == extraction_time
 
 
@@ -561,94 +569,109 @@ class TestProcessData:
 @mock_aws
 class TestGetUnprocessedData:
     def test_function_returns_times_that_have_not_been_processed(self):
+        #create s3 client
         client = boto3.client("s3")
 
+        #create and populate extraction_times bucket
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_times_body = json.dumps({"extraction_times": ["today"]})
+        client.create_bucket(Bucket=extraction_times_bucket_name)
+        client.put_object(
+            Bucket=extraction_times_bucket_name,
+            Key=extraction_times_key,
+            Body=extraction_times_body,
+        )
+
+        #create and populate processed_extractions bucket
         processed_extractions_bucket_name = "processed_extractions_bucket"
         processed_extractions_key = "processed_extractions.json"
         processed_extractions_body = json.dumps({"extraction_times": []})
-
-        client.create_bucket(Bucket=extraction_times_bucket_name)
         client.create_bucket(Bucket=processed_extractions_bucket_name)
-
-        client.put_object(
-            Bucket=extraction_times_bucket_name,
-            Key=extraction_times_key,
-            Body=extraction_times_body,
-        )
         client.put_object(
             Bucket=processed_extractions_bucket_name,
             Key=processed_extractions_key,
             Body=processed_extractions_body,
         )
-
+        
+        #event contains relevant information for the function to opperate
         event = {
             "extraction_times_bucket": extraction_times_bucket_name,
             "processed_extractions_bucket": processed_extractions_bucket_name,
         }
+        
+        #assert that the function returns the string from extraction_times
         assert get_unprocessed_extractions(event) == ["today"]
 
     def test_function_returns_empty_list_when_all_times_have_been_processed(self):
+        #create s3 client
         client = boto3.client("s3")
 
+        #create and populate extraction_times bucket
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_times_body = json.dumps({"extraction_times": ["today"]})
-        processed_extractions_bucket_name = "processed_extractions_bucket"
-        processed_extractions_key = "processed_extractions.json"
-        processed_extractions_body = json.dumps({"extraction_times": ["today"]})
-
         client.create_bucket(Bucket=extraction_times_bucket_name)
-        client.create_bucket(Bucket=processed_extractions_bucket_name)
-
         client.put_object(
             Bucket=extraction_times_bucket_name,
             Key=extraction_times_key,
             Body=extraction_times_body,
         )
+
+        #create and populate processed_extractions bucket
+        processed_extractions_bucket_name = "processed_extractions_bucket"
+        processed_extractions_key = "processed_extractions.json"
+        processed_extractions_body = json.dumps({"extraction_times": ["today"]})
+        client.create_bucket(Bucket=processed_extractions_bucket_name)
         client.put_object(
             Bucket=processed_extractions_bucket_name,
             Key=processed_extractions_key,
             Body=processed_extractions_body,
         )
-
+        
+        #event contains relevant information for the function to opperate
         event = {
             "extraction_times_bucket": extraction_times_bucket_name,
             "processed_extractions_bucket": processed_extractions_bucket_name,
         }
+        
+        #assert that the function returns an empty list
         assert get_unprocessed_extractions(event) == []
 
     def test_function_raises_error_if_there_are_unexpected_entries_in_processed_extractions(
         self,
     ):
+        #create s3 client
         client = boto3.client("s3")
 
+        #create and populate extraction_times bucket
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_times_body = json.dumps({"extraction_times": []})
-        processed_extractions_bucket_name = "processed_extractions_bucket"
-        processed_extractions_key = "processed_extractions.json"
-        processed_extractions_body = json.dumps({"extraction_times": ["today"]})
-
         client.create_bucket(Bucket=extraction_times_bucket_name)
-        client.create_bucket(Bucket=processed_extractions_bucket_name)
-
         client.put_object(
             Bucket=extraction_times_bucket_name,
             Key=extraction_times_key,
             Body=extraction_times_body,
         )
+
+        #create and populate processed_extractions bucket
+        processed_extractions_bucket_name = "processed_extractions_bucket"
+        processed_extractions_key = "processed_extractions.json"
+        processed_extractions_body = json.dumps({"extraction_times": ["today"]})
+        client.create_bucket(Bucket=processed_extractions_bucket_name)
         client.put_object(
             Bucket=processed_extractions_bucket_name,
             Key=processed_extractions_key,
             Body=processed_extractions_body,
         )
-
+        
+        #event contains relevant information for the function to opperate
         event = {
             "extraction_times_bucket": extraction_times_bucket_name,
             "processed_extractions_bucket": processed_extractions_bucket_name,
         }
+
+        #assert functions raises error correctly
         with pytest.raises(ProcessingError):
             get_unprocessed_extractions(event) == []
