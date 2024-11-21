@@ -35,29 +35,42 @@ and return them in this form:
 the final input will have an extra column called sales_record_id which is a serial,
 so we will generate it as it is input into the final database"""
 
+from src.process_data.processing_error import ProcessingError
+
+
 def get_fact_sales_order(purchess_order_table):
     output_list = []
+    
     for diction in purchess_order_table:
         new_purchess_order_dict = {}
+        
         for key in diction :
             try: 
-                if key in {"design_id", 
-                            "staff_id",
-                            "counterparty_id",
-                            "units_sold",
-                            "unit_price",
-                            "currency_id",
-                            "agreed_delivery_lcoation_id"}:
+                if key in {
+                    "design_id", 
+                    "staff_id",
+                    "counterparty_id",
+                    "units_sold",
+                    "unit_price",
+                    "currency_id",
+                    "agreed_delivery_location_id"
+                }:
                     new_purchess_order_dict[key]= diction[key]
+                
                 elif key in ["agreed_delivery_date","agreed_payment_date"]:
-                    new_purchess_order_dict[key] = "".join(filter(lambda char: char != "-", diction[key]))
+                    new_purchess_order_dict[key] = diction[key][0:4]+diction[key][5:7]+diction[key][8:10]
+                
                 elif key == 'created_at':
-                    new_purchess_order_dict["created_date"]= "".join(filter(lambda char: char != "-", diction[key].split()[0]))
-                    new_purchess_order_dict["created_time"]= "".join(filter(lambda char: char != "-", diction[key].split()[1]))
+                    new_purchess_order_dict["created_date"]= diction[key][0:4]+diction[key][5:7]+diction[key][8:10]
+                    new_purchess_order_dict["created_time"]= diction[key][11:]
+                
                 elif key == 'last_updated':
-                    new_purchess_order_dict["last_updated_date"]= "".join(filter(lambda char: char != "-", diction[key].split()[0]))
-                    new_purchess_order_dict["last_updated_time"]= "".join(filter(lambda char: char != "-", diction[key].split()[1]))
-            except: raise Exception
+                    new_purchess_order_dict["last_updated_date"]= diction[key][0:4]+diction[key][5:7]+diction[key][8:10]
+                    new_purchess_order_dict["last_updated_time"]= diction[key][11:]
+            
+            except Exception as e: 
+                raise ProcessingError
+        
         output_list.append(new_purchess_order_dict)
-    print(output_list)
+
     return output_list

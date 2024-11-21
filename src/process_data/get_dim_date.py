@@ -45,11 +45,11 @@ def get_date_object(date_id_string):
     year = int(date_id_string[:4])
     
     if date_id_string[4] == "0":
-        month = date_id_string[5]
+        month = int(date_id_string[5])
     else: month = int(date_id_string[4:6])
     
     if date_id_string[6] == "0":
-        day = date_id_string[7]
+        day = int(date_id_string[7])
     else: day = int(date_id_string[6:])
     
     return date(year, month, day)
