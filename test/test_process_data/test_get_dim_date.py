@@ -64,6 +64,11 @@ class TestGetDateObject:
         test_date_id = "20241119"
         assert get_date_object(test_date_id) == expected_date
 
+    def test_get_date_object_handles_single_digit_month_or_day_numbers(self):
+        expected_date = date(2024, 1, 9)
+        test_date_id = "20240109"
+        assert get_date_object(test_date_id) == expected_date
+
 
 class TestGetDimDate:
     def test_get_dim_date_returns_list_of_dicts(self):

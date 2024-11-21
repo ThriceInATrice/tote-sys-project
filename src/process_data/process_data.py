@@ -66,8 +66,7 @@ def lambda_handler(event, context):
             bytes = body.read()
             content = json.loads(bytes)
             data = content["data"]
-            print(data)
-            print(f"TYPE: {type(data)}")
+
 
             # run get functions
             processed_data = {
