@@ -93,7 +93,7 @@ def lambda_handler(event, context):
             # run get_dim_date last, with the rest of the data as the arg
             processed_data["processsed_data"]["dim_date"] = get_dim_date(processed_data["processed_data"])
 
-            #logger.info("data transformation functions have been called")
+            logger.info("data transformation functions have been called")
 
             # save data to processed_data_bucket
             processed_data_bucket = event["processed_data_bucket"]
@@ -101,12 +101,12 @@ def lambda_handler(event, context):
             s3_client.put_object(
                 Bucket=processed_data_bucket, Key=ingestion_key, Body=body
             )
-            #logger.info("processed data daves to bucket")
+            logger.info("processed data daves to bucket")
 
             # log extraction time in processed_extractions_bucket
             processed_extractions_bucket = event["processed_extractions_bucket"]
             log_extraction_time(extraction_time, processed_extractions_bucket)
-            #logger.info("extraction time logged to processed extractions bucket")
+            logger.info("extraction time logged to processed extractions bucket")
 
         except Exception as e:
             raise ProcessingError(f"lambda handler: {e}")
@@ -131,13 +131,18 @@ def get_unprocessed_extractions(event):
         # check processed_extractions_bucket
         processed_extractions_bucket = event["processed_extractions_bucket"]
         processed_extractions_key = "processed_extractions.json"
-        processed_extractions_response = client.get_object(
-            Bucket=processed_extractions_bucket, Key=processed_extractions_key
-        )
-        processed_extractions_body = processed_extractions_response["Body"]
-        processed_extractions_bytes = processed_extractions_body.read()
-        processed_extractions_dict = json.loads(processed_extractions_bytes)
-        processed_extractions = processed_extractions_dict["extraction_times"]
+        try:
+            processed_extractions_response = client.get_object(
+                Bucket=processed_extractions_bucket, Key=processed_extractions_key
+            )
+            processed_extractions_body = processed_extractions_response["Body"]
+            processed_extractions_bytes = processed_extractions_body.read()
+            processed_extractions_dict = json.loads(processed_extractions_bytes)
+            processed_extractions = processed_extractions_dict["extraction_times"]
+        # if there is no json in the process_extractions bucket, create one
+        except:
+            processed_extractions = []
+            client.put_object(Bucket=processed_extractions_bucket, Key = processed_extractions_key, Body=json.dumps({"extraction_times": []}))
 
         # raises error if there are entries in processed_extractions_bucket that are not in extraction_times_bucket
         if len([entry for entry in processed_extractions if entry not in extraction_times]):

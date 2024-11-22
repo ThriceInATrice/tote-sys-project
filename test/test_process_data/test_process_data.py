@@ -675,3 +675,31 @@ class TestGetUnprocessedData:
         #assert functions raises error correctly
         with pytest.raises(ProcessingError):
             get_unprocessed_extractions(event) == []
+    
+    def test_function_creates_empty_json_if_processed_extractions_bucket_is_empty(self):
+        #create s3 client
+        client = boto3.client("s3")
+
+        #create and populate extraction_times bucket
+        extraction_times_bucket_name = "extraction_times_bucket"
+        extraction_times_key = "extraction_times.json"
+        extraction_times_body = json.dumps({"extraction_times": ["today"]})
+        client.create_bucket(Bucket=extraction_times_bucket_name)
+        client.put_object(
+            Bucket=extraction_times_bucket_name,
+            Key=extraction_times_key,
+            Body=extraction_times_body,
+        )
+
+        #create processed_extractions bucket with no json inside
+        processed_extractions_bucket_name = "processed_extractions_bucket"
+        client.create_bucket(Bucket=processed_extractions_bucket_name)
+
+        #event contains relevant information for the function to opperate
+        event = {
+            "extraction_times_bucket": extraction_times_bucket_name,
+            "processed_extractions_bucket": processed_extractions_bucket_name,
+        }
+        
+        #assert that the function returns the string from extraction_times
+        assert get_unprocessed_extractions(event) == ["today"]
