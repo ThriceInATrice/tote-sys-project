@@ -1,4 +1,7 @@
-from src.process_data.connection import connect_to_db
+try:
+    from src.process_data.connection import connect_to_db
+except ImportError:
+    from connection import connect_to_db
 from botocore.exceptions import ParamValidationError
 from botocore.errorfactory import ClientError
 

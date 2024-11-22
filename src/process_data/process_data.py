@@ -1,4 +1,4 @@
-import boto3, json, re
+import boto3, json, re, pandas
 from datetime import datetime
 
 try:
