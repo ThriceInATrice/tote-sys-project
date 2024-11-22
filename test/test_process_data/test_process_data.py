@@ -377,6 +377,7 @@ expected_processed_data = {
             "currency_id": "2",
             "agreed_delivery_date": "20221107",
             "agreed_payment_date": "20221108",
+            "agreed_delivery_location_id": '8',
         },
         {
             "created_date": "20221103",
@@ -391,6 +392,7 @@ expected_processed_data = {
             "currency_id": "3",
             "agreed_delivery_date": "20221106",
             "agreed_payment_date": "20221107",
+            "agreed_delivery_location_id": '19',
         },
     ],
     "fact_payment": [
@@ -516,7 +518,6 @@ class TestProcessData:
         SecretString = str(json.dumps(config_dict))
         )
         #secrets_list = secrets_client.list_secrets()
-        #print('this is the stored secret>', secrets_list)
 
         #create extraction_times bucket and populate with a single extraction time
         extraction_times_bucket_name = "extraction_times_bucket"
@@ -537,7 +538,7 @@ class TestProcessData:
         ingestion_key = "/".join(
             [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
         )
-        print('this is the test ingestion key>', ingestion_key)
+
         ingestion_body = json.dumps(test_input)
         client.create_bucket(Bucket=ingestion_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
         client.put_object(
@@ -581,7 +582,9 @@ class TestProcessData:
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
-        assert processed_data == expected_processed_data
+        print(type(processed_data))
+        processed_data_dict = dict(processed_data)
+        assert processed_data_dict["processed_data"] == expected_processed_data
 
         # check extraction time is in processed_extractions bucket correctly
         # response = client.get_object(
@@ -714,7 +717,7 @@ class TestGetUnprocessedData:
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_times_body = json.dumps({"extraction_times": ["today"]})
-        client.create_bucket(Bucket=extraction_times_bucket_name)
+        client.create_bucket(Bucket=extraction_times_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
         client.put_object(
             Bucket=extraction_times_bucket_name,
             Key=extraction_times_key,
@@ -723,7 +726,7 @@ class TestGetUnprocessedData:
 
         #create processed_extractions bucket with no json inside
         processed_extractions_bucket_name = "processed_extractions_bucket"
-        client.create_bucket(Bucket=processed_extractions_bucket_name)
+        client.create_bucket(Bucket=processed_extractions_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
 
         #event contains relevant information for the function to opperate
         event = {

@@ -61,7 +61,7 @@ def lambda_handler(event, context):
         ingestion_key = "/".join(
             [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
         )
-        print('this is the ingestion key >', ingestion_key)
+
 
         try:
             s3_client = boto3.client("s3")
@@ -101,9 +101,9 @@ def lambda_handler(event, context):
 
             # save data to processed_data_bucket
             processed_data_bucket = event["processed_data_bucket"]
-            print('this is pd bucket>', processed_data_bucket)
+
             body = json.dumps(processed_data)
-            print('this is the body>', body)
+
             s3_client.put_object(
                 Bucket=processed_data_bucket, Key=ingestion_key, Body=body
             )

@@ -30,7 +30,7 @@ and return them in this form:
     "currency_id": int,
     "agreed_delivery_date": str,
     "agreed_payment_date": str,
-    "agreed_delivery_lcoation_id": str
+    "agreed_delivery_location_id": str
 }
 the final input will have an extra column called sales_record_id which is a serial,
 so we will generate it as it is input into the final database"""
