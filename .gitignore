@@ -13,3 +13,5 @@ test/test_database.sql
 requirements.txt
 !*.tftest.hcl
 .env
+test/test_process_database.ini
+test/test_process_database.sql

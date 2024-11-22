@@ -37,6 +37,7 @@ def get_dim_staff(credentials_id, staff_data):
     
     try:
 
+        #query_string = """SELECT * FROM address;"""
         query_string = """SELECT department_id, department_name, location FROM department;"""
         conn = connect_to_db(credentials_id)
         with conn.cursor() as cursor:
@@ -47,7 +48,7 @@ def get_dim_staff(credentials_id, staff_data):
         department_list = []
         for department in departments:
             department_list.append(dict(zip(departments_columns, department)))
-
+            
         processed_staff_data = []
         for row in staff_data:
             id = 'department_id'
