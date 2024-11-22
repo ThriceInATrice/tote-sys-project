@@ -32,17 +32,20 @@ except ImportError:
     from get_fact_purchase_order import get_fact_purchase_order
     from log_extraction_time import log_extraction_time
 
-# event contains details of the buckets it will use
-# event = {
-#     credentials_id: credentials_id
-#     ingestion_bucket: bucket-id,
-#     extraction_times_bucket: bucket-id,
-#     processed_data_bucket: bucket-id
-#     processed_extractions_bucket: bucket_id
-# }
 
 
 def lambda_handler(event, context):
+    """
+    event contains details of the buckets it will use
+    event = {
+    credentials_id: credentials_id
+    ingestion_bucket: bucket-id,
+    extraction_times_bucket: bucket-id,
+    processed_data_bucket: bucket-id
+    processed_extractions_bucket: bucket_id
+    }
+    
+    """
     #logger.info("transformation phase lambda has been called")
 
     credentials_id = event["credentials_id"]
@@ -58,6 +61,7 @@ def lambda_handler(event, context):
         ingestion_key = "/".join(
             [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
         )
+        print('this is the ingestion key >', ingestion_key)
 
         try:
             s3_client = boto3.client("s3")
@@ -91,13 +95,15 @@ def lambda_handler(event, context):
             }
 
             # run get_dim_date last, with the rest of the data as the arg
-            processed_data["processsed_data"]["dim_date"] = get_dim_date(processed_data["processed_data"])
+            processed_data["processed_data"]["dim_date"] = get_dim_date(processed_data["processed_data"])
 
             logger.info("data transformation functions have been called")
 
             # save data to processed_data_bucket
             processed_data_bucket = event["processed_data_bucket"]
+            print('this is pd bucket>', processed_data_bucket)
             body = json.dumps(processed_data)
+            print('this is the body>', body)
             s3_client.put_object(
                 Bucket=processed_data_bucket, Key=ingestion_key, Body=body
             )

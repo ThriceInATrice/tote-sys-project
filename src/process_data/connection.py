@@ -12,6 +12,7 @@ except ImportError:
 def get_database_creds(credentials_id):
     logger.info("get_database_creds invoked")
     client = boto3.client("secretsmanager", region_name="eu-west-2")
+    secrets_list = client.list_secrets()
 
     try:
         get_secret_value_response = client.get_secret_value(SecretId=credentials_id)
@@ -20,6 +21,7 @@ def get_database_creds(credentials_id):
         raise ClientError(f"get_database_creds: {e}")
 
     credential_dict = json.loads(get_secret_value_response["SecretString"])
+
     return credential_dict
 
 

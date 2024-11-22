@@ -34,14 +34,14 @@ def get_new_dates(data):
         for line in lines:
             for key, value in line.items():
                 if key in date_keys and value not in new_dates:
-                    print(f"{lines}, {line}, {key}, {value}")
+                    #print(f"{lines}, {line}, {key}, {value}")
                     new_dates.append(str(value))
 
     return new_dates
 
 
 def get_date_object(date_id_string):
-    print(date_id_string)
+    #print(date_id_string)
     year = int(date_id_string[:4])
     
     if date_id_string[4] == "0":
