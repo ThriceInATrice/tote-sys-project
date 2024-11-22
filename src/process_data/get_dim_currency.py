@@ -20,7 +20,7 @@ import json
 try:
     from src.process_data.processing_error import ProcessingError
 except ImportError:
-    from processing_error import processingError
+    from processing_error import ProcessingError
 
 
 def get_dim_currency(currency_data):

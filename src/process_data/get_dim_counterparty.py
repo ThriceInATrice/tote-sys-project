@@ -27,7 +27,10 @@ and return them in this form:
 }
 
 you will need to find the address information from legal_address_id - maybe do some sql on the original database to get the relevant information?'''
-from src.process_data.connection import query_database
+try:
+    from src.process_data.connection import query_database
+except ImportError:
+    from connection import query_database
 
 def get_dim_counterparty(credentials_id, input_counterparty_data):
 

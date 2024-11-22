@@ -24,4 +24,5 @@ resource "aws_s3_object" "layer_code" {
   key    = "${var.extract_lambda}/layer_content.zip"
   source = "${path.module}/../packages/layer_content.zip"
   etag   = filemd5("${path.module}/../packages/layer_content.zip")
+  depends_on = [ data.archive_file.layer ]
 }

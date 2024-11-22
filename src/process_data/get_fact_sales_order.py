@@ -35,7 +35,10 @@ and return them in this form:
 the final input will have an extra column called sales_record_id which is a serial,
 so we will generate it as it is input into the final database"""
 
-from src.process_data.processing_error import ProcessingError
+try:
+    from src.process_data.processing_error import ProcessingError
+except ImportError:
+    from processing_error import ProcessingError
 
 
 def get_fact_sales_order(purchess_order_table):
