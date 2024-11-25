@@ -1,8 +1,7 @@
 from src.load.load_error import LoadError
 from src.load.get_insert_query import get_insert_query
 from src.load.connection import connect_to_db
-import boto3, json
-import re
+import boto3, json, re
 
 
 def lambda_handler(event, context):
