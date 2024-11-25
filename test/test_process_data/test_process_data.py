@@ -512,7 +512,7 @@ class TestProcessData:
         client = boto3.client("s3")
 
         # create mock secrets manager and store database credentials
-        secrets_client = boto3.client("secretsmanager") 
+        secrets_client = boto3.client("secretsmanager", region_name = "eu-west-2") 
         response = secrets_client.create_secret(
         Name='test_db_creds',
         Description='test mock secret',
