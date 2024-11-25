@@ -12,7 +12,7 @@ env:
 
 jobs:
   terraform:
-    if: github.repository != 'ThriceInATrice/tote-sys-project'
+    if: github.repository == 'ThriceInATrice/tote-sys-project'
     name: "Terraform Plan"
     runs-on: ubuntu-latest
     permissions:
