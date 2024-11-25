@@ -6,10 +6,10 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "state-bucket-nov-11"
+    bucket         = "state-bucket-nov-11"
     dynamodb_table = "terraform-state-lock-dynamo"
-    key    = "data-engineering-project-state/terraform.tfstate"
-    region = "eu-west-2"
+    key            = "data-engineering-project-state/terraform.tfstate"
+    region         = "eu-west-2"
   }
 }
 provider "aws" {

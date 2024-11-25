@@ -52,7 +52,7 @@ psql -c 'CREATE DATABASE test_process_database;'
 psql -f test_process_database.sql
 rm test_process_database.sql
 
-pytest --log-cli-level=INFO test/test_process_data -vv 
+pytest --log-cli-level=INFO test/test_process_data -vvvrP
 rm test_process_database.ini
 
 if  [[ $PGUSER!='postgres_user' ]]; then psql -c "DROP DATABASE IF EXISTS test_process_database"; fi

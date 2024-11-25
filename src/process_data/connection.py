@@ -9,6 +9,8 @@ except ImportError:
     from logger import logger
 
 
+
+
 def get_database_creds(credentials_id):
     logger.info("get_database_creds invoked")
     client = boto3.client("secretsmanager", region_name="eu-west-2")
@@ -68,6 +70,7 @@ def query_database(credentials_id, query_string):
     if conn:
         try:
             with conn.cursor() as cursor:
+                print(cursor)
                 cursor.execute(query_string)
                 query_result = cursor.fetchall()
                 return query_result
