@@ -495,16 +495,6 @@ parser.read("test/test_process_database.ini")
 params = parser.items("postgresql_test_process_database")
 config_dict = {param[0]: param[1] for param in params}
 
-# @pytest.fixture()
-# def test_data_from_test_database():
-#     with patch("src.process_data.connection.get_database_creds") as patched_creds:
-#         patched_creds.return_value = config_dict
-#         with psycopg2.connect() as conn:
-#             with patch("src.process_data.connection.connect_to_db", conn.cursor):
-#                 yield None
-                #lambda_handler(credentials_id=None)
-
-#test_data_from_test_database
 @mock_aws
 class TestProcessData:
     def test_lambda_handler_processes_data_correctly(self):
@@ -518,7 +508,6 @@ class TestProcessData:
         Description='test mock secret',
         SecretString = str(json.dumps(config_dict))
         )
-        #secrets_list = secrets_client.list_secrets()
 
         #create extraction_times bucket and populate with a single extraction time
         extraction_times_bucket_name = "extraction_times_bucket"
@@ -583,19 +572,17 @@ class TestProcessData:
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
-        print(type(processed_data))
-        processed_data_dict = dict(processed_data)
-        assert processed_data_dict["processed_data"] == expected_processed_data
+        assert processed_data["processed_data"] == expected_processed_data
 
         # check extraction time is in processed_extractions bucket correctly
-        # response = client.get_object(
-        #     Bucket=extraction_bucket_name, Key="extraction_times.json"
-        # )
-        # extraction_body = response["Body"]
-        # extraction_bytes = extraction_body.read()
-        # extraction_dict = json.loads(extraction_bytes)
-        # extraction_list = extraction_dict["extraction_times"]
-        # assert extraction_list[-1] == extraction_time
+        response = client.get_object(
+            Bucket=processed_extractions_bucket_name, Key="processed_extractions.json"
+        )
+        processed_extractions_body = response["Body"]
+        processed_extractions_bytes = processed_extractions_body.read()
+        processed_extractions_dict = json.loads(processed_extractions_bytes)
+        processed_extractions_list = processed_extractions_dict["extraction_times"]
+        assert processed_extractions_list[-1] == extraction_time
 
 
 
