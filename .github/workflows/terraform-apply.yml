@@ -9,11 +9,11 @@ env:
   TF_CLOUD_ORGANIZATION: "totesys"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "totesys-terraform-github-action"
-  CONFIG_DIRECTORY: "./"
+  CONFIG_DIRECTORY: "./terraform"
 
 jobs:
   terraform:
-    if: github.repository != 'ThriceInATrice/tote-sys-project'
+    if: github.repository == 'ThriceInATrice/tote-sys-project'
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     permissions:
