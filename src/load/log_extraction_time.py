@@ -1,9 +1,9 @@
 import json, boto3
 
 try:
-    from src.extraction.ingestion_error import IngestionError
+    from src.load.load_error import LoadError
 except ImportError:
-    from ingestion_error import IngestionError
+    from load_error import LoadError
 
 
 def log_extraction_time(extraction_time, extraction_bucket_name):
@@ -29,4 +29,4 @@ def log_extraction_time(extraction_time, extraction_bucket_name):
         )
 
     except Exception as e:
-        raise IngestionError(f"log_extraction: {e}")
+        raise LoadError(f"log_extraction: {e}")

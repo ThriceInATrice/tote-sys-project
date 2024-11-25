@@ -1,13 +1,22 @@
 from src.load.load_error import LoadError
 from src.load.get_insert_query import get_insert_query
 from src.load.connection import connect_to_db
+from src.load.log_extraction_time import log_extraction_time
+from src.load.logger import logger
 import boto3, json, re
 
 
 def lambda_handler(event, context):
+    """
+    this function checks the list of processed extractions against those that
+    have been loaded into the warehouse, generates the sql code to insert the 
+    unloaded data, runs that code to insert the data into the warehouse, then
+    records the data as loaded
+    """
+    
     warehouse_credentials_id = event["warehouse_credentials_id"]
     processed_data_bucket = event["processed_data_bucket"]
-    loaded_data_bucket = event["loaded_data_bucket"]
+    loaded_extractions_bucket = event["loaded_extractions_bucket"]
 
     # check for unloaded data
     unloaded_data = get_unloaded_data(event)
@@ -21,6 +30,8 @@ def lambda_handler(event, context):
 
         try:
             s3_client = boto3.client("s3")
+            
+            #fetch processed data as unloaded data
             response = s3_client.get_object(Bucket=processed_data_bucket, Key=key)
             body = response["Body"]
             bytes = body.read()
@@ -41,8 +52,10 @@ def lambda_handler(event, context):
                     )
                 )
 
-            # record data as loaded
 
+            # record data as loaded
+            log_extraction_time(extraction_time, loaded_extractions_bucket)
+            logger.info("loaded extraction time recorded")
 
         except Exception as e:
             raise LoadError(f"load_data: {e}")

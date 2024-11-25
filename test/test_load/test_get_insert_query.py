@@ -17,6 +17,7 @@ INSERT INTO test_table (column_1, column_2)
 VALUES
 (1, 'hello world')
 ;
+
 """
         assert get_insert_query(test_table_name, test_row_list) == expected_return
 
@@ -43,5 +44,6 @@ VALUES
 (2, 'hello worm'),
 (3, 'print(hello world)')
 ;
+
 """
         assert get_insert_query(test_table_name, test_row_list) == expected_return
