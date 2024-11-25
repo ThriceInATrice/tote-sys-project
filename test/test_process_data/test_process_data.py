@@ -3,7 +3,7 @@ from src.process_data.processing_error import ProcessingError
 import pytest, boto3, json, re
 from moto import mock_aws
 from unittest.mock import patch
-import psycopg2 
+import psycopg2
 from configparser import ConfigParser
 
 test_input = {
@@ -251,7 +251,6 @@ test_input = {
 }
 
 
-
 expected_processed_data = {
     "dim_staff": [
         {
@@ -329,7 +328,30 @@ expected_processed_data = {
         {"payment_type_id": "1", "payment_type_name": "SALES_RECEIPT"},
         {"payment_type_id": "2", "payment_type_name": "SALES_REFUND"},
     ],
-    "dim_counterparty": [],
+    "dim_counterparty": [
+        {
+            "counterparty_id": 1,
+            "counterparty_legal_name": "Fahey and Sons",
+            "counterparty_legal_address_line_1": "605 Haskell Trafficway",
+            "counterparty_legal_address_line_2": "Axel Freeway",
+            "counterparty_legal_district": "None",
+            "counterparty_legal_city": "East Bobbie",
+            "counterparty_legal_postal_code": "88253-4257",
+            "counterparty_legal_country": "Heard Island and McDonald Islands",
+            "counterparty_legal_phone_number": "9687 937447",
+        },
+        {
+            "counterparty_id": 2,
+            "counterparty_legal_name": "Leannon, Predovic and Morar",
+            "counterparty_legal_address_line_1": "079 Horacio Landing",
+            "counterparty_legal_address_line_2": "None",
+            "counterparty_legal_district": "None",
+            "counterparty_legal_city": "Utica",
+            "counterparty_legal_postal_code": "93045",
+            "counterparty_legal_country": "Austria",
+            "counterparty_legal_phone_number": "7772 084705",
+        },
+    ],
     "fact_purchase_order": [
         {
             "purchase_order_id": "1",
@@ -378,7 +400,7 @@ expected_processed_data = {
             "currency_id": "2",
             "agreed_delivery_date": "20221107",
             "agreed_payment_date": "20221108",
-            "agreed_delivery_location_id": '8',
+            "agreed_delivery_location_id": "8",
         },
         {
             "created_date": "20221103",
@@ -393,7 +415,7 @@ expected_processed_data = {
             "currency_id": "3",
             "agreed_delivery_date": "20221106",
             "agreed_payment_date": "20221107",
-            "agreed_delivery_location_id": '19',
+            "agreed_delivery_location_id": "19",
         },
     ],
     "fact_payment": [
@@ -495,33 +517,37 @@ parser.read("test/test_process_database.ini")
 params = parser.items("postgresql_test_process_database")
 config_dict = {param[0]: param[1] for param in params}
 
+
 @mock_aws
 class TestProcessData:
     def test_lambda_handler_processes_data_correctly(self):
-        #create s3 client
+        # create s3 client
         client = boto3.client("s3")
 
         # create mock secrets manager and store database credentials
-        secrets_client = boto3.client("secretsmanager", region_name = "eu-west-2") 
+        secrets_client = boto3.client("secretsmanager", region_name="eu-west-2")
         response = secrets_client.create_secret(
-        Name='test_db_creds',
-        Description='test mock secret',
-        SecretString = str(json.dumps(config_dict))
+            Name="test_db_creds",
+            Description="test mock secret",
+            SecretString=str(json.dumps(config_dict)),
         )
 
-        #create extraction_times bucket and populate with a single extraction time
+        # create extraction_times bucket and populate with a single extraction time
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_time = "2024-11-20 15:27:20.495299"
         extraction_times_body = json.dumps({"extraction_times": [extraction_time]})
-        client.create_bucket(Bucket=extraction_times_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=extraction_times_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=extraction_times_bucket_name,
             Key=extraction_times_key,
             Body=extraction_times_body,
         )
 
-        #create ingestion_bucket and populate with test_input data
+        # create ingestion_bucket and populate with test_input data
         # key is generated from the extraction time in the same way as in extract.py
         ingestion_bucket_name = "ingestion_bucket"
         date_split = re.findall("[0-9]+", extraction_time)
@@ -530,7 +556,10 @@ class TestProcessData:
         )
 
         ingestion_body = json.dumps(test_input)
-        client.create_bucket(Bucket=ingestion_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=ingestion_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=ingestion_bucket_name,
             Key=ingestion_key,
@@ -541,7 +570,10 @@ class TestProcessData:
         processed_extractions_bucket_name = "processed_extractions_bucket"
         processed_extractions_key = "processed_extractions.json"
         processed_extractions_body = json.dumps({"extraction_times": []})
-        client.create_bucket(Bucket=processed_extractions_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=processed_extractions_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=processed_extractions_bucket_name,
             Key=processed_extractions_key,
@@ -550,25 +582,30 @@ class TestProcessData:
 
         # create processed_data bucket for the data to be placed into
         processed_data_bucket_name = "processed_data_bucket"
-        client.create_bucket(Bucket=processed_data_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=processed_data_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
 
         # lambda_handler is called with json of relevant information
-        # context is a required field in aws lambda, but can be an empty json or dict 
+        # context is a required field in aws lambda, but can be an empty json or dict
         event = {
             "credentials_id": "test_db_creds",
             "ingestion_bucket": "ingestion_bucket",
             "extraction_times_bucket": "extraction_times_bucket",
             "processed_data_bucket": "processed_data_bucket",
-            "processed_extractions_bucket": "processed_extractions_bucket"
+            "processed_extractions_bucket": "processed_extractions_bucket",
         }
         context = {}
 
         # call lambda handler
-        lambda_handler(event, context)    
+        lambda_handler(event, context)
 
         # check processed_data bucket to see if the data is present and processed correctly
         # this uses the same key as in the ingestion bucket so that we know which data it has come from
-        response = client.get_object(Bucket=processed_data_bucket_name, Key=ingestion_key)
+        response = client.get_object(
+            Bucket=processed_data_bucket_name, Key=ingestion_key
+        )
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
@@ -584,143 +621,180 @@ class TestProcessData:
         processed_extractions_list = processed_extractions_dict["extraction_times"]
         assert processed_extractions_list[-1] == extraction_time
 
+    # def test_process_data_can_handle_multiple_unprocessed_extractions(self):
 
 
 @mock_aws
 class TestGetUnprocessedData:
-  
+
     def test_function_returns_times_that_have_not_been_processed(self):
-        #create s3 client
+        # create s3 client
         client = boto3.client("s3")
 
-        #create and populate extraction_times bucket
+        # create and populate extraction_times bucket
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_times_body = json.dumps({"extraction_times": ["today"]})
-        client.create_bucket(Bucket=extraction_times_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=extraction_times_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=extraction_times_bucket_name,
             Key=extraction_times_key,
             Body=extraction_times_body,
         )
 
-        #create and populate processed_extractions bucket
+        # create and populate processed_extractions bucket
         processed_extractions_bucket_name = "processed_extractions_bucket"
         processed_extractions_key = "processed_extractions.json"
         processed_extractions_body = json.dumps({"extraction_times": []})
-        client.create_bucket(Bucket=processed_extractions_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=processed_extractions_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=processed_extractions_bucket_name,
             Key=processed_extractions_key,
             Body=processed_extractions_body,
         )
-        
-        #event contains relevant information for the function to opperate
+
+        # event contains relevant information for the function to opperate
         event = {
-            "extraction_times_bucket": extraction_times_bucket_name,
-            "processed_extractions_bucket": processed_extractions_bucket_name,
+            "credentials_id": "test_db_creds",
+            "ingestion_bucket": "ingestion_bucket",
+            "extraction_times_bucket": "extraction_times_bucket",
+            "processed_data_bucket": "processed_data_bucket",
+            "processed_extractions_bucket": "processed_extractions_bucket",
         }
-        
-        #assert that the function returns the string from extraction_times
+
+        # assert that the function returns the string from extraction_times
         assert get_unprocessed_extractions(event) == ["today"]
-    
+
     def test_function_returns_empty_list_when_all_times_have_been_processed(self):
-        #create s3 client
+        # create s3 client
         client = boto3.client("s3")
 
-        #create and populate extraction_times bucket
+        # create and populate extraction_times bucket
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_times_body = json.dumps({"extraction_times": ["today"]})
-        client.create_bucket(Bucket=extraction_times_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=extraction_times_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=extraction_times_bucket_name,
             Key=extraction_times_key,
             Body=extraction_times_body,
         )
 
-        #create and populate processed_extractions bucket
+        # create and populate processed_extractions bucket
         processed_extractions_bucket_name = "processed_extractions_bucket"
         processed_extractions_key = "processed_extractions.json"
         processed_extractions_body = json.dumps({"extraction_times": ["today"]})
-        client.create_bucket(Bucket=processed_extractions_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=processed_extractions_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=processed_extractions_bucket_name,
             Key=processed_extractions_key,
             Body=processed_extractions_body,
         )
-        
-        #event contains relevant information for the function to opperate
+
+        # event contains relevant information for the function to opperate
         event = {
-            "extraction_times_bucket": extraction_times_bucket_name,
-            "processed_extractions_bucket": processed_extractions_bucket_name,
+            "credentials_id": "test_db_creds",
+            "ingestion_bucket": "ingestion_bucket",
+            "extraction_times_bucket": "extraction_times_bucket",
+            "processed_data_bucket": "processed_data_bucket",
+            "processed_extractions_bucket": "processed_extractions_bucket",
         }
-        
-        #assert that the function returns an empty list
+
+        # assert that the function returns an empty list
         assert get_unprocessed_extractions(event) == []
 
     def test_function_raises_error_if_there_are_unexpected_entries_in_processed_extractions(
         self,
     ):
-        #create s3 client
+        # create s3 client
         client = boto3.client("s3")
 
-        #create and populate extraction_times bucket
+        # create and populate extraction_times bucket
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_times_body = json.dumps({"extraction_times": []})
-        client.create_bucket(Bucket=extraction_times_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=extraction_times_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=extraction_times_bucket_name,
             Key=extraction_times_key,
             Body=extraction_times_body,
         )
 
-        #create and populate processed_extractions bucket
+        # create and populate processed_extractions bucket
         processed_extractions_bucket_name = "processed_extractions_bucket"
         processed_extractions_key = "processed_extractions.json"
         processed_extractions_body = json.dumps({"extraction_times": ["today"]})
-        client.create_bucket(Bucket=processed_extractions_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=processed_extractions_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=processed_extractions_bucket_name,
             Key=processed_extractions_key,
             Body=processed_extractions_body,
         )
-        
-        #event contains relevant information for the function to opperate
+
+        # event contains relevant information for the function to opperate
         event = {
-            "extraction_times_bucket": extraction_times_bucket_name,
-            "processed_extractions_bucket": processed_extractions_bucket_name,
+            "credentials_id": "test_db_creds",
+            "ingestion_bucket": "ingestion_bucket",
+            "extraction_times_bucket": "extraction_times_bucket",
+            "processed_data_bucket": "processed_data_bucket",
+            "processed_extractions_bucket": "processed_extractions_bucket",
         }
 
-        #assert functions raises error correctly
+        # assert functions raises error correctly
         with pytest.raises(ProcessingError):
             get_unprocessed_extractions(event) == []
-    
+
     def test_function_creates_empty_json_if_processed_extractions_bucket_is_empty(self):
-        #create s3 client
+        # create s3 client
         client = boto3.client("s3")
 
-        #create and populate extraction_times bucket
+        # create and populate extraction_times bucket
         extraction_times_bucket_name = "extraction_times_bucket"
         extraction_times_key = "extraction_times.json"
         extraction_times_body = json.dumps({"extraction_times": ["today"]})
-        client.create_bucket(Bucket=extraction_times_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=extraction_times_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         client.put_object(
             Bucket=extraction_times_bucket_name,
             Key=extraction_times_key,
             Body=extraction_times_body,
         )
 
-        #create processed_extractions bucket with no json inside
+        # create processed_extractions bucket with no json inside
         processed_extractions_bucket_name = "processed_extractions_bucket"
-        client.create_bucket(Bucket=processed_extractions_bucket_name, CreateBucketConfiguration={'LocationConstraint': 'eu-west-2'})
+        client.create_bucket(
+            Bucket=processed_extractions_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
 
-        #event contains relevant information for the function to opperate
+        # event contains relevant information for the function to opperate
         event = {
-            "extraction_times_bucket": extraction_times_bucket_name,
-            "processed_extractions_bucket": processed_extractions_bucket_name,
+            "credentials_id": "test_db_creds",
+            "ingestion_bucket": "ingestion_bucket",
+            "extraction_times_bucket": "extraction_times_bucket",
+            "processed_data_bucket": "processed_data_bucket",
+            "processed_extractions_bucket": "processed_extractions_bucket",
         }
-        
-        #assert that the function returns the string from extraction_times
+
+        # assert that the function returns the string from extraction_times
         assert get_unprocessed_extractions(event) == ["today"]

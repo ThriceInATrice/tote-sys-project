@@ -32,9 +32,11 @@ INSERT INTO address
 (address_id, address_line_1, address_line_2, district, city, postal_code, country, phone)
 VALUES 
 (1, '6826 Herzog Via', 'None', 'Avon', 'New Patienceburgh', '28441', 'Turkey', '1803 637401'), 
-(2, '179 Alexie Cliffs', 'None', 'None', 'Aliso Viejo', '99305-7380', 'San Marino', '9621 880720')
-
-RETURNING *;
+(2, '179 Alexie Cliffs', 'None', 'None', 'Aliso Viejo', '99305-7380', 'San Marino', '9621 880720'),
+(28, '079 Horacio Landing', 'None', 'None', 'Utica', '93045', 'Austria', '7772 084705'),
+(15, '605 Haskell Trafficway', 'Axel Freeway', 'None', 'East Bobbie', '88253-4257', 'Heard Island and McDonald Islands', '9687 937447')
+RETURNING *
+;
 
 EOM
 
