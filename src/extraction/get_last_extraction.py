@@ -8,9 +8,19 @@ except ImportError:
     from logger import logger
 
 
-def get_last_extraction(bucket_name):
+def get_last_extraction(extraction_times_bucket_name):
+    """
+    this function takes the name of the extraction_times bucket
+    it returns the last element in the list of extraction times,
+    which should be the most recent extraction time
+    if the list is empty, it returns None
+
+    if there is no extraction_times json in the bucket
+    then one is created, in order to seed the bucket the first time the function is called
+    """
+
     logger.info("get_last_extraction invoked")
-    
+
     try:
         client = boto3.client("s3")
     except Exception as e:
@@ -18,27 +28,24 @@ def get_last_extraction(bucket_name):
 
     try:
         extraction_times_key = "extraction_times.json"
-        response = client.get_object(Bucket=bucket_name, Key=extraction_times_key)
+        response = client.get_object(
+            Bucket=extraction_times_bucket_name, Key=extraction_times_key
+        )
         body = response["Body"]
         bytes = body.read()
         extraction_times_dict = json.loads(bytes)
         extraction_times = extraction_times_dict["extraction_times"]
 
         return None if extraction_times == [] else extraction_times[-1]
-    
+
     except:
         try:
             new_body = json.dumps({"extraction_times": []})
             client.put_object(
-                Bucket=bucket_name, Key=extraction_times_key, Body=new_body
+                Bucket=extraction_times_bucket_name,
+                Key=extraction_times_key,
+                Body=new_body,
             )
             return None
         except Exception as e:
             raise IngestionError(f"get_last_extraction: {e}")
-
-
-
-
-# datetime objects can be made from datetime.datetime() on a series of integers
-# corresponding to string of a datetime object
-# so a string can be returned to a datetime object in this manner when comparison is needed

@@ -12,9 +12,23 @@ except ImportError:
 
 
 def get_database_creds(credentials_id):
+    """
+    this function takes the name of a secret in aws secrets manager
+    and returns a dict containing that secret, which should be database credentials
+
+    the credentials are in this form:
+        {
+            "cohort_id": str,
+            "user": str,
+            "password": str,
+            "host": str,
+            "database": str,
+            "port": int,
+        }
+    """
+
     logger.info("get_database_creds invoked")
-    client = boto3.client("secretsmanager", region_name="eu-west-2")
-    #secrets_list = client.list_secrets()
+    client = boto3.client(service_name="secretsmanager", region_name="eu-west-2")
 
     try:
         get_secret_value_response = client.get_secret_value(SecretId=credentials_id)
@@ -23,38 +37,26 @@ def get_database_creds(credentials_id):
         raise ClientError(f"get_database_creds: {e}")
 
     credential_dict = json.loads(get_secret_value_response["SecretString"])
-    print(credential_dict)
     return credential_dict
 
 
-# credentials are of the form:
-# {
-#     "cohort_id": str,
-#     "user": str,
-#     "password": str,
-#     "host": str,
-#     "database": str,
-#     "port": int,
-# }
-
-
 def connect_to_db(credentials_id):
+    """
+    this function takes as an argument the name of a secret in the aws secrets manager
+    that should contain the credentials to a database
+    the function uses these credentials to create a database connection using psycopg2
+    and returns that connection object
+    """
 
     database_creds = get_database_creds(credentials_id)
 
-    ENDPOINT = database_creds["host"]
-    PORT = database_creds["port"]
-    USER = database_creds["user"]
-    DBNAME = database_creds["database"]
-    PASSWORD = database_creds["password"]
-
     try:
         conn = psycopg2.connect(
-            host=ENDPOINT,
-            port=PORT,
-            database=DBNAME,
-            user=USER,
-            password=PASSWORD,
+            host=database_creds["host"],
+            port=database_creds["port"],
+            database=database_creds["database"],
+            user=database_creds["user"],
+            password=database_creds["password"],
             sslrootcert="SSLCERTIFICATE",
         )
         return conn
@@ -62,17 +64,3 @@ def connect_to_db(credentials_id):
     except Exception as e:
         logger.debug("Houston, we have a %s", "thorny problem", exc_info=1)
         raise ProcessingError(f"connect_to_db: {e}")
-
-def query_database(credentials_id, query_string):
-
-    conn = connect_to_db(credentials_id)
-
-    if conn:
-        try:
-            with conn.cursor() as cursor:
-                print(cursor)
-                cursor.execute(query_string)
-                query_result = cursor.fetchall()
-                return query_result
-        except:
-            raise Exception

@@ -19,6 +19,7 @@ def test_func_returns_list_of_dictionaries():
     assert isinstance(result, list)
     assert all([isinstance(item, dict) for item in result])
 
+
 def test_func_processes_data_correctly():
     test_data = [
         {
@@ -66,6 +67,7 @@ def test_func_processes_data_correctly():
     ]
 
     assert get_dim_counterparty(DB_CREDENTIALS_ID, test_data) == expected_return
+
 
 def test_func_raises_error_correctly_when_connection_fails():
     with pytest.raises(ProcessingError):

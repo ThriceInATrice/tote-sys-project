@@ -24,19 +24,6 @@ def test_data_from_test_database():
                 yield (get_new_data_from_database(credentials_id=None))
 
 
-# @mock_aws
-# def test_boto3_s3():
-#     bucket_name = "test_bucket"
-#     object_key = "test_object"
-#     test_body = "test_body"
-
-#     client = boto3.client("s3", region_name='eu-west-2')
-#     client.create_bucket(Bucket=bucket_name)
-#     client.put_object(Bucket=bucket_name, Key=object_key, Body=test_body)
-
-#     print(client.list_objects_v2(Bucket=bucket_name))
-
-
 @mock_aws
 def test_extract_works_correctly(test_data_from_test_database):
     # create ingestion_bucket and extraciton_times bucket
