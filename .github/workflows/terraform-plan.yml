@@ -8,7 +8,7 @@ env:
     TF_CLOUD_ORGANIZATION: "totesys"
     TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
     TF_WORKSPACE: "totesys-terraform-github-action"
-    CONFIG_DIRECTORY: "./terraform"
+    CONFIG_DIRECTORY: "./"
 
 jobs:
   terraform_setup:
@@ -37,7 +37,6 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-
 
 
   terraform_plan:
