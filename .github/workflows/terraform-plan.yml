@@ -48,7 +48,7 @@ jobs:
     steps:
       - name : terraform plan  
         id : plan
-        run: terraform -chdir=terraform plan
+        run: terraform plan
 
 
 #   terraform_plan:
