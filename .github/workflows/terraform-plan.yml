@@ -37,7 +37,16 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-      - name: terraform plan
+       
+  terraform_plan: 
+    needs: terraform_setup     
+    name: "terraform plan"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name : terraform plan  
         id : plan
         run: terraform -chdir=terraform plan
 
