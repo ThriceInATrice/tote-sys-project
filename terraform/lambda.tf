@@ -16,14 +16,14 @@ resource "aws_lambda_function" "extract_lambda" {
 
 data "archive_file" "extract_lambda" {
   type        = "zip"
-  source_dir  = "${path.module}/../src/extraction/"
-  output_path = "${path.module}/../packages/ingestion_lambda/function.zip"
+  source_dir  = "${path.root}/src/extraction/"
+  output_path = "${path.root}/packages/ingestion_lambda/function.zip"
 }
 
 data "archive_file" "layer" {
   type        = "zip"
-  source_dir  = "${path.module}/layer_files/"
-  output_path = "${path.module}/../packages/layer_content.zip"
+  source_dir  = "${path.root}/terraform/layer_files/"
+  output_path = "${path.root}/packages/layer_content.zip"
 }
 
 resource "aws_lambda_layer_version" "psycopg2_pandas_layer" {
@@ -56,6 +56,6 @@ resource "aws_lambda_function" "transform_lambda" {
 
 data "archive_file" "transform_lambda" {
   type        = "zip"
-  source_dir  = "${path.module}/../src/process_data/"
-  output_path = "${path.module}/../packages/transform_lambda/function.zip"
+  source_dir  = "${path.root}/src/process_data/"
+  output_path = "${path.root}/packages/transform_lambda/function.zip"
 }
