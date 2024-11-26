@@ -46,22 +46,21 @@ def lambda_handler(event, context):
     }
     
     """
-    #logger.info("transformation phase lambda has been called")
-
+    logger.info("transformation phase lambda has been called")
     credentials_id = event["credentials_id"]
     ingestion_bucket = event["ingestion_bucket"]
 
     # run get_unprocessed_extractions to get unprocessed entries
     unprocessed_extractions = get_unprocessed_extractions(event)
-    #logger.info("get_unprocessed_extractions has been called")
+    logger.info("get_unprocessed_extractions has been called")
 
-    # for each unprocessed entry:
+    # for each unprocessed entry, generate a new dict with the data
+    # in the format required for the data warehouse
     for extraction_time in unprocessed_extractions:
         date_split = re.findall("[0-9]+", extraction_time)
         ingestion_key = "/".join(
             [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
         )
-
 
         try:
             s3_client = boto3.client("s3")

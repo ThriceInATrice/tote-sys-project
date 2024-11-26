@@ -1,6 +1,8 @@
 import os
 import json
+import pytest
 from src.process_data.get_dim_counterparty import get_dim_counterparty
+from src.process_data.processing_error import ProcessingError
 
 DB_CREDENTIALS_ID = os.getenv("DB_CREDENTIALS_ID")
 
@@ -12,22 +14,12 @@ test_counterparty = data["counterparty"]
 test_address = data["address"]
 
 
-def test_func_returns_list():
+def test_func_returns_list_of_dictionaries():
     result = get_dim_counterparty(DB_CREDENTIALS_ID, test_counterparty)
     assert isinstance(result, list)
-
-
-def test_list_contains_items():
-    result = get_dim_counterparty(DB_CREDENTIALS_ID, test_counterparty)
-    assert len(result) > 0
-
-
-def test_list_contains_dict():
-    result = get_dim_counterparty(DB_CREDENTIALS_ID, test_counterparty)
     assert all([isinstance(item, dict) for item in result])
 
-
-def test_function_processes_data_correctly():
+def test_func_processes_data_correctly():
     test_data = [
         {
             "counterparty_id": "1",
@@ -73,5 +65,8 @@ def test_function_processes_data_correctly():
         },
     ]
 
-    result = get_dim_counterparty(DB_CREDENTIALS_ID, test_data)
-    assert result == expected_return
+    assert get_dim_counterparty(DB_CREDENTIALS_ID, test_data) == expected_return
+
+def test_func_raises_error_correctly_when_connection_fails():
+    with pytest.raises(ProcessingError):
+        get_dim_counterparty("wrong credentials", [])

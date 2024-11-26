@@ -37,7 +37,13 @@ except ImportError:
 
 
 def get_dim_counterparty(credentials_id, input_counterparty_data):
-    print(f"CREDENTIALS {credentials_id}")
+    """
+    this function takes a list of dictionaries representing rows in the origin datebase
+    and transforms them to the appropriate form for the data warehouse
+    to do so it need to connection to the origin database to find address data
+    then it calls get_counterparty_dict to transform each dictionary
+    """
+
     try:
         conn = connect_to_db(credentials_id)
         with conn.cursor() as cursor:
@@ -56,23 +62,24 @@ def get_dim_counterparty(credentials_id, input_counterparty_data):
 
 
 def get_counterparty_dict(counterparty, addresses):
-    try:    
-        address = [
-            address
-            for address in addresses
-            if int(address["address_id"]) == int(counterparty["legal_address_id"])
-        ][0]
+    """
+    this function transforms a dictionary representing a line from the counterparty table in the origin database
+    into a dictionary representing the same data in the data warehouse
+    """
+    address = [
+        address
+        for address in addresses
+        if int(address["address_id"]) == int(counterparty["legal_address_id"])
+    ][0]
 
-        return {
-            "counterparty_id": int(counterparty["counterparty_id"]),
-            "counterparty_legal_name": counterparty["counterparty_legal_name"],
-            "counterparty_legal_address_line_1": address["address_line_1"],
-            "counterparty_legal_address_line_2": address["address_line_2"],
-            "counterparty_legal_district": address["district"],
-            "counterparty_legal_city": address["city"],
-            "counterparty_legal_postal_code": address["postal_code"],
-            "counterparty_legal_country": address["country"],
-            "counterparty_legal_phone_number": address["phone"],
-        }
-    except Exception as e:
-        raise ProcessingError(f"get_counterparty_dict: {e}")
+    return {
+        "counterparty_id": int(counterparty["counterparty_id"]),
+        "counterparty_legal_name": counterparty["counterparty_legal_name"],
+        "counterparty_legal_address_line_1": address["address_line_1"],
+        "counterparty_legal_address_line_2": address["address_line_2"],
+        "counterparty_legal_district": address["district"],
+        "counterparty_legal_city": address["city"],
+        "counterparty_legal_postal_code": address["postal_code"],
+        "counterparty_legal_country": address["country"],
+        "counterparty_legal_phone_number": address["phone"],
+    }

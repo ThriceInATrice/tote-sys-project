@@ -3,8 +3,8 @@ from src.process_data.processing_error import ProcessingError
 import pytest, boto3, json, re
 from moto import mock_aws
 from unittest.mock import patch
-import psycopg2
 from configparser import ConfigParser
+from pprint import pprint
 
 test_input = {
     "extraction_time": "2024-11-20 15:27:20.495299",
@@ -619,9 +619,255 @@ class TestProcessData:
         processed_extractions_bytes = processed_extractions_body.read()
         processed_extractions_dict = json.loads(processed_extractions_bytes)
         processed_extractions_list = processed_extractions_dict["extraction_times"]
-        assert processed_extractions_list[-1] == extraction_time
+        assert processed_extractions_list == [extraction_time]
 
-    # def test_process_data_can_handle_multiple_unprocessed_extractions(self):
+    def test_process_data_can_handle_multiple_unprocessed_extractions(self):
+        # make 2 dictionaries from the larger test dictionaries above
+        test_data_1 = {
+            "data": {key: [value[0]] for key, value in test_input["data"].items()}
+        }
+        test_data_2 = {
+            "data": {key: [value[1]] for key, value in test_input["data"].items()}
+        }
+        expected_data_1 = {
+            key: [value[0]]
+            for key, value in expected_processed_data.items()
+        }
+        expected_data_1["dim_date"] = [
+            {
+                'date_id': 20221103,
+                'day': 3,
+                'day_name': 'Thursday',
+                'day_of_week': 4,
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+            {
+                'date_id': 20221109,
+                'day': 9,
+                'day_name': 'Wednesday',
+                'day_of_week': 3,
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+            {
+                'date_id': 20221107,
+                'day': 7,
+                'day_name': 'Monday',
+                'day_of_week': 1,
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+            {
+                'date_id': 20221108,
+                'day': 8,
+                'day_name': 'Tuesday',
+                'day_of_week': 2,
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+            {
+                'date_id': 20221104,
+                'day': 4,
+                'day_name': 'Friday',
+                'day_of_week': 5,
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+        ]
+        
+        expected_data_2 = {
+            key: [value[1]]
+            for key, value in expected_processed_data.items()
+        }
+        expected_data_2["dim_date"] = [
+            {
+                'date_id': 20221103,
+                'day': 3,
+                'day_name': 'Thursday',
+                'day_of_week': 4,           
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+            {
+                'date_id': 20221104,
+                'day': 4,
+                'day_name': 'Friday',
+                'day_of_week': 5,
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+            {
+                'date_id': 20221107,
+                'day': 7,
+                'day_name': 'Monday',
+                'day_of_week': 1,
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+            {
+                'date_id': 20221106,
+                'day': 6,
+                'day_name': 'Sunday',
+                'day_of_week': 0,
+                'month': 11,
+                'month_name': 'November',
+                'quarter': 4,
+                'year': 2022,
+            },
+        ]
+        
+        # create s3 client
+        client = boto3.client("s3")
+
+        # create mock secrets manager and store database credentials
+        secrets_client = boto3.client("secretsmanager", region_name="eu-west-2")
+        response = secrets_client.create_secret(
+            Name="test_db_creds",
+            Description="test mock secret",
+            SecretString=str(json.dumps(config_dict)),
+        )
+
+        # create extraction_times bucket and populate with 2 extraction times
+        extraction_times_bucket_name = "extraction_times_bucket"
+        extraction_times_key = "extraction_times.json"
+        extraction_time_1 = "2024-11-20 15:00:00.000000"
+        extraction_time_2 = "2024-11-21 15:00:00.000000"
+        extraction_times_body = json.dumps(
+            {"extraction_times": [extraction_time_1, extraction_time_2]}
+        )
+        client.create_bucket(
+            Bucket=extraction_times_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
+        client.put_object(
+            Bucket=extraction_times_bucket_name,
+            Key=extraction_times_key,
+            Body=extraction_times_body,
+        )
+
+        # create ingestion_bucket and populate with test_data_1 and test_data_2
+        # key is generated from the extraction time in the same way as in extract.py
+        ingestion_bucket_name = "ingestion_bucket"
+        client.create_bucket(
+            Bucket=ingestion_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
+
+        date_split_1 = re.findall("[0-9]+", extraction_time_1)
+        ingestion_key_1 = "/".join(
+            [
+                date_split_1[0],
+                date_split_1[1],
+                date_split_1[2],
+                extraction_time_1 + ".json",
+            ]
+        )
+        ingestion_body_1 = json.dumps(test_data_1)
+        client.put_object(
+            Bucket=ingestion_bucket_name,
+            Key=ingestion_key_1,
+            Body=ingestion_body_1,
+        )
+
+        date_split_2 = re.findall("[0-9]+", extraction_time_2)
+        ingestion_key_2 = "/".join(
+            [
+                date_split_2[0],
+                date_split_2[1],
+                date_split_2[2],
+                extraction_time_2 + ".json",
+            ]
+        )
+        ingestion_body_2 = json.dumps(test_data_2)
+        client.put_object(
+            Bucket=ingestion_bucket_name,
+            Key=ingestion_key_2,
+            Body=ingestion_body_2,
+        )
+
+        # create processed_extractions bucket and populate with an empty list
+        processed_extractions_bucket_name = "processed_extractions_bucket"
+        processed_extractions_key = "processed_extractions.json"
+        processed_extractions_body = json.dumps({"extraction_times": []})
+        client.create_bucket(
+            Bucket=processed_extractions_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
+        client.put_object(
+            Bucket=processed_extractions_bucket_name,
+            Key=processed_extractions_key,
+            Body=processed_extractions_body,
+        )
+
+        # create processed_data bucket for the data to be placed into
+        processed_data_bucket_name = "processed_data_bucket"
+        client.create_bucket(
+            Bucket=processed_data_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
+
+        # lambda_handler is called with json of relevant information
+        # context is a required field in aws lambda, but can be an empty json or dict
+        event = {
+            "credentials_id": "test_db_creds",
+            "ingestion_bucket": "ingestion_bucket",
+            "extraction_times_bucket": "extraction_times_bucket",
+            "processed_data_bucket": "processed_data_bucket",
+            "processed_extractions_bucket": "processed_extractions_bucket",
+        }
+        context = {}
+
+        # call lambda handler
+        lambda_handler(event, context)
+
+        # check processed_data bucket to see if the data is present and processed correctly
+        # this uses the same key as in the ingestion bucket so that we know which data it has come from
+        response = client.get_object(
+            Bucket=processed_data_bucket_name, Key=ingestion_key_1
+        )
+        processed_data_body = response["Body"]
+        processed_data_bytes = processed_data_body.read()
+        processed_data = json.loads(processed_data_bytes)
+        pprint(f"PROCESSED DATA: {processed_data}")
+        pprint(f"EXPECTED DATA: {expected_data_1}")
+        assert processed_data["processed_data"] == expected_data_1
+
+        response = client.get_object(
+            Bucket=processed_data_bucket_name, Key=ingestion_key_2
+        )
+        processed_data_body = response["Body"]
+        processed_data_bytes = processed_data_body.read()
+        processed_data = json.loads(processed_data_bytes)
+        pprint(f"PROCESSED DATA: {processed_data}")
+        pprint(f"EXPECTED DATA: {expected_data_2}")
+        assert processed_data["processed_data"] == expected_data_2
+
+        # check extraction time is in processed_extractions bucket correctly
+        response = client.get_object(
+            Bucket=processed_extractions_bucket_name, Key="processed_extractions.json"
+        )
+        processed_extractions_body = response["Body"]
+        processed_extractions_bytes = processed_extractions_body.read()
+        processed_extractions_dict = json.loads(processed_extractions_bytes)
+        processed_extractions_list = processed_extractions_dict["extraction_times"]
+        assert processed_extractions_list == [extraction_time_1, extraction_time_2]
 
 
 @mock_aws
