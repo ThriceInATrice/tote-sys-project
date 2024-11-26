@@ -1,10 +1,8 @@
 import boto3
 import json
 import re
-import os
 import pandas as pd
 from datetime import datetime
-import pyarrow
 
 try:
     from src.process_data.logger import logger
@@ -36,6 +34,7 @@ except ImportError:
     from get_fact_payment import get_fact_payment
     from get_fact_purchase_order import get_fact_purchase_order
     from log_extraction_time import log_extraction_time
+
 
 
 def lambda_handler(event, context):
@@ -103,9 +102,9 @@ def lambda_handler(event, context):
 
             logger.info("data transformation functions have been called")
             
-            # body = json.dumps(processed_data)
-            processed_df = pd.DataFrame(processed_data)
-            body = processed_df.to_parquet(engine='pyarrow')
+            body = json.dumps(processed_data)
+            # processed_df = pd.DataFrame(processed_data)
+            # body = processed_df.to_parquet(engine='pyarrow')
 
 
 
