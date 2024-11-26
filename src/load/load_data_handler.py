@@ -1,9 +1,17 @@
-from src.load.load_error import LoadError
-from src.load.get_insert_query import get_insert_query
-from src.load.connection import connect_to_db
-from src.load.log_extraction_time import log_extraction_time
-from src.load.logger import logger
 import boto3, json, re
+
+try:
+    from src.load.load_error import LoadError
+    from src.load.get_insert_query import get_insert_query
+    from src.load.connection import connect_to_db
+    from src.load.log_extraction_time import log_extraction_time
+    from src.load.logger import logger
+except ImportError:
+    from load_error import LoadError
+    from get_insert_query import get_insert_query
+    from connection import connect_to_db
+    from log_extraction_time import log_extraction_time
+    from logger import logger
 
 
 def lambda_handler(event, context):
@@ -14,6 +22,8 @@ def lambda_handler(event, context):
     records the data as loaded
     """
     
+    logger.info("Starting load lambda handler.")
+
     warehouse_credentials_id = event["warehouse_credentials_id"]
     processed_data_bucket = event["processed_data_bucket"]
     loaded_extractions_bucket = event["loaded_extractions_bucket"]
