@@ -1,4 +1,7 @@
-import boto3, json, re, pandas
+import boto3
+import json
+import re
+import pandas as pd
 from datetime import datetime
 
 try:
@@ -97,16 +100,21 @@ def lambda_handler(event, context):
             processed_data["processed_data"]["dim_date"] = get_dim_date(processed_data["processed_data"])
 
             logger.info("data transformation functions have been called")
+            
+            body = json.dumps(processed_data)
+            # processed_df = pd.DataFrame(processed_data)
+            # body = processed_df.to_parquet(engine='pyarrow')
+
+
 
             # save data to processed_data_bucket
             processed_data_bucket = event["processed_data_bucket"]
 
-            body = json.dumps(processed_data)
 
             s3_client.put_object(
                 Bucket=processed_data_bucket, Key=ingestion_key, Body=body
             )
-            logger.info("processed data daves to bucket")
+            logger.info("processed data saved to bucket")
 
             # log extraction time in processed_extractions_bucket
             processed_extractions_bucket = event["processed_extractions_bucket"]

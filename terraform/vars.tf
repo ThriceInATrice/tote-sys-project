@@ -9,11 +9,11 @@ variable "python_runtime" {
 }
 
 variable "transform_lambda" {
-  type = string
+  type    = string
   default = "transform"
 }
 
 variable "load_lambda" {
-  type = string
+  type    = string
   default = "load"
 }
