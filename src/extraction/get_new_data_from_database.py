@@ -27,7 +27,7 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
     logger.info("get_new_data_from_database invoked")
 
     now = str(datetime.now())
-
+    last_extraction = None
     timeframe_string = ""
     last_extraction_time = None
     if last_extraction:
@@ -131,3 +131,10 @@ def destring_timestamp(datetime_string):
         )
     else: 
         raise Exception("datetime error")
+
+
+def make_dict(column_names, values):
+    if len(column_names) == len(values):
+        return {column_names[i]: str(values[i]) for i in range(len(column_names))}
+    else:
+        raise Exception("data_error")

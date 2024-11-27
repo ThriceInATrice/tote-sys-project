@@ -18,7 +18,7 @@ params = parser.items("postgresql_test_load_database")
 config_dict = {param[0]: param[1] for param in params}
 
 
-@pytest.mark.run
+
 @mock_aws
 class TestLambdaHandler:
     def test_lambda_handler_processes_data_correctly(self):
