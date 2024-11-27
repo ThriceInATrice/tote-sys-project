@@ -1,5 +1,6 @@
 import boto3, json, re
 
+
 try:
     from src.load.load_error import LoadError
     from src.load.get_insert_query import get_insert_query
@@ -52,7 +53,7 @@ def lambda_handler(event, context):
             # load unloaded data
             with connect_to_db(warehouse_credentials_id) as conn:
                 cursor = conn.cursor()
-                query_str = "\n".join(
+                query_str = f"\n".join(
                         [
                             get_insert_query(table_name, row_list)
                             for table_name, row_list in unloaded_data[

@@ -6,6 +6,12 @@ except ImportError:
     from processing_error import ProcessingError
 
 
+def escape_quotes(input_str):
+    if "'" in input_str:
+        return input_str.replace("'", "")
+    else:
+        return input_str
+
 def get_dim_counterparty(credentials_id, input_counterparty_data):
     """
     this function takes a list of dictionaries representing rows in the origin datebase
@@ -43,7 +49,7 @@ def get_counterparty_dict(counterparty, addresses):
 
     return {
         "counterparty_id": int(counterparty["counterparty_id"]),
-        "counterparty_legal_name": counterparty["counterparty_legal_name"],
+        "counterparty_legal_name": escape_quotes(counterparty["counterparty_legal_name"]),
         "counterparty_legal_address_line_1": address["address_line_1"],
         "counterparty_legal_address_line_2": address["address_line_2"],
         "counterparty_legal_district": address["district"],

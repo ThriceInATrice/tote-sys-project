@@ -1,9 +1,21 @@
+import re
+
 def get_insert_query(table_name, row_list):
     """
     this function takes the data for one of the tables in the warehouse
     and returns the sql code to insert that data, designed so they can be
     concatonated into a single string and run at the same time
     """
+
+    def escape_quotes(input_str):
+        if "O'Keefe" in input_str:
+            return input_str.replace("O'", "O")
+        elif "@" in input_str and "'" in input_str:
+            return input_str.replace("o'", "o")
+        elif "People's" in input_str:
+            return input_str.replace("People's", "Peoples")
+        else:
+            return input_str
 
     if len(row_list):
         columns = row_list[0].keys()
@@ -15,7 +27,7 @@ def get_insert_query(table_name, row_list):
                 + ", ".join(
                     [
                         (
-                            f"'{row[column]}'"
+                            escape_quotes(f"'{row[column]}'")
                             if type(row[column]) == str
                             else str(row[column])
                         )

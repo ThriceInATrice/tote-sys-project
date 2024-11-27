@@ -13,6 +13,11 @@ class DBCredentialsExportError(Exception):
 class UnexpectedDimStaffError(Exception):
     pass
 
+def escape_quotes(input_str):
+    if "'" in input_str:
+        return input_str.replace("'", "")
+    else:
+        return input_str
 
 def get_dim_staff(credentials_id, staff_data):
     """
@@ -45,7 +50,7 @@ def get_dim_staff(credentials_id, staff_data):
             {
                 "staff_id": row["staff_id"],
                 "first_name": row["first_name"],
-                "last_name": row["last_name"],
+                "last_name": escape_quotes(row["last_name"]),
                 "department_name": [
                     department["department_name"]
                     for department in department_list
