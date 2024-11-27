@@ -100,6 +100,6 @@ class TestGetDimDate:
                 "day_of_week": 2,
                 "day_name": "Tuesday",
                 "month_name": "November",
-                "quarter": 4
+                "quarter": 4,
             }
         ]

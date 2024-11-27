@@ -36,18 +36,29 @@ except ImportError:
     from log_extraction_time import log_extraction_time
 
 
-
 def lambda_handler(event, context):
     """
-    event contains details of the buckets it will use
+    this function takes an argument of an event the ids of aws buckets and secrets
+    context is a required arguemnt in aws lambda but it can be an empty dict
     event = {
-    credentials_id: credentials_id
-    ingestion_bucket: bucket-id,
-    extraction_times_bucket: bucket-id,
-    processed_data_bucket: bucket-id
-    processed_extractions_bucket: bucket_id
+        credentials_id: credentials_id
+        ingestion_bucket: bucket-id,
+        extraction_times_bucket: bucket-id,
+        processed_data_bucket: bucket-id
+        processed_extractions_bucket: bucket_id
     }
-    
+
+    this function checks if there is unprocessed data using get_unprocessed_extractions
+    to find extraction times that have not been logged as processed
+    then it uses those extraction time to access the relevent data from the ingestion bucket
+
+    the data is processed using the various get_dim and get_fact functions
+    and a dictionary of the processed data is placed in the processed_data bucket
+    the extraction time of the processed data is recorded in the processed_extractions bucket
+    so that it is not processed a second time
+
+
+
     """
     logger.info("transformation phase lambda has been called")
     credentials_id = event["credentials_id"]
@@ -68,11 +79,10 @@ def lambda_handler(event, context):
         try:
             s3_client = boto3.client("s3")
             response = s3_client.get_object(Bucket=ingestion_bucket, Key=ingestion_key)
-            body=response["Body"]
+            body = response["Body"]
             bytes = body.read()
             content = json.loads(bytes)
             data = content["data"]
-
 
             # run get functions
             processed_data = {
@@ -97,7 +107,9 @@ def lambda_handler(event, context):
             }
 
             # run get_dim_date last, with the rest of the data as the arg
-            processed_data["processed_data"]["dim_date"] = get_dim_date(processed_data["processed_data"])
+            processed_data["processed_data"]["dim_date"] = get_dim_date(
+                processed_data["processed_data"]
+            )
 
             logger.info("data transformation functions have been called")
             
@@ -126,6 +138,14 @@ def lambda_handler(event, context):
 
 
 def get_unprocessed_extractions(event):
+    """
+    this function compares the contents of the extractions_times bucket and the processed extractions_bucket
+    and returns a list of those extraction times that have not been recorded as processed
+    it raises an error is there are items in the processed_extractions bucket that are not in the extraction_times bucket
+
+    this function also has fuctionality to create an empty processed_extractions json
+    if there is not one present, so that the bucket can been seeded when the funtion is run for the first time
+    """
 
     try:
         client = boto3.client("s3")
@@ -155,16 +175,24 @@ def get_unprocessed_extractions(event):
         # if there is no json in the process_extractions bucket, create one
         except:
             processed_extractions = []
-            client.put_object(Bucket=processed_extractions_bucket, Key = processed_extractions_key, Body=json.dumps({"extraction_times": []}))
+            client.put_object(
+                Bucket=processed_extractions_bucket,
+                Key=processed_extractions_key,
+                Body=json.dumps({"extraction_times": []}),
+            )
 
         # raises error if there are entries in processed_extractions_bucket that are not in extraction_times_bucket
-        if len([entry for entry in processed_extractions if entry not in extraction_times]):
+        if len(
+            [entry for entry in processed_extractions if entry not in extraction_times]
+        ):
             raise ProcessingError(
                 "Entries in processed_extractions bucket do not match extraction_times bucket"
             )
 
         # return a list of unprocessed entries
-        return [entry for entry in extraction_times if entry not in processed_extractions]
+        return [
+            entry for entry in extraction_times if entry not in processed_extractions
+        ]
 
     except Exception as e:
         raise ProcessingError(f"get_unprocessed_extractions: {e}")

@@ -13,15 +13,22 @@ except ImportError:
     from ingestion_error import IngestionError
     from logger import logger
 
-# trigger event is a json with the bucket names and the name of the credentials in the secret manager
-# event = {
-# credentials_id: "credentials_id"
-# ingestion_bucket : "bucket-id",
-# extraction_times_bucket : "bucket-id"
-# }
-
 
 def lambda_handler(event, context):
+    """
+    this function takes an argument of an event the ids of aws buckets and secrets
+    context is a required arguemnt in aws lambda but it can be an empty dict
+    event = {
+        credentials_id: "credentials_id"
+        ingestion_bucket : "bucket-id",
+        extraction_times_bucket : "bucket-id"
+    }
+
+    this function checks the extraction_times bucket for the last recorded extraction time
+    then queries the origin database for entries updated since the last extraction time
+    the new data is stored in the ingestion bucket
+    and the time of extraction is recorded so that the data is not extracted twice
+    """
     logger.info("Lambda function invoked")
     try:
         credentials_id = event["credentials_id"]
@@ -42,15 +49,3 @@ def lambda_handler(event, context):
 
     except Exception as e:
         raise IngestionError(f"extract: {e}")
-
-
-# does this want a return, even if its just a status code?
-
-if __name__ == "__main__":
-    event = {
-        "credentials_id": "totesys-db-creds",
-        "ingestion_bucket": "ingestion-bucket-20241111133940921900000001",
-        "extraction_times_bucket": "extraction-times-20241111134946737900000001",
-    }
-    context = {}
-    lambda_handler(event, context)

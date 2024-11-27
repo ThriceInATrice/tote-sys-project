@@ -17,7 +17,7 @@ except ImportError:
 def lambda_handler(event, context):
     """
     this function checks the list of processed extractions against those that
-    have been loaded into the warehouse, generates the sql code to insert the 
+    have been loaded into the warehouse, generates the sql code to insert the
     unloaded data, runs that code to insert the data into the warehouse, then
     records the data as loaded
     """
@@ -41,8 +41,8 @@ def lambda_handler(event, context):
 
         # try:
             s3_client = boto3.client("s3")
-            
-            #fetch processed data as unloaded data
+
+            # fetch processed data as unloaded data
             response = s3_client.get_object(Bucket=processed_data_bucket, Key=key)
             body = response["Body"]
             bytes = body.read()
@@ -62,7 +62,6 @@ def lambda_handler(event, context):
 
 
                 cursor.execute(query_str)
-
 
 
             # record data as loaded
@@ -102,7 +101,11 @@ def get_unloaded_data(event):
             loaded_data = loaded_data_dict["extraction_times"]
         except:
             loaded_data = []
-            client.put_object(Bucket=loaded_data_bucket, Key = loaded_data_key, Body=json.dumps({"extraction_times": []}))
+            client.put_object(
+                Bucket=loaded_data_bucket,
+                Key=loaded_data_key,
+                Body=json.dumps({"extraction_times": []}),
+            )
 
         # raises error if there are entries in processed_extractions_bucket that are not in extraction_times_bucket
         if len([entry for entry in loaded_data if entry not in processed_extractions]):

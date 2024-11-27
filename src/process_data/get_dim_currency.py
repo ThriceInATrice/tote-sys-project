@@ -1,20 +1,3 @@
-# the data from the currency table comes in as a dictionary
-# eg {"currnecy": line1, line2, line3}
-# each line is a dict with key/values of column/entry
-# eg {
-#   currency_id:int,
-#   currnecy_code: int,
-#   created_at: datetime,
-#   last_updated: datetime
-# }
-# the function should return a list of dictionaries representing the line to be inserted in the final database
-# eg {
-#   currency_id: int,
-#   currency_code: int,
-#   currency_name: str
-# }
-# then return the new list
-
 import json
 
 try:
@@ -24,7 +7,11 @@ except ImportError:
 
 
 def get_dim_currency(currency_data):
-
+    """
+    this function takes a list of dictionaries representing rows in the origin datebase
+    and transforms them to the appropriate form for the data warehouse
+    to do so it references a json of currency names and codes using get_currency_name
+    """
     return [
         {
             "currency_id": entry["currency_id"],
@@ -37,6 +24,10 @@ def get_dim_currency(currency_data):
 
 # func to use a currency code to get a currency name from a currency api
 def get_currency_name(currency_code):
+    """
+    this function takes a currency code as argument and returns the corresponding currency name
+    by referencing a json of currnecy codes and names
+    """
     try:
         with open("currencies.json") as currency_json:
             currency_dict = json.load(currency_json)

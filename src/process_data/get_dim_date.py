@@ -49,7 +49,6 @@ def get_new_dates(data):
     return new_dates
 
 
-
 def get_date_object(date_id_string):
     """
     this function turns a date id from the data processing into a datetime object
@@ -57,7 +56,5 @@ def get_date_object(date_id_string):
     """
 
     return date(
-        int(date_id_string[:4]), 
-        int(date_id_string[4:6]), 
-        int(date_id_string[6:])
+        int(date_id_string[:4]), int(date_id_string[4:6]), int(date_id_string[6:])
     )
