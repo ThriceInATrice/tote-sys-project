@@ -1,6 +1,7 @@
 from src.load.get_insert_query import get_insert_query
 
 
+
 class TestGetInsertQuery:
     def test_func_returns_none_when_there_are_no_rows(self):
         assert (get_insert_query("dim_staff", [])) == None
