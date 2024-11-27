@@ -16,5 +16,19 @@
             "location": "Manchester",
             "email_address": "deron.beier@terrifictotes.com"
         }
+    ],
+    "dim_design": [
+        {
+            "design_id": "8",
+            "design_name": "Wooden",
+            "file_location": "/usr",
+            "file_name": "wooden-20220717-npgz.json"
+        },
+        {
+            "design_id": "51",
+            "design_name": "Bronze",
+            "file_location": "/private",
+            "file_name": "bronze-20221024-4dds.json"
+        }
     ]
 }}

@@ -49,8 +49,8 @@ def lambda_handler(event, context):
             # unloaded_data = content["data"]
 
             # load unloaded data
-            conn = connect_to_db(warehouse_credentials_id)
-            with conn.cursor() as cursor:
+            with connect_to_db(warehouse_credentials_id) as conn:
+                cursor = conn.cursor()
                 query_str = "\n".join(
                         [
                             get_insert_query(table_name, row_list)
@@ -58,11 +58,12 @@ def lambda_handler(event, context):
                                 "processed_data"
                             ].items()
                         ])
+
                 print(f'QUERY STR: {query_str}')
                 cursor.execute(query_str)
                 response = cursor.fetchall()
-                print(f'TEST : {response}')
-                cursor.execute("SELECT * FROM dim_staff;")
+                print(f'RETURN FROM QUERY STRING: {response}')
+                cursor.execute("SELECT * FROM dim_design; SELECT * FROM dim_staff")
                 response = cursor.fetchall()
                 print(f'TEST 2: {response}')
 
@@ -89,7 +90,6 @@ def get_unloaded_data(event):
         processed_extractions_body = processed_extractions_response["Body"]
         processed_extractions_bytes = processed_extractions_body.read()
         processed_extractions_dict = json.loads(processed_extractions_bytes)
-        print(f'PROCESSED EXTRACTIONS:{processed_extractions_dict}')
         processed_extractions = processed_extractions_dict["extraction_times"]
 
         # check processed_extractions_bucket
@@ -102,7 +102,6 @@ def get_unloaded_data(event):
             loaded_data_body = loaded_data_response["Body"]
             loaded_data_bytes = loaded_data_body.read()
             loaded_data_dict = json.loads(loaded_data_bytes)
-            print(f'LOADED DATA DICT: {loaded_data_dict}')
             loaded_data = loaded_data_dict["extraction_times"]
         except:
             loaded_data = []

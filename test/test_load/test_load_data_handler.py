@@ -11,17 +11,6 @@ from src.load.load_data_handler import lambda_handler as handler, get_unloaded_d
 from src.load.load_error import LoadError
 from src.load.connection import connect_to_db
 
-with open ('test/test_load/mock_processed_data.json', 'r', encoding='utf-8') as f:
-    mock_data = json.load(f)
-
-processed_bucket_name = 'processed_data_bucket'
-loaded_extractions_bucket_name = "loaded_extractions_bucket"
-processed_extractions_bucket_name = 'extraction_times'
-object_key = 'processed_data.json'
-object_body = mock_data
-
-
-
 
 parser = ConfigParser()
 parser.read("test/test_load/test_load_database.ini")
@@ -29,64 +18,80 @@ params = parser.items("postgresql_test_load_database")
 config_dict = {param[0]: param[1] for param in params}
 
 
-
 @pytest.mark.run
 @mock_aws
 class TestLambdaHandler:
     def test_lambda_handler_processes_data_correctly(self):
-        print(f'CONFIG DICT: {config_dict}')
-
+        # the expected return from the test database
+        expected_staff_data = [(1, 'Jeremie', 'Franey', 'Purchasing', 'Manchester', 'jeremie.franey@terrifictotes.com'), (2, 'Deron', 'Beier', 'Sales', 'Manchester', 'deron.beier@terrifictotes.com')]
+        
+        
         # create mock secrets manager and store datawarehouse credentials
         secrets_client = boto3.client("secretsmanager", region_name="eu-west-2")
-        secrets_client.create_secret(Name='test_db_creds', SecretString=str(json.dumps(config_dict)))
-
-
-        #create mock s3 bucket to store mock processed data jsons
-        s3 = boto3.client('s3', region_name='eu-west-2')
-        s3.create_bucket(Bucket=processed_bucket_name, CreateBucketConfiguration={"LocationConstraint": "eu-west-2"})
-        s3.put_object(
-            Bucket=processed_bucket_name,
-            Key='2024/11/27/2024-11-27.json',
-            Body=json.dumps(object_body),
+        secrets_client.create_secret(
+            Name="test_db_creds", SecretString=str(json.dumps(config_dict))
         )
 
+        # create s3 client
+        s3 = boto3.client("s3", region_name="eu-west-2")
+
         # create mock s3 bucket to store processed extraction times and populate with a single extraction time
-        s3.create_bucket(Bucket=processed_extractions_bucket_name, CreateBucketConfiguration={"LocationConstraint": "eu-west-2"})
+        processed_extractions_bucket_name = "extraction_times"
+        s3.create_bucket(
+            Bucket=processed_extractions_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         s3.put_object(
             Bucket=processed_extractions_bucket_name,
-            Key='processed_extractions.json',
-            Body=json.dumps({
-                "extraction_times": ["2024-11-27"]
-            })
+            Key="processed_extractions.json",
+            Body=json.dumps({"extraction_times": ["2024-11-27"]}),
         )
 
         # create mock s3 bucket to store extraction load times and populate with a single extraction time
-        s3.create_bucket(Bucket=loaded_extractions_bucket_name, CreateBucketConfiguration={"LocationConstraint": "eu-west-2"})
+        loaded_extractions_bucket_name = "loaded_extractions_bucket"
+        s3.create_bucket(
+            Bucket=loaded_extractions_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
         s3.put_object(
             Bucket=loaded_extractions_bucket_name,
-            Key='loaded_extractions.json',
-            Body=json.dumps({
-                "extraction_times": []
-            })
+            Key="loaded_extractions.json",
+            Body=json.dumps({"extraction_times": []}),
         )
 
-        test_event = { 
-        "warehouse_credentials_id": "test_db_creds",
-        'processed_data_bucket': processed_bucket_name,
-        'loaded_extractions_bucket': loaded_extractions_bucket_name,
-        'processed_extractions_bucket': processed_extractions_bucket_name
+        # create mock s3 bucket to store mock processed data jsons
+        processed_bucket_name = "processed_data_bucket"
+        s3.create_bucket(
+            Bucket=processed_bucket_name,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-2"},
+        )
+
+        with open(
+            "test/test_load/mock_processed_data.json", "r", encoding="utf-8"
+        ) as f:
+            mock_data = json.load(f)
+            s3.put_object(
+                Bucket=processed_bucket_name,
+                Key="2024/11/27/2024-11-27.json",
+                Body=json.dumps(mock_data),
+            )
+
+        test_event = {
+            "warehouse_credentials_id": "test_db_creds",
+            "processed_data_bucket": processed_bucket_name,
+            "loaded_extractions_bucket": loaded_extractions_bucket_name,
+            "processed_extractions_bucket": processed_extractions_bucket_name,
         }
-        
+
         handler(test_event, {})
 
-
-        conn = psycopg2.connect(host="", port=5432, database="test_load_database", user="Joanna", password="", sslrootcert="SSLCERTIFICATE")
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT * FROM dim_staff;")
-        print(f'DATABASE RETURN: {cursor.fetchall()}')
+        with connect_to_db("test_db_creds") as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM dim_staff;")
+            database_staff_data = cursor.fetchall()
 
 
+        assert database_staff_data == expected_staff_data
 @mock_aws
 class TestGetUnloadedData:
 
@@ -209,7 +214,3 @@ class TestGetUnloadedData:
         }
 
         assert get_unloaded_data(event) == ["today"]
-
-        
-
-
