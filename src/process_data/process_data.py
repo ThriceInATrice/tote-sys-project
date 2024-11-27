@@ -79,11 +79,10 @@ def lambda_handler(event, context):
         # try:
         s3_client = boto3.client("s3")
         response = s3_client.get_object(Bucket=ingestion_bucket, Key=ingestion_key)
-        body=response["Body"]
+        body = response["Body"]
         bytes = body.read()
         content = json.loads(bytes)
         data = content["data"]
-
 
         # run get functions
         processed_data = {
@@ -99,19 +98,19 @@ def lambda_handler(event, context):
                 "dim_counterparty": get_dim_counterparty(
                     credentials_id, data["counterparty"]
                 ),
-                "fact_purchase_order": get_fact_purchase_order(
-                    data["purchase_order"]
-                ),
+                "fact_purchase_order": get_fact_purchase_order(data["purchase_order"]),
                 "fact_sales_order": get_fact_sales_order(data["sales_order"]),
                 "fact_payment": get_fact_payment(data["payment"]),
             },
         }
 
         # run get_dim_date last, with the rest of the data as the arg
-        processed_data["processed_data"]["dim_date"] = get_dim_date(processed_data["processed_data"])
+        processed_data["processed_data"]["dim_date"] = get_dim_date(
+            processed_data["processed_data"]
+        )
 
         logger.info("data transformation functions have been called")
-        
+
         body = json.dumps(processed_data)
         # processed_df = pd.DataFrame(processed_data)
         # body = processed_df.to_parquet(engine='pyarrow')
@@ -119,10 +118,7 @@ def lambda_handler(event, context):
         # save data to processed_data_bucket
         processed_data_bucket = event["processed_data_bucket"]
 
-
-        s3_client.put_object(
-            Bucket=processed_data_bucket, Key=ingestion_key, Body=body
-        )
+        s3_client.put_object(Bucket=processed_data_bucket, Key=ingestion_key, Body=body)
         logger.info("processed data saved to bucket")
 
         # log extraction time in processed_extractions_bucket

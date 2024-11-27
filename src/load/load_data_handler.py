@@ -35,42 +35,39 @@ def lambda_handler(event, context):
 
     # get unloaded data
     for extraction_time in unloaded_data:
-            date_split = re.findall("[0-9]+", extraction_time)
-            key = "/".join(
-                [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
-            )
+        date_split = re.findall("[0-9]+", extraction_time)
+        key = "/".join(
+            [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
+        )
 
         # try:
-            s3_client = boto3.client("s3")
+        s3_client = boto3.client("s3")
 
-            # fetch processed data as unloaded data
-            response = s3_client.get_object(Bucket=processed_data_bucket, Key=key)
-            body = response["Body"]
-            bytes = body.read()
-            unloaded_data = json.loads(bytes)
-            # unloaded_data = content["data"]
+        # fetch processed data as unloaded data
+        response = s3_client.get_object(Bucket=processed_data_bucket, Key=key)
+        body = response["Body"]
+        bytes = body.read()
+        unloaded_data = json.loads(bytes)
+        # unloaded_data = content["data"]
 
-            # load unloaded data
-            with connect_to_db(warehouse_credentials_id) as conn:
-                cursor = conn.cursor()
-                query_str = f"\n".join(
-                        [
-                            get_insert_query(table_name, row_list)
-                            for table_name, row_list in unloaded_data[
-                                "processed_data"
-                            ].items()
-                        ])
+        # load unloaded data
+        with connect_to_db(warehouse_credentials_id) as conn:
+            cursor = conn.cursor()
+            query_str = f"\n".join(
+                [
+                    get_insert_query(table_name, row_list)
+                    for table_name, row_list in unloaded_data["processed_data"].items()
+                ]
+            )
 
+            cursor.execute(query_str)
 
-                cursor.execute(query_str)
+        # record data as loaded
+        log_extraction_time(extraction_time, loaded_extractions_bucket)
+        logger.info("loaded extraction time recorded")
 
-
-            # record data as loaded
-            log_extraction_time(extraction_time, loaded_extractions_bucket)
-            logger.info("loaded extraction time recorded")
-
-        # except Exception as e:
-        #     raise LoadError(f"load_data: {e}")
+    # except Exception as e:
+    #     raise LoadError(f"load_data: {e}")
 
 
 def get_unloaded_data(event):

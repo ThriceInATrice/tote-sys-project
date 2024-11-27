@@ -129,7 +129,7 @@ def destring_timestamp(datetime_string):
             int(datetime_split[4]),
             int(datetime_split[5]),
         )
-    else: 
+    else:
         raise Exception("datetime error")
 
 

@@ -17,9 +17,8 @@ def get_dim_payment_type(payment_type_data):
 
     return [
         {
-            key: value
-            for key, value in payment_type_dict.items()
-            if key in ["payment_type_id", "payment_type_name"]
+            "payment_type_id": int(payment_type_dict["payment_type_id"]),
+            "payment_type_name": payment_type_dict["payment_type_name"],
         }
         for payment_type_dict in payment_type_data
     ]

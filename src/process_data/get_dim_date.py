@@ -45,7 +45,7 @@ def get_new_dates(data):
             for key, value in line.items():
                 if key in date_keys and value not in new_dates:
                     new_dates.append(str(value))
-    
+
     return new_dates
 
 
@@ -56,7 +56,5 @@ def get_date_object(date_id_string):
     """
 
     return date(
-        int(date_id_string[:4]), 
-        int(date_id_string[5:7]), 
-        int(date_id_string[8:10])
+        int(date_id_string[:4]), int(date_id_string[5:7]), int(date_id_string[8:10])
     )

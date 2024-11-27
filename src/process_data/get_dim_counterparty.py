@@ -12,6 +12,7 @@ def escape_quotes(input_str):
     else:
         return input_str
 
+
 def get_dim_counterparty(credentials_id, input_counterparty_data):
     """
     this function takes a list of dictionaries representing rows in the origin datebase
@@ -25,7 +26,7 @@ def get_dim_counterparty(credentials_id, input_counterparty_data):
         with conn.cursor() as cursor:
             cursor.execute("SELECT * FROM address;")
             response = cursor.fetchall()
-    
+
         column_names = [desc[0] for desc in cursor.description]
         addresses = [dict(zip(column_names, address)) for address in response]
         return [
@@ -34,7 +35,6 @@ def get_dim_counterparty(credentials_id, input_counterparty_data):
         ]
     except Exception as e:
         raise ProcessingError(f"get_dim_counterparty: {e}")
-        
 
 
 def get_counterparty_dict(counterparty, addresses):
@@ -51,11 +51,25 @@ def get_counterparty_dict(counterparty, addresses):
     return {
         "counterparty_id": int(counterparty["counterparty_id"]),
         "counterparty_legal_name": counterparty["counterparty_legal_name"],
-        "counterparty_legal_address_line_1": None if address["address_line_1"] =="None" else address["address_line_1"],
-        "counterparty_legal_address_line_2": None if address["address_line_2"] =="None" else address["address_line_2"],
-        "counterparty_legal_district": None if address["district"] =="None" else address["district"],
-        "counterparty_legal_city": None if address["city"] =="None" else address["city"],
-        "counterparty_legal_postal_code": None if address["postal_code"] =="None" else address["postal_code"],
-        "counterparty_legal_country": None if address["country"] =="None" else address["country"],
-        "counterparty_legal_phone_number": None if address["phone"] =="None" else address["phone"],
+        "counterparty_legal_address_line_1": (
+            None if address["address_line_1"] == "None" else address["address_line_1"]
+        ),
+        "counterparty_legal_address_line_2": (
+            None if address["address_line_2"] == "None" else address["address_line_2"]
+        ),
+        "counterparty_legal_district": (
+            None if address["district"] == "None" else address["district"]
+        ),
+        "counterparty_legal_city": (
+            None if address["city"] == "None" else address["city"]
+        ),
+        "counterparty_legal_postal_code": (
+            None if address["postal_code"] == "None" else address["postal_code"]
+        ),
+        "counterparty_legal_country": (
+            None if address["country"] == "None" else address["country"]
+        ),
+        "counterparty_legal_phone_number": (
+            None if address["phone"] == "None" else address["phone"]
+        ),
     }

@@ -34,17 +34,22 @@ def get_fact_payment(payment_data):
 
     when input into the final database there will be an additional column called “payment_record_id” which is a serial,
     so we will generate this as it is input into the data warehouse in the next step"""
-    return [{
-        "payment_id": int(payment_data[i]["payment_id"]),
-        "created_time": payment_data[i]["created_at"][11:19],
-        "created_date": payment_data[i]["created_at"][:10],
-        "last_updated_time": payment_data[i]["last_updated"][11:19],
-        "last_updated_date": payment_data[i]["last_updated"][:10],
-        "transaction_id": int(payment_data[i]["transaction_id"]),
-        "counterparty_id": int(payment_data[i]["counterparty_id"]),
-        "payment_amount": payment_data[i]["payment_amount"],
-        "currency_id": int(payment_data[i]["currency_id"]),
-        "payment_type_id": int(payment_data[i]["payment_type_id"]),
-        "paid": True if (payment_data[i]["paid"]) in ["True", "true", True] else False,
-        "payment_date": payment_data[i]["payment_date"][:10],
-    } for i in range(len(payment_data))]
+    return [
+        {
+            "payment_id": int(payment_data[i]["payment_id"]),
+            "created_time": payment_data[i]["created_at"][11:19],
+            "created_date": payment_data[i]["created_at"][:10],
+            "last_updated_time": payment_data[i]["last_updated"][11:19],
+            "last_updated_date": payment_data[i]["last_updated"][:10],
+            "transaction_id": int(payment_data[i]["transaction_id"]),
+            "counterparty_id": int(payment_data[i]["counterparty_id"]),
+            "payment_amount": payment_data[i]["payment_amount"],
+            "currency_id": int(payment_data[i]["currency_id"]),
+            "payment_type_id": int(payment_data[i]["payment_type_id"]),
+            "paid": (
+                True if (payment_data[i]["paid"]) in ["True", "true", True] else False
+            ),
+            "payment_date": payment_data[i]["payment_date"][:10],
+        }
+        for i in range(len(payment_data))
+    ]

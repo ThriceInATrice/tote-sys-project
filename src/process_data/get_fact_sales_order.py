@@ -43,38 +43,38 @@ def get_fact_sales_order(sales_order_table):
     """
 
     output_list = []
-    
+
     for diction in sales_order_table:
         new_sales_order_dict = {}
-        
-        for key in diction :
-            #try: 
-                if key in {
-                    "design_id",
-                    "staff_id",
-                    "counterparty_id",
-                    "units_sold",
-                    "currency_id",
-                    "agreed_delivery_location_id",
-                }:
-                    new_sales_order_dict[key]= int(diction[key])
-                elif key == "unit_price":
-                    new_sales_order_dict[key]=float(diction[key])
-                
-                elif key in ["agreed_delivery_date","agreed_payment_date"]:
-                    new_sales_order_dict[key] = diction[key][0:10]
-                
-                elif key == 'created_at':
-                    new_sales_order_dict["created_date"]= diction[key][0:10]
-                    new_sales_order_dict["created_time"]= diction[key][11:19]
-                
-                elif key == 'last_updated':
-                    new_sales_order_dict["last_updated_date"]= diction[key][0:10]
-                    new_sales_order_dict["last_updated_time"]= diction[key][11:19]
-            
-            #except Exception as e: 
-                #raise ProcessingError
-        
+
+        for key in diction:
+            # try:
+            if key in {
+                "design_id",
+                "staff_id",
+                "counterparty_id",
+                "units_sold",
+                "currency_id",
+                "agreed_delivery_location_id",
+            }:
+                new_sales_order_dict[key] = int(diction[key])
+            elif key == "unit_price":
+                new_sales_order_dict[key] = float(diction[key])
+
+            elif key in ["agreed_delivery_date", "agreed_payment_date"]:
+                new_sales_order_dict[key] = diction[key][0:10]
+
+            elif key == "created_at":
+                new_sales_order_dict["created_date"] = diction[key][0:10]
+                new_sales_order_dict["created_time"] = diction[key][11:19]
+
+            elif key == "last_updated":
+                new_sales_order_dict["last_updated_date"] = diction[key][0:10]
+                new_sales_order_dict["last_updated_time"] = diction[key][11:19]
+
+        # except Exception as e:
+        # raise ProcessingError
+
         output_list.append(new_sales_order_dict)
 
     return output_list
