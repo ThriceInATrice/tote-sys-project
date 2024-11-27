@@ -18,12 +18,15 @@ def get_dim_transaction(transaction_data):
         }
     """
 
-    return [
-        {
-            "transaction_id": int(row["transaction_id"]),
-            "transaction_type": row["transaction_type"],
-            "sales_order_id": row["sales_order_id"],
-            "purchase_order_id": row["purchase_order_id"],
+    processed_transaction = []
+    for row in transaction_data:
+        dim_transaction =  {
+            "transaction_id": int(row["transaction_id"]), 
+            "transaction_type": row["transaction_type"], 
+            "sales_order_id": None if row["sales_order_id"] in ["None", None] else int(row["sales_order_id"]),
+            "purchase_order_id": None if row["purchase_order_id"] == ["None", None] else int(row["purchase_order_id"])
         }
-        for row in transaction_data
-    ]
+
+        processed_transaction.append(dim_transaction)
+
+    return processed_transaction

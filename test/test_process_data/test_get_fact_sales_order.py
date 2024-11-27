@@ -49,7 +49,7 @@ def test_list_processed_correctly():
             'currency_id': 3,
             'agreed_delivery_date': '2024-10-11',
             'agreed_payment_date': '2024-10-10',
-            'agreed_delivery_location_id': '4'
+            'agreed_delivery_location_id': 4
         }, 
         {
             'created_date': '2024-08-01',
@@ -64,7 +64,7 @@ def test_list_processed_correctly():
             'currency_id': 889,
             'agreed_delivery_date': '2025-02-01',
             'agreed_payment_date': '2025-01-15',
-            'agreed_delivery_location_id': '4'
+            'agreed_delivery_location_id': 4
         }
     ]
 

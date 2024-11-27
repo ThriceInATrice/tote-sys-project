@@ -76,62 +76,62 @@ def lambda_handler(event, context):
             [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
         )
 
-        try:
-            s3_client = boto3.client("s3")
-            response = s3_client.get_object(Bucket=ingestion_bucket, Key=ingestion_key)
-            body = response["Body"]
-            bytes = body.read()
-            content = json.loads(bytes)
-            data = content["data"]
+        # try:
+        s3_client = boto3.client("s3")
+        response = s3_client.get_object(Bucket=ingestion_bucket, Key=ingestion_key)
+        body=response["Body"]
+        bytes = body.read()
+        content = json.loads(bytes)
+        data = content["data"]
 
-            # run get functions
-            processed_data = {
-                "extraction_time": extraction_time,
-                "processing time": str(datetime.now()),
-                "processed_data": {
-                    "dim_staff": get_dim_staff(credentials_id, data["staff"]),
-                    "dim_location": get_dim_location(data["address"]),
-                    "dim_design": get_dim_design(data["design"]),
-                    "dim_currency": get_dim_currency(data["currency"]),
-                    "dim_transaction": get_dim_transaction(data["transaction"]),
-                    "dim_payment_type": get_dim_payment_type(data["payment_type"]),
-                    "dim_counterparty": get_dim_counterparty(
-                        credentials_id, data["counterparty"]
-                    ),
-                    "fact_purchase_order": get_fact_purchase_order(
-                        data["purchase_order"]
-                    ),
-                    "fact_sales_order": get_fact_sales_order(data["sales_order"]),
-                    "fact_payment": get_fact_payment(data["payment"]),
-                },
-            }
 
-            # run get_dim_date last, with the rest of the data as the arg
-            processed_data["processed_data"]["dim_date"] = get_dim_date(
-                processed_data["processed_data"]
-            )
+        # run get functions
+        processed_data = {
+            "extraction_time": extraction_time,
+            "processing time": str(datetime.now()),
+            "processed_data": {
+                "dim_staff": get_dim_staff(credentials_id, data["staff"]),
+                "dim_location": get_dim_location(data["address"]),
+                "dim_design": get_dim_design(data["design"]),
+                "dim_currency": get_dim_currency(data["currency"]),
+                "dim_transaction": get_dim_transaction(data["transaction"]),
+                "dim_payment_type": get_dim_payment_type(data["payment_type"]),
+                "dim_counterparty": get_dim_counterparty(
+                    credentials_id, data["counterparty"]
+                ),
+                "fact_purchase_order": get_fact_purchase_order(
+                    data["purchase_order"]
+                ),
+                "fact_sales_order": get_fact_sales_order(data["sales_order"]),
+                "fact_payment": get_fact_payment(data["payment"]),
+            },
+        }
 
-            logger.info("data transformation functions have been called")
+        # run get_dim_date last, with the rest of the data as the arg
+        processed_data["processed_data"]["dim_date"] = get_dim_date(processed_data["processed_data"])
 
-            body = json.dumps(processed_data)
-            # processed_df = pd.DataFrame(processed_data)
-            # body = processed_df.to_parquet(engine='pyarrow')
+        logger.info("data transformation functions have been called")
+        
+        body = json.dumps(processed_data)
+        # processed_df = pd.DataFrame(processed_data)
+        # body = processed_df.to_parquet(engine='pyarrow')
 
-            # save data to processed_data_bucket
-            processed_data_bucket = event["processed_data_bucket"]
+        # save data to processed_data_bucket
+        processed_data_bucket = event["processed_data_bucket"]
 
-            s3_client.put_object(
-                Bucket=processed_data_bucket, Key=ingestion_key, Body=body
-            )
-            logger.info("processed data saved to bucket")
 
-            # log extraction time in processed_extractions_bucket
-            processed_extractions_bucket = event["processed_extractions_bucket"]
-            log_extraction_time(extraction_time, processed_extractions_bucket)
-            logger.info("extraction time logged to processed extractions bucket")
+        s3_client.put_object(
+            Bucket=processed_data_bucket, Key=ingestion_key, Body=body
+        )
+        logger.info("processed data saved to bucket")
 
-        except Exception as e:
-            raise ProcessingError(f"lambda handler: {e}")
+        # log extraction time in processed_extractions_bucket
+        processed_extractions_bucket = event["processed_extractions_bucket"]
+        log_extraction_time(extraction_time, processed_extractions_bucket)
+        logger.info("extraction time logged to processed extractions bucket")
+
+        # except Exception as e:
+        #     raise ProcessingError(f"lambda handler: {e}")
 
 
 def get_unprocessed_extractions(event):

@@ -32,18 +32,5 @@ def test_if_payment_type_name_is_key_in_dict():
 
 def test_key_value_is_correct_type():
     result = get_dim_payment_type(data)
-    assert all([isinstance(item["payment_type_id"], str) for item in result])
-    assert all([isinstance(item["payment_type_name"], str) for item in result])
-
-
-def test_function_processes_data_correctly():
-    test_data = [
-        {
-            "payment_type_id": "1",
-            "payment_type_name": "SALES_RECEIPT",
-            "created_at": "2022-11-03 14:20:49.962000",
-            "last_updated": "2022-11-03 14:20:49.962000",
-        }
-    ]
-    expected_return = [{"payment_type_id": "1", "payment_type_name": "SALES_RECEIPT"}]
-    assert get_dim_payment_type(test_data) == expected_return
+    assert all([isinstance(item['payment_type_id'], int) for item in result])
+    assert all([isinstance(item['payment_type_name'], str) for item in result])

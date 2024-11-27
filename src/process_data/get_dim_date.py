@@ -42,11 +42,10 @@ def get_new_dates(data):
 
     for lines in data.values():
         for line in lines:
-            print(f"LINE: {line}")
             for key, value in line.items():
                 if key in date_keys and value not in new_dates:
                     new_dates.append(str(value))
-    print(f"NEW DATES: {new_dates}")
+    
     return new_dates
 
 

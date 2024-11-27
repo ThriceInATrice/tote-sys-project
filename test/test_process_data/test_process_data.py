@@ -254,7 +254,7 @@ test_input = {
 expected_processed_data = {
     "dim_staff": [
         {
-            "staff_id": "1",
+            "staff_id": 1,
             "first_name": "Jeremie",
             "last_name": "Franey",
             "department_name": "Purchasing",
@@ -262,7 +262,7 @@ expected_processed_data = {
             "email_address": "jeremie.franey@terrifictotes.com",
         },
         {
-            "staff_id": "2",
+            "staff_id": 2,
             "first_name": "Deron",
             "last_name": "Beier",
             "department_name": "Sales",
@@ -272,7 +272,7 @@ expected_processed_data = {
     ],
     "dim_location": [
         {
-            "location_id": "1",
+            "location_id": 1,
             "address_line_1": "6826 Herzog Via",
             "address_line_2": "None",
             "district": "Avon",
@@ -282,7 +282,7 @@ expected_processed_data = {
             "phone": "1803 637401",
         },
         {
-            "location_id": "2",
+            "location_id": 2,
             "address_line_1": "179 Alexie Cliffs",
             "address_line_2": "None",
             "district": "None",
@@ -294,39 +294,39 @@ expected_processed_data = {
     ],
     "dim_design": [
         {
-            "design_id": "8",
+            "design_id": 8,
             "design_name": "Wooden",
             "file_location": "/usr",
             "file_name": "wooden-20220717-npgz.json",
         },
         {
-            "design_id": "51",
+            "design_id": 51,
             "design_name": "Bronze",
             "file_location": "/private",
             "file_name": "bronze-20221024-4dds.json",
         },
     ],
     "dim_currency": [
-        {"currency_id": "1", "currency_code": "GBP", "currency_name": "British Pound"},
-        {"currency_id": "2", "currency_code": "USD", "currency_name": "US Dollar"},
+        {"currency_id": 1, "currency_code": "GBP", "currency_name": "British Pound"},
+        {"currency_id": 2, "currency_code": "USD", "currency_name": "US Dollar"},
     ],
     "dim_transaction": [
         {
-            "transaction_id": "1",
+            "transaction_id": 1,
             "transaction_type": "PURCHASE",
-            "sales_order_id": "None",
-            "purchase_order_id": "2",
+            "sales_order_id": None,
+            "purchase_order_id": 2,
         },
         {
-            "transaction_id": "2",
+            "transaction_id": 2,
             "transaction_type": "PURCHASE",
-            "sales_order_id": "None",
-            "purchase_order_id": "3",
+            "sales_order_id": None,
+            "purchase_order_id": 3,
         },
     ],
     "dim_payment_type": [
-        {"payment_type_id": "1", "payment_type_name": "SALES_RECEIPT"},
-        {"payment_type_id": "2", "payment_type_name": "SALES_REFUND"},
+        {"payment_type_id": 1, "payment_type_name": "SALES_RECEIPT"},
+        {"payment_type_id": 2, "payment_type_name": "SALES_REFUND"},
     ],
     "dim_counterparty": [
         {
@@ -334,7 +334,7 @@ expected_processed_data = {
             "counterparty_legal_name": "Fahey and Sons",
             "counterparty_legal_address_line_1": "605 Haskell Trafficway",
             "counterparty_legal_address_line_2": "Axel Freeway",
-            "counterparty_legal_district": "None",
+            "counterparty_legal_district": None,
             "counterparty_legal_city": "East Bobbie",
             "counterparty_legal_postal_code": "88253-4257",
             "counterparty_legal_country": "Heard Island and McDonald Islands",
@@ -344,8 +344,8 @@ expected_processed_data = {
             "counterparty_id": 2,
             "counterparty_legal_name": "Leannon, Predovic and Morar",
             "counterparty_legal_address_line_1": "079 Horacio Landing",
-            "counterparty_legal_address_line_2": "None",
-            "counterparty_legal_district": "None",
+            "counterparty_legal_address_line_2": None,
+            "counterparty_legal_district": None,
             "counterparty_legal_city": "Utica",
             "counterparty_legal_postal_code": "93045",
             "counterparty_legal_country": "Austria",
@@ -354,36 +354,36 @@ expected_processed_data = {
     ],
     "fact_purchase_order": [
         {
-            "purchase_order_id": "1",
+            "purchase_order_id": 1,
             "created_date": "2022-11-03",
             "created_time": "14:20:52",
             "last_updated_date": "2022-11-03",
             "last_updated_time": "14:20:52",
-            "staff_id": "12",
-            "counterparty_id": "11",
+            "staff_id": 12,
+            "counterparty_id": 11,
             "item_code": "ZDOI5EA",
-            "item_quantity": "371",
-            "item_unit_price": "361.39",
-            "currency_id": "2",
+            "item_quantity": 371,
+            "item_unit_price": 361.39,
+            "currency_id": 2,
             "agreed_delivery_date": "2022-11-09",
             "agreed_payment_date": "2022-11-07",
-            "agreed_delivery_location_id": "6",
+            "agreed_delivery_location_id": 6,
         },
         {
-            "purchase_order_id": "2",
+            "purchase_order_id": 2,
             "created_date": "2022-11-03",
             "created_time": "14:20:52",
             "last_updated_date": "2022-11-03",
             "last_updated_time": "14:20:52",
-            "staff_id": "20",
-            "counterparty_id": "17",
+            "staff_id": 20,
+            "counterparty_id": 17,
             "item_code": "QLZLEXR",
-            "item_quantity": "286",
-            "item_unit_price": "199.04",
-            "currency_id": "2",
+            "item_quantity": 286,
+            "item_unit_price": 199.04,
+            "currency_id": 2,
             "agreed_delivery_date": "2022-11-04",
             "agreed_payment_date": "2022-11-07",
-            "agreed_delivery_location_id": "8",
+            "agreed_delivery_location_id": 8,
         },
     ],
     "fact_sales_order": [
@@ -392,58 +392,58 @@ expected_processed_data = {
             "created_time": "14:20:52",
             "last_updated_date": "2022-11-03",
             "last_updated_time": "14:20:52",
-            "design_id": "3",
-            "staff_id": "19",
-            "counterparty_id": "8",
-            "units_sold": "42972",
-            "unit_price": "3.94",
-            "currency_id": "2",
+            "design_id": 3,
+            "staff_id": 19,
+            "counterparty_id": 8,
+            "units_sold": 42972,
+            "unit_price": 3.94,
+            "currency_id": 2,
             "agreed_delivery_date": "2022-11-07",
             "agreed_payment_date": "2022-11-08",
-            "agreed_delivery_location_id": "8",
+            "agreed_delivery_location_id": 8,
         },
         {
             "created_date": "2022-11-03",
             "created_time": "14:20:52",
             "last_updated_date": "2022-11-03",
             "last_updated_time": "14:20:52",
-            "design_id": "4",
-            "staff_id": "10",
-            "counterparty_id": "4",
-            "units_sold": "65839",
-            "unit_price": "2.91",
-            "currency_id": "3",
+            "design_id": 4,
+            "staff_id": 10,
+            "counterparty_id": 4,
+            "units_sold": 65839,
+            "unit_price": 2.91,
+            "currency_id": 3,
             "agreed_delivery_date": "2022-11-06",
             "agreed_payment_date": "2022-11-07",
-            "agreed_delivery_location_id": "19",
+            "agreed_delivery_location_id": 19,
         },
     ],
     "fact_payment": [
         {
-            "payment_id": "2",
+            "payment_id": 2,
             "created_time": "14:20:52",
             "created_date": "2022-11-03",
             "last_updated_time": "14:20:52",
             "last_updated_date": "2022-11-03",
-            "transaction_id": "2",
-            "counterparty_id": "15",
+            "transaction_id": 2,
+            "counterparty_id": 15,
             "payment_amount": "552548.62",
-            "currency_id": "2",
-            "payment_type_id": "3",
+            "currency_id": 2,
+            "payment_type_id": 3,
             "paid": False,
             "payment_date": "2022-11-04",
         },
         {
-            "payment_id": "3",
+            "payment_id": 3,
             "created_time": "14:20:52",
             "created_date": "2022-11-03",
             "last_updated_time": "14:20:52",
             "last_updated_date": "2022-11-03",
-            "transaction_id": "3",
-            "counterparty_id": "18",
+            "transaction_id": 3,
+            "counterparty_id": 18,
             "payment_amount": "205952.22",
-            "currency_id": "3",
-            "payment_type_id": "1",
+            "currency_id": 3,
+            "payment_type_id": 1,
             "paid": False,
             "payment_date": "2022-11-03",
         },
@@ -843,8 +843,6 @@ class TestProcessData:
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
-        pprint(f"PROCESSED DATA: {processed_data}")
-        pprint(f"EXPECTED DATA: {expected_data_1}")
         assert processed_data["processed_data"] == expected_data_1
 
         response = client.get_object(
@@ -853,8 +851,6 @@ class TestProcessData:
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
-        pprint(f"PROCESSED DATA: {processed_data}")
-        pprint(f"EXPECTED DATA: {expected_data_2}")
         assert processed_data["processed_data"] == expected_data_2
 
         # check extraction time is in processed_extractions bucket correctly

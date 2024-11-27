@@ -57,4 +57,6 @@ rm test_process_database.sql
 pytest --log-cli-level=INFO test/test_process_data -vvvrP
 rm test_process_database.ini
 
-if  [[ $PGUSER!='postgres_user' ]]; then psql -c "DROP DATABASE IF EXISTS test_process_database"; fi
+psql -c "DROP DATABASE IF EXISTS test_process_database"; fi
+
+# if  [[ $PGUSER!='postgres_user' ]]; then psql -c "DROP DATABASE IF EXISTS test_process_database"; fi

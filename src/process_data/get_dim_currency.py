@@ -14,7 +14,7 @@ def get_dim_currency(currency_data):
     """
     return [
         {
-            "currency_id": entry["currency_id"],
+            "currency_id": int(entry["currency_id"]),
             "currency_code": entry["currency_code"],
             "currency_name": get_currency_name(entry["currency_code"]),
         }

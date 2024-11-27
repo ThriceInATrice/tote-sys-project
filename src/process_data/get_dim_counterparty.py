@@ -50,12 +50,12 @@ def get_counterparty_dict(counterparty, addresses):
 
     return {
         "counterparty_id": int(counterparty["counterparty_id"]),
-        "counterparty_legal_name": escape_quotes(counterparty["counterparty_legal_name"]),
-        "counterparty_legal_address_line_1": address["address_line_1"],
-        "counterparty_legal_address_line_2": address["address_line_2"],
-        "counterparty_legal_district": address["district"],
-        "counterparty_legal_city": address["city"],
-        "counterparty_legal_postal_code": address["postal_code"],
-        "counterparty_legal_country": address["country"],
-        "counterparty_legal_phone_number": address["phone"],
+        "counterparty_legal_name": counterparty["counterparty_legal_name"],
+        "counterparty_legal_address_line_1": None if address["address_line_1"] =="None" else address["address_line_1"],
+        "counterparty_legal_address_line_2": None if address["address_line_2"] =="None" else address["address_line_2"],
+        "counterparty_legal_district": None if address["district"] =="None" else address["district"],
+        "counterparty_legal_city": None if address["city"] =="None" else address["city"],
+        "counterparty_legal_postal_code": None if address["postal_code"] =="None" else address["postal_code"],
+        "counterparty_legal_country": None if address["country"] =="None" else address["country"],
+        "counterparty_legal_phone_number": None if address["phone"] =="None" else address["phone"],
     }
