@@ -13,3 +13,7 @@ resource "aws_s3_bucket" "transformed_data" {
 resource "aws_s3_bucket" "data_transformation_times" {
   bucket_prefix = "transformation-times-"
 }
+
+resource "aws_s3_bucket" "loaded_extractions" {
+  bucket_prefix = "loaded-extractions-"
+}

@@ -34,6 +34,7 @@ VALUES
 ;
 
 """
+        print(f"INSERT QUEREY: {insert_query}")
         return insert_query
 
     else:
