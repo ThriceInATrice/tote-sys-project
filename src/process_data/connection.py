@@ -9,8 +9,6 @@ except ImportError:
     from logger import logger
 
 
-
-
 def get_database_creds(credentials_id):
     """
     this function takes the name of a secret in aws secrets manager

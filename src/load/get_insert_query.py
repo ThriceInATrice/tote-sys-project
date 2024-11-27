@@ -20,7 +20,7 @@ def get_insert_query(table_name, row_list):
     if len(row_list):
         columns = row_list[0].keys()
         column_names = ", ".join(columns)
-
+        
         values = ",\n".join(
             [
                 "("
@@ -38,6 +38,8 @@ def get_insert_query(table_name, row_list):
                 for row in row_list
             ]
         )
+
+
 
         insert_query = f"""
 INSERT INTO {table_name} ({column_names})

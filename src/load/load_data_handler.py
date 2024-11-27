@@ -22,7 +22,7 @@ def lambda_handler(event, context):
     unloaded data, runs that code to insert the data into the warehouse, then
     records the data as loaded
     """
-    
+
     logger.info("Starting load lambda handler.")
     logger.info(f"event data: {event}")
 
@@ -94,7 +94,7 @@ def get_unloaded_data(event):
         loaded_data_key = "loaded_extractions.json"
         try:
             loaded_data_response = client.get_object(
-                Bucket=loaded_data_bucket, Key=loaded_data_key
+                Bucket=loaded_extractions_bucket, Key=loaded_data_key
             )
             loaded_data_body = loaded_data_response["Body"]
             loaded_data_bytes = loaded_data_body.read()
@@ -103,7 +103,7 @@ def get_unloaded_data(event):
         except:
             loaded_data = []
             client.put_object(
-                Bucket=loaded_data_bucket,
+                Bucket=loaded_extractions_bucket,
                 Key=loaded_data_key,
                 Body=json.dumps({"extraction_times": []}),
             )
