@@ -9,10 +9,10 @@ def get_dim_date(data):
     then it uses the date object to construct a dim_date entry for each date
     and returns a list of those dictionaries
     """
-
+    print(f"DATES: {get_new_dates(data)}")
     return [
         {
-            "date_id": int(date_id),
+            "date_id": date_id,
             "year": get_date_object(date_id).year,
             "month": get_date_object(date_id).month,
             "day": get_date_object(date_id).day,
@@ -42,10 +42,11 @@ def get_new_dates(data):
 
     for lines in data.values():
         for line in lines:
+            print(f"LINE: {line}")
             for key, value in line.items():
                 if key in date_keys and value not in new_dates:
                     new_dates.append(str(value))
-
+    print(f"NEW DATES: {new_dates}")
     return new_dates
 
 
@@ -58,6 +59,6 @@ def get_date_object(date_id_string):
 
     return date(
         int(date_id_string[:4]), 
-        int(date_id_string[4:6]), 
-        int(date_id_string[6:])
+        int(date_id_string[5:7]), 
+        int(date_id_string[8:10])
     )

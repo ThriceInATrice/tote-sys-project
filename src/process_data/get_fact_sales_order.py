@@ -61,15 +61,15 @@ def get_fact_sales_order(purchess_order_table):
                     new_purchess_order_dict[key]= diction[key]
                 
                 elif key in ["agreed_delivery_date","agreed_payment_date"]:
-                    new_purchess_order_dict[key] = diction[key][0:4]+diction[key][5:7]+diction[key][8:10]
+                    new_purchess_order_dict[key] = diction[key][0:10]
                 
                 elif key == 'created_at':
-                    new_purchess_order_dict["created_date"]= diction[key][0:4]+diction[key][5:7]+diction[key][8:10]
-                    new_purchess_order_dict["created_time"]= diction[key][11:]
+                    new_purchess_order_dict["created_date"]= diction[key][0:10]
+                    new_purchess_order_dict["created_time"]= diction[key][11:19]
                 
                 elif key == 'last_updated':
-                    new_purchess_order_dict["last_updated_date"]= diction[key][0:4]+diction[key][5:7]+diction[key][8:10]
-                    new_purchess_order_dict["last_updated_time"]= diction[key][11:]
+                    new_purchess_order_dict["last_updated_date"]= diction[key][0:10]
+                    new_purchess_order_dict["last_updated_time"]= diction[key][11:19]
             
             except Exception as e: 
                 raise ProcessingError

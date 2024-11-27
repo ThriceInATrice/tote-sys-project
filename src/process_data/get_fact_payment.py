@@ -35,15 +35,15 @@ def get_fact_payment(payment_data):
     so we will generate this as it is input into the data warehouse in the next step"""
     return [{
         "payment_id": payment_data[i]["payment_id"],
-        "created_time": payment_data[i]["created_at"][11:],
-        "created_date": payment_data[i]["created_at"][:4]+payment_data[i]["created_at"][5:7]+payment_data[i]["created_at"][8:10],
-        "last_updated_time": payment_data[i]["last_updated"][11:],
-        "last_updated_date": payment_data[i]["last_updated"][:4]+payment_data[i]["last_updated"][5:7]+payment_data[i]["last_updated"][8:10],
+        "created_time": payment_data[i]["created_at"][11:19],
+        "created_date": payment_data[i]["created_at"][:10],
+        "last_updated_time": payment_data[i]["last_updated"][11:19],
+        "last_updated_date": payment_data[i]["last_updated"][:10],
         "transaction_id": payment_data[i]["transaction_id"],
         "counterparty_id": payment_data[i]["counterparty_id"],
         "payment_amount": payment_data[i]["payment_amount"],
         "currency_id": payment_data[i]["currency_id"],
         "payment_type_id": payment_data[i]["payment_type_id"],
-        "paid": payment_data[i]["paid"],
-        "payment_date": payment_data[i]["payment_date"][:4]+payment_data[i]["payment_date"][5:7]+payment_data[i]["payment_date"][8:10],
+        "paid": True if (payment_data[i]["paid"]) == "True" else False,
+        "payment_date": payment_data[i]["payment_date"][:10],
     } for i in range(len(payment_data))]
