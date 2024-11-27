@@ -19,7 +19,7 @@ def get_dim_design(design_data):
     """
     processed_design_data = []
     for row in design_data:
-        dim_design =  {"design_id": row["design_id"], 
+        dim_design =  {"design_id": int(row["design_id"]), 
                               "design_name": row["design_name"], 
                               "file_location": row["file_location"],
                               "file_name": row["file_name"]

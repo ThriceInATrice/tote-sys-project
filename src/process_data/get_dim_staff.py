@@ -60,7 +60,7 @@ def get_dim_staff(credentials_id, staff_data):
             row[id] = int(row[id])
             department_name = [d[name] for d in department_list if d[id] == row[id]][0]
             department_location = [d[location] for d in department_list if d[id] == row[id]][0]
-            dim_staff =  {"staff_id": row["staff_id"], 
+            dim_staff =  {"staff_id": int(row["staff_id"]), 
                                 "first_name": row["first_name"], 
                                 "last_name": row["last_name"],
                                 "department_name": department_name,

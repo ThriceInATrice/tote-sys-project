@@ -20,7 +20,7 @@ def get_dim_payment_type(payment_type_table):
 
         try:
             new_payment_type_dict = {
-                'payment_type_id': item['payment_type_id'], 
+                'payment_type_id': int(item['payment_type_id']), 
                 'payment_type_name': item['payment_type_name']}
             
             return new_payment_type_dict

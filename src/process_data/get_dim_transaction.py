@@ -20,7 +20,7 @@ def get_dim_transaction(transaction_data):
 
     processed_transaction = []
     for row in transaction_data:
-        dim_transaction =  {"transaction_id": row["transaction_id"], 
+        dim_transaction =  {"transaction_id": int(row["transaction_id"]), 
                               "transaction_type": row["transaction_type"], 
                               "sales_order_id": row["sales_order_id"],
                               "purchase_order_id": row["purchase_order_id"]}
