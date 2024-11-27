@@ -58,7 +58,7 @@ def get_fact_sales_order(sales_order_table):
                     "currency_id",
                     "agreed_delivery_location_id",
                 }:
-                    new_purchess_order_dict[key]= diction[key]
+                    new_purchess_order_dict[key]= int(diction[key])
                 
                 elif key in ["agreed_delivery_date","agreed_payment_date"]:
                     new_purchess_order_dict[key] = diction[key][0:10]

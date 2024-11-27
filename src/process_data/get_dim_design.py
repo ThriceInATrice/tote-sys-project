@@ -18,13 +18,14 @@ def get_dim_design(design_data):
             "file_name": str
         }
     """
+    processed_design_data = []
+    for row in design_data:
+        dim_design =  {"design_id": int(row["design_id"]), 
+                              "design_name": row["design_name"], 
+                              "file_location": row["file_location"],
+                              "file_name": row["file_name"]
+                              }
+        processed_design_data.append(dim_design)
 
-    return [
-        {
-            "design_id": row["design_id"],
-            "design_name": row["design_name"],
-            "file_location": row["file_location"],
-            "file_name": row["file_name"],
-        }
-        for row in design_data
-    ]
+    return processed_design_data  
+

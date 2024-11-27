@@ -28,7 +28,7 @@ def get_dim_location(address_data):
 
     return [
         {
-            "location_id": row["address_id"],
+            "location_id": int(row["address_id"]),
             "address_line_1": row["address_line_1"],
             "address_line_2": row["address_line_2"],
             "district": row["district"],

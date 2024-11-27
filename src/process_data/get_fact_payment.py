@@ -35,7 +35,7 @@ def get_fact_payment(payment_data):
     when input into the final database there will be an additional column called “payment_record_id” which is a serial,
     so we will generate this as it is input into the data warehouse in the next step"""
     return [{
-        "payment_id": payment_data[i]["payment_id"],
+        "payment_id": int(payment_data[i]["payment_id"]),
         "created_time": payment_data[i]["created_at"][11:19],
         "created_date": payment_data[i]["created_at"][:10],
         "last_updated_time": payment_data[i]["last_updated"][11:19],
