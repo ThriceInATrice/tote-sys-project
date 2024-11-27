@@ -23,6 +23,7 @@ def lambda_handler(event, context):
     """
     
     logger.info("Starting load lambda handler.")
+    logger.info(f"event data: {event}")
 
     warehouse_credentials_id = event["warehouse_credentials_id"]
     processed_data_bucket = event["processed_data_bucket"]
