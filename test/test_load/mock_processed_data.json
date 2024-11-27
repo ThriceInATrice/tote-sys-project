@@ -1,1 +1,20 @@
-{"data": "coming soon"}
+{"processed_data": {
+    "dim_staff": [
+        {
+            "staff_id": "1",
+            "first_name": "Jeremie",
+            "last_name": "Franey",
+            "department_name": "Purchasing",
+            "location": "Manchester",
+            "email_address": "jeremie.franey@terrifictotes.com"
+        },
+        {
+            "staff_id": "2",
+            "first_name": "Deron",
+            "last_name": "Beier",
+            "department_name": "Sales",
+            "location": "Manchester",
+            "email_address": "deron.beier@terrifictotes.com"
+        }
+    ]
+}}

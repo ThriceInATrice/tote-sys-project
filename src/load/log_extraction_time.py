@@ -9,7 +9,7 @@ except ImportError:
 def log_extraction_time(extraction_time, extraction_bucket_name):
     try:
         client = boto3.client("s3")
-        extraction_times_key = "extraction_times.json"
+        extraction_times_key = "loaded_extractions.json"
         
         # fetch list of extraction times
         response = client.get_object(

@@ -6,7 +6,8 @@ def get_insert_query(table_name, row_list):
     """
     
     if len(row_list):
-        column_names = ", ".join(row_list[0].keys())
+        columns = row_list[0].keys()
+        column_names = ", ".join(columns)
 
         values = ",\n".join(
             [
@@ -16,9 +17,9 @@ def get_insert_query(table_name, row_list):
                         (
                             f"'{row[column]}'"
                             if type(row[column]) == str
-                            else str(row[column])
+                            else row[column]
                         )
-                        for column in column_names
+                        for column in columns
                     ]
                 )
                 + ")"
@@ -30,7 +31,7 @@ def get_insert_query(table_name, row_list):
 INSERT INTO {table_name} ({column_names})
 VALUES
 {values}
-;
+RETURNING *;
 
 """
         return insert_query

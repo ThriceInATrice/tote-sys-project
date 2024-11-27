@@ -1,3 +1,5 @@
+\c test_load_database
+
 CREATE TABLE IF NOT EXISTS dim_counterparty (
     counterparty_id INT PRIMARY KEY,
     counterparty_legal_name TEXT,
@@ -52,6 +54,7 @@ CREATE TABLE IF NOT EXISTS dim_payment_type(
 
 CREATE TABLE IF NOT EXISTS dim_staff(
     staff_id INT PRIMARY KEY,
+    first_name TEXT,
     last_name TEXT,
     department_name TEXT,
     location TEXT,

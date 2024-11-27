@@ -33,42 +33,46 @@ def lambda_handler(event, context):
 
     # get unloaded data
     for extraction_time in unloaded_data:
-        date_split = re.findall("[0-9]+", extraction_time)
-        key = "/".join(
-            [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
-        )
+            date_split = re.findall("[0-9]+", extraction_time)
+            key = "/".join(
+                [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
+            )
 
-        try:
+        # try:
             s3_client = boto3.client("s3")
             
             #fetch processed data as unloaded data
             response = s3_client.get_object(Bucket=processed_data_bucket, Key=key)
             body = response["Body"]
             bytes = body.read()
-            content = json.loads(bytes)
-            unloaded_data = content["data"]
+            unloaded_data = json.loads(bytes)
+            # unloaded_data = content["data"]
 
             # load unloaded data
             conn = connect_to_db(warehouse_credentials_id)
             with conn.cursor() as cursor:
-                cursor.execute(
-                    "\n".join(
+                query_str = "\n".join(
                         [
                             get_insert_query(table_name, row_list)
                             for table_name, row_list in unloaded_data[
                                 "processed_data"
                             ].items()
-                        ]
-                    )
-                )
+                        ])
+                print(f'QUERY STR: {query_str}')
+                cursor.execute(query_str)
+                response = cursor.fetchall()
+                print(f'TEST : {response}')
+                cursor.execute("SELECT * FROM dim_staff;")
+                response = cursor.fetchall()
+                print(f'TEST 2: {response}')
 
 
             # record data as loaded
             log_extraction_time(extraction_time, loaded_extractions_bucket)
             logger.info("loaded extraction time recorded")
 
-        except Exception as e:
-            raise LoadError(f"load_data: {e}")
+        # except Exception as e:
+        #     raise LoadError(f"load_data: {e}")
 
 
 def get_unloaded_data(event):
@@ -85,11 +89,12 @@ def get_unloaded_data(event):
         processed_extractions_body = processed_extractions_response["Body"]
         processed_extractions_bytes = processed_extractions_body.read()
         processed_extractions_dict = json.loads(processed_extractions_bytes)
+        print(f'PROCESSED EXTRACTIONS:{processed_extractions_dict}')
         processed_extractions = processed_extractions_dict["extraction_times"]
 
         # check processed_extractions_bucket
-        loaded_data_bucket = event["loaded_data_bucket"]
-        loaded_data_key = "loaded_data.json"
+        loaded_data_bucket = event["loaded_extractions_bucket"]
+        loaded_data_key = "loaded_extractions.json"
         try:
             loaded_data_response = client.get_object(
                 Bucket=loaded_data_bucket, Key=loaded_data_key
@@ -97,6 +102,7 @@ def get_unloaded_data(event):
             loaded_data_body = loaded_data_response["Body"]
             loaded_data_bytes = loaded_data_body.read()
             loaded_data_dict = json.loads(loaded_data_bytes)
+            print(f'LOADED DATA DICT: {loaded_data_dict}')
             loaded_data = loaded_data_dict["extraction_times"]
         except:
             loaded_data = []
