@@ -61,12 +61,12 @@ class TestGetNewDates:
 class TestGetDateObject:
     def test_if_get_date_object_successfully_produces_a_date_object(self):
         expected_date = date(2024, 11, 19)
-        test_date_id = "20241119"
+        test_date_id = "2024-11-19"
         assert get_date_object(test_date_id) == expected_date
 
     def test_get_date_object_handles_single_digit_month_or_day_numbers(self):
         expected_date = date(2024, 1, 9)
-        test_date_id = "20240109"
+        test_date_id = "2024-01-09"
         assert get_date_object(test_date_id) == expected_date
 
 
@@ -74,7 +74,7 @@ class TestGetDimDate:
     def test_get_dim_date_returns_list_of_dicts(self):
         test_data = {
             "dict_list_1": [
-                {"created_date": "20241119"},
+                {"created_date": "2024-11-19"},
             ]
         }
         result = get_dim_date(test_data)
@@ -88,12 +88,12 @@ class TestGetDimDate:
     def test_get_dim_date_returns_correct_date_info(self):
         test_data = {
             "dict_list_1": [
-                {"created_date": "20241119"},
+                {"created_date": "2024-11-19"},
             ]
         }
         assert get_dim_date(test_data) == [
             {
-                "date_id": 20241119,
+                "date_id": "2024-11-19",
                 "year": 2024,
                 "month": 11,
                 "day": 19,

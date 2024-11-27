@@ -40,29 +40,20 @@ def get_fact_purchase_order(purchase_order_data):
         raise TypeError("Input must be a list")
     elif not all([type(el) == dict for el in purchase_order_data]):
         raise TypeError("Input must be a list of dictionaries")
-
-    return [
-        {
-            "purchase_order_id": purchase_order["purchase_order_id"],
-            "created_date": purchase_order["created_at"][:10].replace("-", ""),
-            "created_time": purchase_order["created_at"][11:],
-            "last_updated_date": purchase_order["last_updated"][:10].replace("-", ""),
-            "last_updated_time": purchase_order["last_updated"][11:],
-            "staff_id": purchase_order["staff_id"],
-            "counterparty_id": purchase_order["counterparty_id"],
-            "item_code": purchase_order["item_code"],
-            "item_quantity": purchase_order["item_quantity"],
-            "item_unit_price": purchase_order["item_unit_price"],
-            "currency_id": purchase_order["currency_id"],
-            "agreed_delivery_date": purchase_order["agreed_delivery_date"][:10].replace(
-                "-", ""
-            ),
-            "agreed_payment_date": purchase_order["agreed_payment_date"][:10].replace(
-                "-", ""
-            ),
-            "agreed_delivery_location_id": purchase_order[
-                "agreed_delivery_location_id"
-            ],
-        }
-        for purchase_order in purchase_order_data
-    ]
+    
+    return [{
+        "purchase_order_id": purchase_order_data[i]["purchase_order_id"],
+        "created_date":	purchase_order_data[i]["created_at"][:10],
+        "created_time": purchase_order_data[i]["created_at"][11:19],
+        "last_updated_date": purchase_order_data[i]["last_updated"][:10],
+        "last_updated_time":  purchase_order_data[i]["last_updated"][11:19],
+        "staff_id":	purchase_order_data[i]["staff_id"],
+        "counterparty_id":	purchase_order_data[i]["counterparty_id"],
+        "item_code": purchase_order_data[i]["item_code"],
+        "item_quantity": purchase_order_data[i]["item_quantity"],
+        "item_unit_price": purchase_order_data[i]["item_unit_price"],
+        "currency_id": purchase_order_data[i]["currency_id"],
+        "agreed_delivery_date":	purchase_order_data[i]["agreed_delivery_date"][:10],
+        "agreed_payment_date": purchase_order_data[i]["agreed_payment_date"][:10],
+        "agreed_delivery_location_id": purchase_order_data[i]["agreed_delivery_location_id"]
+    } for i in range(len(purchase_order_data))]
