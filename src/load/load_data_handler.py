@@ -59,13 +59,9 @@ def lambda_handler(event, context):
                             ].items()
                         ])
 
-                print(f'QUERY STR: {query_str}')
+
                 cursor.execute(query_str)
-                response = cursor.fetchall()
-                print(f'RETURN FROM QUERY STRING: {response}')
-                cursor.execute("SELECT * FROM dim_design; SELECT * FROM dim_staff")
-                response = cursor.fetchall()
-                print(f'TEST 2: {response}')
+
 
 
             # record data as loaded

@@ -17,7 +17,7 @@ def get_insert_query(table_name, row_list):
                         (
                             f"'{row[column]}'"
                             if type(row[column]) == str
-                            else row[column]
+                            else str(row[column])
                         )
                         for column in columns
                     ]
@@ -31,9 +31,10 @@ def get_insert_query(table_name, row_list):
 INSERT INTO {table_name} ({column_names})
 VALUES
 {values}
-RETURNING *;
+;
 
 """
+        print(f"INSERT QUEREY: {insert_query}")
         return insert_query
 
     else:

@@ -90,7 +90,6 @@ class TestLambdaHandler:
             cursor.execute("SELECT * FROM dim_staff;")
             database_staff_data = cursor.fetchall()
 
-
         assert database_staff_data == expected_staff_data
 @mock_aws
 class TestGetUnloadedData:
