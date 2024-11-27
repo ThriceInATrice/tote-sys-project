@@ -90,7 +90,7 @@ def get_unloaded_data(event):
         processed_extractions = processed_extractions_dict["extraction_times"]
 
         # check processed_extractions_bucket
-        loaded_data_bucket = event["loaded_extractions_bucket"]
+        loaded_extractions_bucket = event["loaded_extractions_bucket"]
         loaded_data_key = "loaded_extractions.json"
         try:
             loaded_data_response = client.get_object(

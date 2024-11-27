@@ -29,6 +29,7 @@ def get_new_data_from_database(credentials_id, last_extraction=None):
     now = str(datetime.now())
 
     timeframe_string = ""
+    last_extraction_time = None
     if last_extraction:
         last_extraction_time = destring_timestamp(last_extraction_time)
         timeframe_string = (
