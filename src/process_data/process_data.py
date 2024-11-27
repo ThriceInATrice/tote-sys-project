@@ -112,16 +112,13 @@ def lambda_handler(event, context):
             )
 
             logger.info("data transformation functions have been called")
-            
+
             body = json.dumps(processed_data)
             # processed_df = pd.DataFrame(processed_data)
             # body = processed_df.to_parquet(engine='pyarrow')
 
-
-
             # save data to processed_data_bucket
             processed_data_bucket = event["processed_data_bucket"]
-
 
             s3_client.put_object(
                 Bucket=processed_data_bucket, Key=ingestion_key, Body=body

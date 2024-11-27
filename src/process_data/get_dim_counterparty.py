@@ -19,7 +19,7 @@ def get_dim_counterparty(credentials_id, input_counterparty_data):
         with conn.cursor() as cursor:
             cursor.execute("SELECT * FROM address;")
             response = cursor.fetchall()
-
+    
         column_names = [desc[0] for desc in cursor.description]
         addresses = [dict(zip(column_names, address)) for address in response]
         return [
@@ -28,6 +28,7 @@ def get_dim_counterparty(credentials_id, input_counterparty_data):
         ]
     except Exception as e:
         raise ProcessingError(f"get_dim_counterparty: {e}")
+        
 
 
 def get_counterparty_dict(counterparty, addresses):
