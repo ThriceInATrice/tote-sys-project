@@ -52,7 +52,7 @@ def get_dim_staff(credentials_id, staff_data):
             {
                 "staff_id": int(row["staff_id"]),
                 "first_name": row["first_name"],
-                "last_name": escape_quotes(row["last_name"]),
+                "last_name": row["last_name"],
                 "department_name": [
                     department["department_name"]
                     for department in department_list

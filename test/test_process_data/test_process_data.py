@@ -609,7 +609,8 @@ class TestProcessData:
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
-        assert processed_data["processed_data"] == expected_processed_data
+        assert all(item in processed_data["processed_data"] for item in expected_processed_data)
+        assert all(item in expected_processed_data for item in processed_data["processed_data"])
 
         # check extraction time is in processed_extractions bucket correctly
         response = client.get_object(
@@ -843,7 +844,8 @@ class TestProcessData:
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
-        assert processed_data["processed_data"] == expected_data_1
+        assert all(item in processed_data["processed_data"] for item in expected_data_1)
+        assert all(item in expected_data_1 for item in processed_data["processed_data"])
 
         response = client.get_object(
             Bucket=processed_data_bucket_name, Key=ingestion_key_2
@@ -851,7 +853,8 @@ class TestProcessData:
         processed_data_body = response["Body"]
         processed_data_bytes = processed_data_body.read()
         processed_data = json.loads(processed_data_bytes)
-        assert processed_data["processed_data"] == expected_data_2
+        assert all(item in processed_data["processed_data"] for item in expected_data_2)
+        assert all(item in expected_data_2 for item in processed_data["processed_data"])
 
         # check extraction time is in processed_extractions bucket correctly
         response = client.get_object(

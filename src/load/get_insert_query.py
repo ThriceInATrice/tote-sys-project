@@ -28,7 +28,7 @@ def get_insert_query(table_name, row_list):
                 + ", ".join(
                     [
                         (
-                            escape_quotes(f"'{row[column]}'")
+                            "'" + row[column].replace("'", "''") + "'"
                             if type(row[column]) == str
                             else str(row[column])
                         )
@@ -47,7 +47,7 @@ VALUES
 ;
 
 """
-        print(f"INSERT QUEREY: {insert_query}")
+
         return insert_query
 
     else:

@@ -35,3 +35,21 @@ VALUES
 
 """
         assert get_insert_query(test_table_name, test_row_list) == expected_return
+
+    def test_function_handles_apostrophes_correctly(self):
+        test_table_name = "test_table"
+        test_row_list = [
+            {"column_1": "John's cat", "column_2": "O'Keefe"},
+            {"column_1": "it's too far, isn't it?", "column_2": "'ello world"},
+
+        ]
+        expected_return = """
+INSERT INTO test_table (column_1, column_2)
+VALUES
+('John''s cat', 'O''Keefe'),
+('it''s too far, isn''t it?', '''ello world')
+;
+
+"""
+
+        assert get_insert_query(test_table_name, test_row_list) == expected_return

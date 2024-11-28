@@ -17,13 +17,10 @@ class TestGetNewDates:
                 }
             ],
         }
-        assert get_new_dates(test_data) == [
-            "date_1",
-            "date_2",
-            "date_3",
-            "date_4",
-            "date_5",
-        ]
+
+        expected_return =["date_1", "date_2", "date_3", "date_4", "date_5"]
+        assert all(item in expected_return for item in get_new_dates(test_data))
+        assert all(item in get_new_dates(test_data) for item in expected_return)
 
     def test_get_new_dates_does_not_repreat_dates(self):
         test_data = {
@@ -39,7 +36,9 @@ class TestGetNewDates:
                 }
             ],
         }
-        assert get_new_dates(test_data) == ["date_1", "date_2", "date_3"]
+        expected_return =["date_1", "date_2", "date_3"]
+        assert all(item in expected_return for item in get_new_dates(test_data))
+        assert all(item in get_new_dates(test_data) for item in expected_return)
 
     def test_get_new_dates_ignores_values_from_non_date_keys(self):
         test_data = {
@@ -55,7 +54,9 @@ class TestGetNewDates:
                 }
             ],
         }
-        assert get_new_dates(test_data) == ["date_1", "date_2"]
+        expected_return =["date_1", "date_2"]
+        assert all(item in expected_return for item in get_new_dates(test_data))
+        assert all(item in get_new_dates(test_data) for item in expected_return)
 
 
 class TestGetDateObject:
