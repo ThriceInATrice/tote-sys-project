@@ -4,7 +4,7 @@
 
 ## Summary
 
-This project is an Extract, Transform, and Load pipeline which extracts data from a pre-created Totesys database, processes it according to a pre-defined schema, and finally loads it into a data warehouse. Terraform is used as our Infrastructure as Code tool to create resources quickly and efficiently. The full ERD for the OLTP totesys database is detailed [here](https://dbdiagram.io/d/6332fecf7b3d2034ffcaaa92). The overall structure of the resulting data warehouse is shown [here](https://dbdiagram.io/d/63a19c5399cb1f3b55a27eca). A diagram which details the cloud infrastructure of this project can be seen [here][img](./cloud_infrastructure.png).
+This project is an Extract, Transform, and Load pipeline which extracts data from a pre-created Totesys database, processes it according to a pre-defined schema, and finally loads it into a data warehouse. Terraform is used as our Infrastructure as Code tool to create resources quickly and efficiently. The full ERD for the OLTP totesys database is detailed [here](https://dbdiagram.io/d/6332fecf7b3d2034ffcaaa92). The overall structure of the resulting data warehouse is shown [here](https://dbdiagram.io/d/63a19c5399cb1f3b55a27eca). A diagram which details the cloud infrastructure of this project can be seen [here][img](./etl_cloud_infrastructure.png).
 
 ## Pre-Requisites and Set-Up 
 
