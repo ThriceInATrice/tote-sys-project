@@ -30,7 +30,7 @@ def get_dim_transaction(transaction_data):
             ),
             "purchase_order_id": (
                 None
-                if row["purchase_order_id"] == ["None", None]
+                if row["purchase_order_id"] in ["None", None]
                 else int(row["purchase_order_id"])
             ),
         }
