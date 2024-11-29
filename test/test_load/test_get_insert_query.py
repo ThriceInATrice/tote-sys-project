@@ -53,3 +53,55 @@ VALUES
 """
 
         assert get_insert_query(test_table_name, test_row_list) == expected_return
+
+    def test_func_processes_multiple_tables_correctly(self):
+
+        test_data = {
+            "processed_data":{
+                "table_1":[
+                    {
+                        "row_1": 1,
+                        "row_2": 2
+                    }, {
+                        "row_1": 3,
+                        "row_2": 4
+                    }
+                ],
+                "table_2": [
+                    {
+                        "row_3": 5,
+                        "row_4": 6
+                    },
+                    {
+                        "row_3": 7,
+                        "row_4": 8
+                    }
+                ]
+            }
+        }
+
+        expected_return = """
+INSERT INTO table_1 (row_1, row_2)
+VALUES
+(1, 2),
+(3, 4)
+;
+
+
+
+INSERT INTO table_2 (row_3, row_4)
+VALUES
+(5, 6),
+(7, 8)
+;
+
+"""
+
+        query_str = f"\n".join(
+                [
+                    get_insert_query(table_name, row_list)
+                    for table_name, row_list in test_data["processed_data"].items()
+                ]
+            )
+        
+        assert query_str == expected_return

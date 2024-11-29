@@ -29,17 +29,21 @@ def get_dim_location(address_data):
     return [
         {
             "location_id": int(row["address_id"]),
-            "address_line_1": (
-                None if row["address_line_1"] == "None" else row["address_line_1"]
-            ),
+            "address_line_1": row["address_line_1"],
             "address_line_2": (
-                None if row["address_line_2"] == "None" else row["address_line_2"]
+                "Null"
+                if row["address_line_2"] in ["None", "Null", "null", None]
+                else row["address_line_2"]
             ),
-            "district": None if row["district"] == "None" else row["district"],
-            "city": None if row["city"] == "None" else row["city"],
-            "postal_code": None if row["postal_code"] == "None" else row["postal_code"],
-            "country": None if row["country"] == "None" else row["country"],
-            "phone": None if row["phone"] == "None" else row["phone"],
+            "district": (
+                "Null"
+                if row["district"] in ["None", "Null", "null", None]
+                else row["district"]
+            ),
+            "city": row["city"],
+            "postal_code": row["postal_code"],
+            "country": row["country"],
+            "phone": row["phone"],
         }
         for row in address_data
     ]

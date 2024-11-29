@@ -75,7 +75,7 @@ def lambda_handler(event, context):
         ingestion_key = "/".join(
             [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
         )
-
+        print(f"process - data key: {ingestion_key}")
         # try:
         s3_client = boto3.client("s3")
         response = s3_client.get_object(Bucket=ingestion_bucket, Key=ingestion_key)

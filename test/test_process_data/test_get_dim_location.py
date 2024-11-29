@@ -5,8 +5,8 @@ def test_process_address_returns_correct_data_for_single_dict():
     input_list = [
         {
             "address_id": 1,
-            "address_line_1": "6826 Herzog Via",
-            "address_line_2": None,
+            "address_line_1": "1 Test Street",
+            "address_line_2": "Sample Road",
             "district": "Avon",
             "city": "New Patienceburgh",
             "postal_code": "28441",
@@ -19,8 +19,8 @@ def test_process_address_returns_correct_data_for_single_dict():
     expected_list = [
         {
             "location_id": 1,
-            "address_line_1": "6826 Herzog Via",
-            "address_line_2": None,
+            "address_line_1": "1 Test Street",
+            "address_line_2": "Sample Road",
             "district": "Avon",
             "city": "New Patienceburgh",
             "postal_code": "28441",
@@ -36,8 +36,8 @@ def test_process_address_returns_correct_data_for_multiple_dicts():
     input_list = [
         {
             "address_id": 1,
-            "address_line_1": "6826 Herzog Via",
-            "address_line_2": None,
+            "address_line_1": "1 Test Street",
+            "address_line_2": "Sample Road",
             "district": "Avon",
             "city": "New Patienceburgh",
             "postal_code": "28441",
@@ -62,8 +62,8 @@ def test_process_address_returns_correct_data_for_multiple_dicts():
     expected_list = [
         {
             "location_id": 1,
-            "address_line_1": "6826 Herzog Via",
-            "address_line_2": None,
+            "address_line_1": "1 Test Street",
+            "address_line_2": "Sample Road",
             "district": "Avon",
             "city": "New Patienceburgh",
             "postal_code": "28441",
@@ -73,8 +73,8 @@ def test_process_address_returns_correct_data_for_multiple_dicts():
         {
             "location_id": 2,
             "address_line_1": "179 Alexie Cliffs",
-            "address_line_2": None,
-            "district": None,
+            "address_line_2": "Null",
+            "district": "Null",
             "city": "Aliso Viejo",
             "postal_code": "99305-7380",
             "country": "San Marino",

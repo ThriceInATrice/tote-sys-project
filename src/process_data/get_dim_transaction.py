@@ -24,13 +24,13 @@ def get_dim_transaction(transaction_data):
             "transaction_id": int(row["transaction_id"]),
             "transaction_type": row["transaction_type"],
             "sales_order_id": (
-                None
-                if row["sales_order_id"] in ["None", None]
+                "Null"
+                if row["sales_order_id"] in ["None", "Null", None]
                 else int(row["sales_order_id"])
             ),
             "purchase_order_id": (
-                None
-                if row["purchase_order_id"] in ["None", None]
+                "Null"
+                if row["purchase_order_id"] in ["None", "Null", None]
                 else int(row["purchase_order_id"])
             ),
         }

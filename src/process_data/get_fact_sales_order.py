@@ -29,7 +29,7 @@ def get_fact_sales_order(sales_order_table):
             "last_updated_date": str, #split
             "last_updated_time": str, #split
             "design_id": int,
-            "staff_id": int,
+            "sales_staff_id": int,
             "counterparty_id": int,
             "units_sold": int,
             "unit_price": int,
@@ -50,14 +50,17 @@ def get_fact_sales_order(sales_order_table):
         for key in diction:
             # try:
             if key in {
+                "sales_order_id",
                 "design_id",
-                "staff_id",
                 "counterparty_id",
                 "units_sold",
                 "currency_id",
                 "agreed_delivery_location_id",
             }:
                 new_sales_order_dict[key] = int(diction[key])
+
+            elif key == "staff_id":
+                new_sales_order_dict["sales_staff_id"] = int(diction[key])
             elif key == "unit_price":
                 new_sales_order_dict[key] = float(diction[key])
 

@@ -6,8 +6,8 @@ def test_process_staff_returns_correct_data_for_single_dict():
         {
             "transaction_id": 1,
             "transaction_type": "PURCHASE",
-            "sales_order_id": None,
-            "purchase_order_id": 2,
+            "sales_order_id": 2,
+            "purchase_order_id": 3,
             "created_at": "2022-11-03 14:20:52.186000",
             "updated_at": "2022-11-03 14:20:52.186000",
         }
@@ -16,8 +16,8 @@ def test_process_staff_returns_correct_data_for_single_dict():
         {
             "transaction_id": 1,
             "transaction_type": "PURCHASE",
-            "sales_order_id": None,
-            "purchase_order_id": 2,
+            "sales_order_id": 2,
+            "purchase_order_id": 3,
         }
     ]
     result = get_dim_transaction(input_list)
@@ -29,16 +29,16 @@ def test_process_staff_returns_correct_data_for_2_dicts():
         {
             "transaction_id": 1,
             "transaction_type": "PURCHASE",
-            "sales_order_id": None,
-            "purchase_order_id": 2,
+            "sales_order_id": 2,
+            "purchase_order_id": 3,
             "created_at": "2022-11-03 14:20:52.186000",
             "updated_at": "2022-11-03 14:20:52.186000",
         },
         {
-            "transaction_id": 2,
+            "transaction_id": 4,
             "transaction_type": "PURCHASE",
             "sales_order_id": None,
-            "purchase_order_id": 5,
+            "purchase_order_id": None,
             "created_at": "2021-12-03 14:29:52.186000",
             "updated_at": "2021-13-03 14:25:52.186000",
         },
@@ -47,14 +47,14 @@ def test_process_staff_returns_correct_data_for_2_dicts():
         {
             "transaction_id": 1,
             "transaction_type": "PURCHASE",
-            "sales_order_id": None,
-            "purchase_order_id": 2,
+            "sales_order_id": 2,
+            "purchase_order_id": 3,
         },
         {
-            "transaction_id": 2,
+            "transaction_id": 4,
             "transaction_type": "PURCHASE",
-            "sales_order_id": None,
-            "purchase_order_id": 5,
+            "sales_order_id": "Null",
+            "purchase_order_id": "Null",
         },
     ]
     result = get_dim_transaction(input_list)

@@ -23,7 +23,7 @@ def test_func_returns_list_of_dictionaries():
 def test_func_processes_data_correctly():
     test_data = [
         {
-            "counterparty_id": "1",
+            "counterparty_id": 1,
             "counterparty_legal_name": "Fahey and Sons",
             "legal_address_id": "15",
             "commercial_contact": "Micheal Toy",
@@ -47,7 +47,7 @@ def test_func_processes_data_correctly():
             "counterparty_legal_name": "Fahey and Sons",
             "counterparty_legal_address_line_1": "605 Haskell Trafficway",
             "counterparty_legal_address_line_2": "Axel Freeway",
-            "counterparty_legal_district": None,
+            "counterparty_legal_district": "Null",
             "counterparty_legal_city": "East Bobbie",
             "counterparty_legal_postal_code": "88253-4257",
             "counterparty_legal_country": "Heard Island and McDonald Islands",
@@ -57,8 +57,8 @@ def test_func_processes_data_correctly():
             "counterparty_id": 2,
             "counterparty_legal_name": "Leannon, Predovic and Morar",
             "counterparty_legal_address_line_1": "079 Horacio Landing",
-            "counterparty_legal_address_line_2": None,
-            "counterparty_legal_district": None,
+            "counterparty_legal_address_line_2": "Null",
+            "counterparty_legal_district": "Null",
             "counterparty_legal_city": "Utica",
             "counterparty_legal_postal_code": "93045",
             "counterparty_legal_country": "Austria",

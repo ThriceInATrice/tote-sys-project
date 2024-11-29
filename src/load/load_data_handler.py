@@ -35,84 +35,98 @@ def lambda_handler(event, context):
 
     # get unloaded data
     for extraction_time in unloaded_data:
-        date_split = re.findall("[0-9]+", extraction_time)
-        key = "/".join(
-            [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
-        )
-
-        # try:
-        s3_client = boto3.client("s3")
-
-        # fetch processed data as unloaded data
-        response = s3_client.get_object(Bucket=processed_data_bucket, Key=key)
-        body = response["Body"]
-        bytes = body.read()
-        unloaded_data = json.loads(bytes)
-        # unloaded_data = content["data"]
-
-        # load unloaded data
-        with connect_to_db(warehouse_credentials_id) as conn:
-            cursor = conn.cursor()
-            query_str = f"\n".join(
-                [
-                    get_insert_query(table_name, row_list)
-                    for table_name, row_list in unloaded_data["processed_data"].items()
-                ]
+        try:
+            date_split = re.findall("[0-9]+", extraction_time)
+            key = "/".join(
+                [date_split[0], date_split[1], date_split[2], extraction_time + ".json"]
             )
+            print(f"load - data key: {key}")
 
-            cursor.execute(query_str)
+            # try:
+            s3_client = boto3.client("s3")
 
-        # record data as loaded
-        log_extraction_time(extraction_time, loaded_extractions_bucket)
-        logger.info("loaded extraction time recorded")
+            # fetch processed data as unloaded data
+            response = s3_client.get_object(Bucket=processed_data_bucket, Key=key)
+            body = response["Body"]
+            bytes = body.read()
+            unloaded_data = json.loads(bytes)
+            # unloaded_data = content["data"]
 
-    # except Exception as e:
-    #     raise LoadError(f"load_data: {e}")
+            # load unloaded data
+            with connect_to_db(warehouse_credentials_id) as conn:
+                cursor = conn.cursor()
+                
+                query_str = f"\n".join(
+                    [
+                        get_insert_query(table_name, row_list).replace("None", "Null")
+                        for table_name, row_list in unloaded_data["processed_data"].items()
+                        if table_name[:3] == "dim"
+                    ]
+                )
+
+                cursor.execute(query_str)
+
+                query_str = f"\n".join(
+                    [
+                        get_insert_query(table_name, row_list)
+                        for table_name, row_list in unloaded_data["processed_data"].items()
+                        if table_name[:3] != "dim" and all([value not in ["Null", "null", "NULL", "None", None] for row in row_list for value in row.values()])
+                    ]
+                )
+
+                cursor.execute(query_str)
+
+            # record data as loaded
+            log_extraction_time(extraction_time, loaded_extractions_bucket)
+            logger.info("loaded extraction time recorded")
+
+        except Exception as e:
+            raise Exception(f"load_data: {e}, key: {key}")
 
 
 def get_unloaded_data(event):
 
+#try:
+    client = boto3.client("s3")
+
+    # check processed_extractions_bucket
+    processed_extractions_bucket = event["processed_extractions_bucket"]
+    processed_extractions_key = "processed_extractions.json"
+    processed_extractions_response = client.get_object(
+        Bucket=processed_extractions_bucket, Key=processed_extractions_key
+    )
+    processed_extractions_body = processed_extractions_response["Body"]
+    processed_extractions_bytes = processed_extractions_body.read()
+    processed_extractions_dict = json.loads(processed_extractions_bytes)
+    processed_extractions = processed_extractions_dict["extraction_times"]
+
+    # check processed_extractions_bucket
+    loaded_extractions_bucket = event["loaded_extractions_bucket"]
+    loaded_data_key = "loaded_extractions.json"
     try:
-        client = boto3.client("s3")
-
-        # check processed_extractions_bucket
-        processed_extractions_bucket = event["processed_extractions_bucket"]
-        processed_extractions_key = "processed_extractions.json"
-        processed_extractions_response = client.get_object(
-            Bucket=processed_extractions_bucket, Key=processed_extractions_key
+        loaded_data_response = client.get_object(
+            Bucket=loaded_extractions_bucket, Key=loaded_data_key
         )
-        processed_extractions_body = processed_extractions_response["Body"]
-        processed_extractions_bytes = processed_extractions_body.read()
-        processed_extractions_dict = json.loads(processed_extractions_bytes)
-        processed_extractions = processed_extractions_dict["extraction_times"]
+        loaded_data_body = loaded_data_response["Body"]
+        loaded_data_bytes = loaded_data_body.read()
+        loaded_data_dict = json.loads(loaded_data_bytes)
+        loaded_data = loaded_data_dict["extraction_times"]
+    except:
+        loaded_data = []
+        client.put_object(
+            Bucket=loaded_extractions_bucket,
+            Key=loaded_data_key,
+            Body=json.dumps({"extraction_times": []}),
+        )
 
-        # check processed_extractions_bucket
-        loaded_extractions_bucket = event["loaded_extractions_bucket"]
-        loaded_data_key = "loaded_extractions.json"
-        try:
-            loaded_data_response = client.get_object(
-                Bucket=loaded_extractions_bucket, Key=loaded_data_key
-            )
-            loaded_data_body = loaded_data_response["Body"]
-            loaded_data_bytes = loaded_data_body.read()
-            loaded_data_dict = json.loads(loaded_data_bytes)
-            loaded_data = loaded_data_dict["extraction_times"]
-        except:
-            loaded_data = []
-            client.put_object(
-                Bucket=loaded_extractions_bucket,
-                Key=loaded_data_key,
-                Body=json.dumps({"extraction_times": []}),
-            )
+    # raises error if there are entries in processed_extractions_bucket that are not in extraction_times_bucket
+    if len([entry for entry in loaded_data if entry not in processed_extractions]):
+        raise LoadError(
+            "Entries in loaded_data bucket do not match extraction_times bucket"
+        )
 
-        # raises error if there are entries in processed_extractions_bucket that are not in extraction_times_bucket
-        if len([entry for entry in loaded_data if entry not in processed_extractions]):
-            raise LoadError(
-                "Entries in loaded_data bucket do not match extraction_times bucket"
-            )
+    # return a list of unprocessed entries
+    return [entry for entry in processed_extractions if entry not in loaded_data]
 
-        # return a list of unprocessed entries
-        return [entry for entry in processed_extractions if entry not in loaded_data]
-
-    except Exception as e:
-        raise LoadError(f"get_unloaded_data: {e}")
+#except Exception as e:
+#    raise LoadError(f"get_unloaded_data: {e}")

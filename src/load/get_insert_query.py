@@ -8,16 +8,6 @@ def get_insert_query(table_name, row_list):
     concatonated into a single string and run at the same time
     """
 
-    def escape_quotes(input_str):
-        if "O'Keefe" in input_str:
-            return input_str.replace("O'", "O")
-        elif "@" in input_str and "'" in input_str:
-            return input_str.replace("o'", "o")
-        elif "People's" in input_str:
-            return input_str.replace("People's", "Peoples")
-        else:
-            return input_str
-
     if len(row_list):
         columns = row_list[0].keys()
         column_names = ", ".join(columns)
@@ -28,8 +18,8 @@ def get_insert_query(table_name, row_list):
                 + ", ".join(
                     [
                         (
-                            "'" + row[column].replace("'", "''") + "'"
-                            if type(row[column]) == str
+                            "'" + row[column].replace("'", "\'\'") + "'"
+                            if type(row[column]) == str and row[column] != "Null"
                             else str(row[column])
                         )
                         for column in columns
