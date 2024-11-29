@@ -13,6 +13,7 @@ class TestGetInsertQuery:
 INSERT INTO test_table (column_1, column_2)
 VALUES
 (1, 'hello world')
+ON CONFLICT DO NOTHING
 ;
 
 """
@@ -31,6 +32,7 @@ VALUES
 (1, 'hello world'),
 (2, 'hello worm'),
 (3, 'print(hello world)')
+ON CONFLICT DO NOTHING
 ;
 
 """
@@ -48,6 +50,7 @@ INSERT INTO test_table (column_1, column_2)
 VALUES
 ('John''s cat', 'O''Keefe'),
 ('it''s too far, isn''t it?', '''ello world')
+ON CONFLICT DO NOTHING
 ;
 
 """
@@ -85,6 +88,7 @@ INSERT INTO table_1 (row_1, row_2)
 VALUES
 (1, 2),
 (3, 4)
+ON CONFLICT DO NOTHING
 ;
 
 
@@ -93,6 +97,7 @@ INSERT INTO table_2 (row_3, row_4)
 VALUES
 (5, 6),
 (7, 8)
+ON CONFLICT DO NOTHING
 ;
 
 """

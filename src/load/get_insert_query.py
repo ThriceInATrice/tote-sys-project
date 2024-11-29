@@ -34,6 +34,7 @@ def get_insert_query(table_name, row_list):
 INSERT INTO {table_name} ({column_names})
 VALUES
 {values}
+ON CONFLICT DO NOTHING
 ;
 
 """
